@@ -1,51 +1,39 @@
 # Swarm Agent Registry
-
-Maintained by Milo. Updated after each completed task and during nightly dreaming.
-Each block is ≤200 tokens — compact status only. Full history in git log.
-
+Maintained by Milo. Last dream: 2026-11-17 22:31 UTC
+Graph: 0 accepted claims, 0 pending.
 ---
+## @graude
+Last commit: 6ab75a1 feat(milo): add memory & context manager bot
+Context health: OK (avg 8.5s)
 
-## @graude — orchestrator
-Last task: bootstrapped Emily and Milo profiles; triaged issues #4–8
-Current: monitoring
-Context health: OK
+## @dirk
+Last commit: (none yet)
+Context health: OK (avg 11.8s)
 
-## @dirk — literature reader
-Last task: (none yet — queue has 3 papers pending)
-Current: idle
-Context health: OK
+## @otto
+Last commit: (none yet)
+Context health: UNKNOWN
 
-## @otto — ontologist
-Last task: (none yet)
-Current: idle
-Context health: OK
+## @archie
+Last commit: (none yet)
+Context health: OK (avg 5.4s)
 
-## @archie — fact-checker
-Last task: (none yet)
-Current: idle
-Context health: OK
+## @stan
+Last commit: (none yet)
+Context health: UNKNOWN
 
-## @stan — statistician
-Last task: (none yet — awaiting first accepted claims)
-Current: idle
-Context health: OK
+## @kim
+Last commit: (none yet)
+Context health: OK (avg 4.7s)
 
-## @kim — graph builder
-Last task: (none yet — graph not yet bootstrapped locally)
-Current: idle
-Context health: OK
+## @rey
+Last commit: (none yet)
+Context health: OK (avg 15.8s)
 
-## @rey — curator
-Last task: (none yet — no claims in pending/)
-Current: idle
-Context health: OK
+## @emily
+Last commit: 8311448 fix(ci): enable APOC plugin in Neo4j container
+Context health: OK (avg 5.1s)
 
-## @emily — software engineer
-Last task: working on issues #10–13
-Current: active
-Context health: monitoring
-
-## @milo — memory & context manager
-Last task: initial setup
-Current: active
-Context health: OK
+## @milo
+Last commit: (none yet)
+Context health: OK (avg 3.4s)
