@@ -11,5 +11,5 @@ CREATE CONSTRAINT publication_pmid_unique IF NOT EXISTS FOR (p:Publication) REQU
 CREATE CONSTRAINT publication_doi_unique IF NOT EXISTS FOR (p:Publication) REQUIRE p.doi IS UNIQUE;
 CREATE CONSTRAINT claim_id_unique IF NOT EXISTS FOR (c:Claim) REQUIRE c.claim_id IS UNIQUE;
 CREATE CONSTRAINT trial_nct_unique IF NOT EXISTS FOR (t:ClinicalTrial) REQUIRE t.nct_id IS UNIQUE;
-CREATE CONSTRAINT gene_symbol_exists IF NOT EXISTS FOR (g:Gene) REQUIRE g.symbol IS NOT NULL;
-CREATE CONSTRAINT claim_text_exists IF NOT EXISTS FOR (c:Claim) REQUIRE c.claim_text IS NOT NULL;
+// Note: property existence constraints require Neo4j Enterprise Edition.
+// Validation is handled by claims/schema.json + testing/harness/claim_validator.py

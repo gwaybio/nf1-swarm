@@ -39,8 +39,13 @@ def run_cypher_file(session, path):
                   if s.strip() and not s.strip().startswith("//")]
     for stmt in statements:
         if stmt:
+            # Strip leading comment lines from each statement
+            stmt_lines = [l for l in stmt.split("\n") if not l.strip().startswith("//")]
+            stmt_clean = "\n".join(stmt_lines).strip()
+            if not stmt_clean:
+                continue
             try:
-                session.run(stmt)
+                session.run(stmt_clean)
             except Exception as e:
                 print(f"    WARNING: {e}")
 
