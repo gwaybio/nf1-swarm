@@ -2,7 +2,11 @@
 #
 # @gwaybio (Gregory) is the human owner and must approve ALL PRs touching
 # protected paths. No agent may merge a PR that modifies these files.
-# Rey reviews science-adjacent paths but cannot merge without Gregory.
+#
+# Review chain for ALL PRs:
+#   1. Emily — engineering review (technical correctness, no regressions)
+#   2. Rey   — science review (specs and schema only)
+#   3. Gregory (@gwaybio) — final approval (required, cannot be bypassed)
 #
 # Pattern                   Owner(s)
 # ─────────────────────────────────────────────────────────────────────────────

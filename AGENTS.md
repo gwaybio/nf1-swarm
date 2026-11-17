@@ -171,13 +171,18 @@ All claims must conform to `claims/schema.json`. Key fields:
 
 ## PR protocol (harness and spec changes)
 
-When any agent — most likely Graude — identifies that a rule needs changing:
+When any agent identifies that a rule needs changing:
 
 1. Open a branch; write the proposed change with a clear rationale in the PR description
-2. Tag `@gwaybio` for required approval
-3. CodeRabbit reviews automatically on all PRs
-4. For changes to `testing/specs/` or `claims/schema.json`: also tag Rey for science review
-5. **Do not merge without Gregory's approval.** No exceptions.
+2. Tag Emily for engineering review on ALL PRs — she reviews first
+3. Tag `@gwaybio` for required final approval
+4. CodeRabbit reviews automatically on all PRs
+5. For changes to `testing/specs/` or `claims/schema.json`: also tag Rey for science review
+6. **Do not merge without Gregory's approval.** No exceptions.
+
+Emily's review scope: technical correctness, no regressions, validator still passes.
+Rey's review scope: scientific contract integrity.
+Gregory's approval: final authority on all protected paths.
 
 ---
 
