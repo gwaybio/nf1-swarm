@@ -1,3 +1,6 @@
 [user]
 	name = Emily (nf1-swarm)
 	email = emily@nf1-swarm.bot
+
+[commit]
+	template = ~/repos/nf1-swarm/.github/commit_template.txt

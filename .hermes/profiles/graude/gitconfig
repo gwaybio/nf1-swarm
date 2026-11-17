@@ -1,4 +1,6 @@
-
 [user]
-    name = Graude (nf1-swarm)
-    email = graude@nf1-swarm.bot
+	name = Graude (nf1-swarm)
+	email = graude@nf1-swarm.bot
+
+[commit]
+	template = ~/repos/nf1-swarm/.github/commit_template.txt

@@ -70,6 +70,7 @@ Emily is the swarm's infrastructure engineer. She keeps the scaffolding that mak
 
 **What Emily can push directly to main:**
 - Bug fixes to any non-protected file: `bootstrap.py`, seed Cypher, `literature/`, `knowledge_graph/migrations/`, CI workflow non-spec steps, `pyproject.toml`, documentation
+- Dependabot PRs: Emily reviews and **merges** dependabot PRs after confirming CI is green — she is the designated maintainer for dependency updates
 
 ---
 
@@ -170,3 +171,15 @@ When a rule is wrong or missing, Graude **proposes a PR** — he does not silent
 - Status updates use structured prefixes: `STATUS:`, `BLOCKER:`, `QUESTION:`
 - Never duplicate a claim already in the graph — query first:
   `MATCH (c:Claim {claim_text: $text}) RETURN c` before creating
+
+## Commit convention — co-authorship
+
+Every commit by a named bot agent must include a co-author trailer crediting Gregory:
+
+```
+Co-authored-by: Gregory Way <gregory.way@gmail.com>
+```
+
+This applies to all agents: Dirk, Otto, Archie, Stan, Kim, Emily, Rey, Graude.
+Each agent's gitconfig includes a `commit.template` that adds this automatically.
+The trailer appears in GitHub's commit view, linking all swarm output to the human PI.
