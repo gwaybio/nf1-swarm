@@ -1,0 +1,28 @@
+version: 2
+updates:
+  # Python dependencies (uv / pip ecosystem)
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "08:00"
+    labels: ["infrastructure", "dependencies"]
+    commit-message:
+      prefix: "deps"
+    groups:
+      neo4j:
+        patterns: ["neo4j*"]
+      testing:
+        patterns: ["jsonschema*", "pyyaml*", "pre-commit*"]
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "08:00"
+    labels: ["infrastructure", "dependencies"]
+    commit-message:
+      prefix: "ci"

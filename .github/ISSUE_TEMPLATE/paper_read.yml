@@ -1,0 +1,78 @@
+name: "Paper: Read & Extract Claims"
+description: "Assign Dirk to read a paper and extract structured claims."
+title: "[DIRK] Read: "
+labels: ["paper", "dirk", "pending"]
+body:
+  - type: input
+    id: title
+    attributes:
+      label: Paper title
+      placeholder: "e.g. Activity of selumetinib in NF1-related plexiform neurofibromas"
+    validations:
+      required: true
+
+  - type: input
+    id: pmid
+    attributes:
+      label: PMID
+      placeholder: "e.g. 32187458"
+
+  - type: input
+    id: doi
+    attributes:
+      label: DOI
+      placeholder: "e.g. 10.1056/NEJMoa1912735"
+
+  - type: dropdown
+    id: source
+    attributes:
+      label: Source
+      options:
+        - PubMed / PMC
+        - bioRxiv
+        - arXiv
+        - PDF upload
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - "High: foundational / blocking other work"
+        - "Normal: standard queue"
+        - "Low: background reading"
+    validations:
+      required: true
+
+  - type: textarea
+    id: focus
+    attributes:
+      label: Focus (optional)
+      description: "What specific aspects should Dirk focus on? Leave blank for full extraction."
+      placeholder: "e.g. Focus on MEK inhibitor dosing and response rates only"
+
+  - type: input
+    id: directed_by
+    attributes:
+      label: Directed by
+      placeholder: "@graude"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Dirk checklist
+      options:
+        - label: Check literature/processed.md — paper not already read
+        - label: Fetch full text (PMC preferred) or abstract if paywalled
+        - label: Extract all relevant NF1 claims
+        - label: Assign evidence_strength per testing/specs/evidence_rubric.yaml
+        - label: Deposit JSON files in claims/pending/ using reserve_claim_id()
+        - label: Run uv run python testing/harness/claim_validator.py — all PASS
+        - label: "Commit with message: claim(dirk): short title"
+        - label: Update literature/processed.md with paper + claim IDs
+        - label: Comment on this issue with claim IDs extracted

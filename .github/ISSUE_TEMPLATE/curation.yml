@@ -1,0 +1,41 @@
+name: "👩‍🔬 Curation: Rey Review Session"
+description: "Batch curation request for Rey to review pending claims."
+title: "[REY] Curate: "
+labels: ["curation", "rey", "pending"]
+body:
+  - type: textarea
+    id: claim_ids
+    attributes:
+      label: Claim IDs to review
+      placeholder: "C0042, C0043, C0044"
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: "Any background Graude wants Rey to consider"
+      placeholder: "These 3 claims all come from the SPRINT trial paper. Focus on whether the evidence strength assignments are correct."
+
+  - type: dropdown
+    id: priority
+    attributes:
+      label: Priority
+      options:
+        - High — blocking graph insertion
+        - Normal
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Rey checklist
+      options:
+        - label: Review each claim JSON in claims/pending/
+        - label: Check evidence_strength against rubric
+        - label: "Accept: move to claims/accepted/, tag Kim, close claim issue"
+        - label: "Reject: add rejection_reason to JSON, close with explanation"
+        - label: Spot-check 1 accepted claim at random for audit
+        - label: Comment on this issue with accept/reject summary

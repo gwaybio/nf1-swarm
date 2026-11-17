@@ -1,0 +1,77 @@
+name: "🔬 Claim: Lifecycle Tracking"
+description: "Track a single claim from extraction through graph insertion."
+title: "[CLAIM] C____: "
+labels: ["claim", "pending"]
+body:
+  - type: input
+    id: claim_id
+    attributes:
+      label: Claim ID
+      description: "Use reserve_claim_id() to get the next ID before opening this issue."
+      placeholder: "e.g. C0042"
+    validations:
+      required: true
+
+  - type: textarea
+    id: claim_text
+    attributes:
+      label: Claim text
+      description: "Declarative, falsifiable statement. Max 500 chars."
+      placeholder: "e.g. Selumetinib reduces plexiform neurofibroma volume by ≥20% in pediatric NF1 patients"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: claim_type
+    attributes:
+      label: Claim type
+      options:
+        - molecular_function
+        - pathway_interaction
+        - clinical_outcome
+        - genetic_association
+        - drug_response
+        - phenotype_association
+        - model_validation
+    validations:
+      required: true
+
+  - type: dropdown
+    id: evidence_strength
+    attributes:
+      label: Evidence strength
+      options:
+        - "5 — Definitive (consensus, systematic review, biochemical proof)"
+        - "4 — Strong (RCT, replicated cohort)"
+        - "3 — Moderate (validated preclinical, small clinical)"
+        - "2 — Preliminary (single study, case report)"
+        - "1 — Speculative (expert opinion, hypothesis)"
+    validations:
+      required: true
+
+  - type: input
+    id: source
+    attributes:
+      label: Source (PMID or DOI)
+      placeholder: "PMID:32187458 or 10.1056/NEJMoa1912735"
+    validations:
+      required: true
+
+  - type: input
+    id: extracted_by
+    attributes:
+      label: Extracted by
+      placeholder: "dirk"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: status
+    attributes:
+      label: Lifecycle status
+      options:
+        - label: "[ ] Extracted — JSON in claims/pending/"
+        - label: "[ ] Validated — passes claim_validator.py"
+        - label: "[ ] Verified — Archie confirmed (if requested)"
+        - label: "[ ] Curated — Rey accepted"
+        - label: "[ ] In graph — Kim wrote to Neo4j"

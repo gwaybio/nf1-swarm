@@ -1,0 +1,61 @@
+name: "🔍 Verification: Archie Deep-Dive"
+description: "Assign Archie to verify a specific claim against raw data."
+title: "[ARCHIE] Verify: C____"
+labels: ["verification", "archie", "pending"]
+body:
+  - type: input
+    id: claim_id
+    attributes:
+      label: Claim ID
+      placeholder: "e.g. C0042"
+    validations:
+      required: true
+
+  - type: textarea
+    id: claim_text
+    attributes:
+      label: Claim text
+      placeholder: "Paste the claim text from the JSON file"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: current_strength
+    attributes:
+      label: Current evidence strength
+      options:
+        - "5 — Definitive"
+        - "4 — Strong"
+        - "3 — Moderate"
+        - "2 — Preliminary"
+        - "1 — Speculative"
+    validations:
+      required: true
+
+  - type: textarea
+    id: verification_task
+    attributes:
+      label: What to verify
+      placeholder: "e.g. Confirm MEK inhibitor mechanism using raw GEO data GSE12345. Check if Nf1+/- mouse model shows elevated ERK phosphorylation."
+    validations:
+      required: true
+
+  - type: input
+    id: directed_by
+    attributes:
+      label: Directed by
+      placeholder: "@graude"
+    validations:
+      required: true
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Archie checklist
+      options:
+        - label: Search graph for existing corroborating/conflicting claims
+        - label: Pull raw data if available (NF Data Portal, GEO, CCLE, GitHub)
+        - label: Run computational analysis if applicable
+        - label: Report SUPPORTED / CONTRADICTED / INCONCLUSIVE
+        - label: Commit report to `claims/pending/<claim_id>_archie_report.md`
+        - label: Comment on issue with finding + confidence + evidence

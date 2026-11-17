@@ -1,0 +1,42 @@
+name: "🕸️ Graph Task: Kim"
+description: "Graph building, analysis, schema changes, or exploration."
+title: "[KIM] "
+labels: ["graph", "kim", "pending"]
+body:
+  - type: dropdown
+    id: task_type
+    attributes:
+      label: Task type
+      options:
+        - Write claims to graph
+        - Graph analysis (centrality, community, paths)
+        - Schema change (new node label or edge type)
+        - Query development
+        - Migration
+        - Exploration
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      placeholder: "What needs to happen and why"
+    validations:
+      required: true
+
+  - type: textarea
+    id: claim_ids
+    attributes:
+      label: Claim IDs (if writing to graph)
+      placeholder: "C0042, C0043 (must be in claims/accepted/)"
+
+  - type: checkboxes
+    id: schema_change
+    attributes:
+      label: If schema change
+      options:
+        - label: GitHub issue opened + Rey approved before proceeding
+        - label: Migration file created in knowledge_graph/migrations/
+        - label: edge_constraints.yaml or node_schemas.yaml updated
+        - label: Specs approved by @gwaybio or Rey

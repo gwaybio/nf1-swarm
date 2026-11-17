@@ -82,7 +82,8 @@ jobs:
 
     services:
       neo4j:
-        image: neo4j:5-community
+        # Pinned to match local (5.26.33). uv.lock pins Python only — Docker tags need pinning here.
+        image: neo4j:5.26-community
         env:
           NEO4J_AUTH: neo4j/nf1swarm
         ports:
@@ -104,7 +105,17 @@ jobs:
         run: uv sync
 
       - name: Bootstrap graph
-        run: uv run python knowledge_graph/seeds/bootstrap.py --password nf1swarm
+        run: |
+          uv run python knowledge_graph/seeds/bootstrap.py --password nf1swarm
+          # Seed the claim ID counter node (used by agents to get atomic IDs)
+          uv run python -c "
+          from neo4j import GraphDatabase
+          d = GraphDatabase.driver('bolt://localhost:7687', auth=('neo4j','nf1swarm'))
+          with d.session() as s:
+              s.run(\"MERGE (c:Counter {name: 'claim_id'}) ON CREATE SET c.value = 0\")
+          d.close()
+          print('Counter node ready')
+          "
 
       - name: Run graph assertions
         run: uv run python testing/harness/approval_checker.py
