@@ -52,6 +52,7 @@ see **GAPMAP** (Salem, White, Bada, Hunter, 2025, arXiv:2510.25055).
 
 - Repo at `~/repos/nf1-swarm`
 - Neo4j running: `sudo systemctl start neo4j`
+- **APOC plugin required** — `reserve_claim_id()` uses `apoc.lock.nodes()` for atomic counter increment. APOC is a Neo4j server-side plugin, not a Python package. In CI it is enabled via `NEO4J_PLUGINS='["apoc"]'` on the Docker run command. Locally: install via `neo4j-admin plugin install apoc` or set in `neo4j.conf`.
 - Python env: `cd ~/repos/nf1-swarm` (use `uv run python ...`)
 - RTX-KG2 API: `https://kg2cploverdb.transltr.io/query`
 
@@ -153,13 +154,41 @@ uv run python testing/harness/claim_validator.py
 
 ## Pitfalls
 
-1. **Never ground entities in Stage 1.** Core FETA principle.
-2. **SemMedDB is deprecated** (Dec 2024). Use RTX-KG2.
-3. **Ambiguous CURIEs:** NF1 gene = `NCBIGene:4763`; NF1 disease = `MONDO:0009981`.
-4. **Abstract-only:** Cap `evidence_strength` at 3; note in `notes` field.
+1. **Never ground entities in Stage 1.** Core FETA principle — LLMs hallucinate ontology IDs when asked to extract and ground simultaneously.
+2. **SemMedDB is deprecated** (Dec 2024). Use RTX-KG2 — SemMedDB content is now incorporated into RTX-KG2.
+3. **Ambiguous CURIEs:** NF1 gene = `NCBIGene:4763`; NF1 disease = `MONDO:0009981`. Always use `claim_text` context to disambiguate before accepting a CURIE.
+4. **Abstract-only:** Cap `evidence_strength` at 3; note `"Full text unavailable, extracted from abstract"` in `notes` field.
+5. **APOC is a server plugin, not a pip package** — do not add it to `pyproject.toml`. It must be installed into Neo4j itself. If `reserve_claim_id()` raises a procedure-not-found error, APOC is not installed on the server.
+6. **Never manually assign claim IDs** — always call `next_claim_id(session)`. Manual IDs cause collisions and break the counter.
 
-## Verification
+## Graude: Issue triage procedure
 
-- Stage 1: JSON in `claims/pending/`, passes `claim_validator.py`, committed
-- Stage 2: `semantic_triple.subject_id` and `object_id` resolve in RTX-KG2;
-  `bel_notation` set for molecular claims; committed
+Before opening new issues, audit existing open issues for staleness:
+```bash
+gh issue list --state open --limit 50
+gh issue view <N>  # read body to understand original intent
+```
+
+Close issues that are already done by a later commit — do not leave them open as noise:
+```bash
+gh issue close <N> --comment "DONE — implemented in commit <sha>. <one-line summary>. Closed by @graude."
+```
+
+Re-title and re-label stale `[INFRA]` issues when a specialist now owns them:
+```bash
+gh issue edit <N> --title "[EMILY] <new title>" --add-label "engineering,emily" --remove-label "infrastructure"
+```
+
+Create labels before using them — `gh issue edit` fails silently if a label doesn't exist:
+```bash
+gh label create "emily" --description "Assigned to Emily" --color "e4e669" 2>&1 || true
+```
+
+## Graude: PR authority
+
+Graude proposes harness/spec changes via PR; never self-merges. The gate:
+- `testing/specs/`, `claims/schema.json`: Gregory must approve; Rey reviews
+- `testing/harness/`: Gregory must approve; CodeRabbit reviews
+- Everything else: direct push to main is fine
+
+When Graude catches a bug in infrastructure (bootstrap, CI, seed Cypher), he opens an `[EMILY]` issue with his diagnosis, then Emily executes. Graude fixed the bootstrap bug himself only because Emily didn't exist yet; that precedent does not repeat.
