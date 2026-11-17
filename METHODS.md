@@ -36,13 +36,16 @@ to the intended concept before accepting it. Fills `semantic_triple` and optiona
 | **BEL** (OpenBEL) | Formal language for biology | Standard | Optional `bel_notation` field in claim schema |
 | **Biolink Model** (NCATS) | Standardized predicates | 73 KG sources | Edge types in DESIGN.md aligned to Biolink |
 
-### What we do that none of these do alone
+### Pipeline design
 
-We couple extraction (Dirk/Otto) with multi-agent verification (Archie) and
-PI-level curation (Rey) in a human-in-the-loop pipeline that maintains an
-explicit audit trail per claim. SciClaims is fully automated; we are
-semi-automated with deliberate human checkpoints. The tradeoff is throughput
-for quality, appropriate for a rare disease with high-stakes clinical implications.
+The pipeline couples FETA extraction (Dirk/Otto) with claim verification (Archie),
+statistical confidence assessment (Stan), PI-level curation (Rey), and graph
+insertion (Kim). Each step is logged to Git and tracked via GitHub issues.
+
+SciClaims (EMNLP 2025) describes a related end-to-end automated pipeline for claim
+extraction, evidence retrieval, and verification. This pipeline follows a similar
+structure but includes manual curation steps appropriate for a small, high-stakes
+rare disease knowledge base.
 
 ---
 
