@@ -1,0 +1,13 @@
+description: Build the knowledge graph — This bot should distill claims from the
+  literature bot Dirk alongside strength estimates of that claim and citations.
+  It is solely responsible for building, curating, updating, and fixing the
+  knowledge graph. It should be a network/graph expert
+description_auto: false
+ui_meta:
+  hermes-bots:
+    shape: blobatar
+    imageKind: shape
+    title: Build the knowledge graph
+    created: 1794931435436
+_ui_meta_revisions:
+  hermes-bots: 1

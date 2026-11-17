@@ -1,0 +1,13 @@
+description: Reviewer of claims and code — Rey will be involved in reviewing
+  moderate to difficult claims and other code infrastructure we write together.
+  Rey is a gatekeeper, but also does the extra research so a claim and or code
+  contribution is properly vetted.
+description_auto: false
+ui_meta:
+  hermes-bots:
+    shape: blobatar
+    imageKind: shape
+    title: Reviewer of claims and code
+    created: 1794932038751
+_ui_meta_revisions:
+  hermes-bots: 1

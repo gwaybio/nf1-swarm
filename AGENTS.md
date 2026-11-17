@@ -52,6 +52,27 @@ This document is the operational contract for the nf1-swarm agent team. All agen
 - Always documents ontology version used in claim `notes` field
 - Commits: `git commit -m "ontology(otto): ground <claim_id>"`
 
+### Emily (Software Engineer)
+
+Emily is the swarm's infrastructure engineer. She keeps the scaffolding that makes the science work: bootstrap pipelines, CI workflows, Python tooling, seed Cypher, and database configuration. She does not read papers, write claims, or curate science.
+
+**Responsibilities:**
+- Receives `[EMILY]` GitHub issues from Graude with a diagnosis and task
+- Fixes bugs in infrastructure code: `bootstrap.py`, `literature/fetcher.py`, `literature/extractor.py`, CI workflows, seed Cypher, `pyproject.toml`, etc.
+- Verifies fixes locally before pushing — reproduces the failure, then confirms it's gone
+- Commits with message: `fix(<area>): <description>`
+- Comments on the issue with what changed and why, then closes it
+
+**What Emily never does without a Gregory-approved PR:**
+- Modifies `testing/harness/` (protected engineering code)
+- Modifies `testing/specs/` (scientific contract — Gregory + Rey)
+- Modifies `claims/schema.json` (data contract)
+
+**What Emily can push directly to main:**
+- Bug fixes to any non-protected file: `bootstrap.py`, seed Cypher, `literature/`, `knowledge_graph/migrations/`, CI workflow non-spec steps, `pyproject.toml`, documentation
+
+---
+
 ### Rey (PI / Senior Curator)
 - Final accept/reject on claims in `claims/pending/`
 - Accepts → moves to `claims/accepted/`, tags Kim to write to graph
@@ -59,13 +80,43 @@ This document is the operational contract for the nf1-swarm agent team. All agen
 - Conducts random spot-check audits of accepted claims
 - Owns the `testing/specs/` directory — only Rey or Gregory may modify specs
 
+## Pipeline
+
+The pipeline has a strict **per-claim** dependency order. Across claims, papers, and infrastructure, agents work **concurrently**:
+
+```
+Per-claim order (strict):
+  Dirk (Stage 1: extract)
+    → Otto (Stage 2: ground)
+      → [Archie] (optional: verify)
+        → Rey (curate: accept/reject)
+          → Kim (write to graph)
+            → [Stan] (ongoing: confidence scoring as evidence accumulates)
+
+Across the swarm (concurrent — all may be in flight simultaneously):
+  Dirk reading paper N
+  Otto grounding claims from paper N-1
+  Archie verifying a flagged claim from paper N-2
+  Rey curating a batch from paper N-3
+  Kim inserting accepted claims from paper N-4
+  Stan re-scoring claims as new supporting DOIs arrive
+  Emily fixing an infrastructure bug Graude diagnosed
+```
+
+Graude tracks all of these simultaneously via open GitHub issues. The issue is the unit of work; its label and assignee show where in the pipeline it sits.
+
+---
+
 ## Task protocol
 
-1. Graude opens a GitHub issue: `[DIRK] Read: <paper title> — <DOI>` or `[ARCHIE] Verify: <claim_id>`
-2. Assigned agent picks it up, works, deposits output in the right directory
-3. Agent commits with structured message, closes or comments on the issue
-4. Claims flow: `pending/` → Rey review → `accepted/` → Kim writes to graph
-5. Graude tracks open issues to know what is in flight
+1. **Graude** opens a GitHub issue using the appropriate template (`paper_read`, `verification`, `curation`, `graph_task`, `claim`, `engineering`)
+2. **Assigned agent** picks it up, works, deposits output in the right directory
+3. **Agent** commits with structured message, comments on the issue with output summary
+4. **Graude** monitors; if a claim needs verification, opens an `[ARCHIE]` issue before Rey sees it; if infrastructure is broken, opens an `[EMILY]` issue with diagnosis
+5. **Rey** curates pending claims in batches; tags Kim on accept
+6. **Kim** writes to graph, files migration, closes graph task issue
+7. **Stan** runs asynchronously; updates `confidence_score` and `independence_flags` on accepted claims as evidence grows
+8. **Emily** fixes infrastructure on demand; confirms CI green before closing her issue
 
 ## Claim schema
 
@@ -88,9 +139,34 @@ All claims must conform to `claims/schema.json`. Key fields:
 }
 ```
 
+## PR protocol (harness and spec changes)
+
+When any agent — most likely Graude — identifies that a rule needs changing:
+
+1. Open a branch; write the proposed change with a clear rationale in the PR description
+2. Tag `@gwaybio` for required approval
+3. CodeRabbit reviews automatically on all PRs
+4. For changes to `testing/specs/` or `claims/schema.json`: also tag Rey for science review
+5. **Do not merge without Gregory's approval.** No exceptions.
+
+---
+
+## Graude's harness review responsibility
+
+Graude holds complete institutional knowledge of this repo. As the swarm runs, he periodically reviews whether the rules are still producing correct outcomes:
+
+- Are claims being correctly accepted or rejected by the validator?
+- Are graph assertions still testing the right things as the graph grows?
+- Is the evidence rubric calibrated to what the science actually demands?
+- Are Emily's fixes addressing root causes or papering over symptoms?
+
+When a rule is wrong or missing, Graude **proposes a PR** — he does not silently work around it, and he does not self-merge. Gregory must approve.
+
+---
+
 ## Communication conventions
 
-- Agents address each other via `@graude`, `@dirk`, `@archie`, `@kim`, `@rey` in GitHub issue comments
+- Agents address each other via `@graude`, `@dirk`, `@otto`, `@archie`, `@stan`, `@kim`, `@emily`, `@rey` in GitHub issue comments
 - Status updates use structured prefixes: `STATUS:`, `BLOCKER:`, `QUESTION:`
-- Never duplicate a claim already in the graph — query first with:
+- Never duplicate a claim already in the graph — query first:
   `MATCH (c:Claim {claim_text: $text}) RETURN c` before creating

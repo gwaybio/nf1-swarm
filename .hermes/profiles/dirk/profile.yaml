@@ -1,0 +1,13 @@
+description: Read the literature — This bot should read primary literature
+  available on pubmed, PMC, or other public resources. It should distill claims
+  of that literature, assess strength of evidence for that claim, and then
+  deposit the claim and strength into a growing database of knowledge.
+description_auto: false
+ui_meta:
+  hermes-bots:
+    shape: blobatar::droplet
+    imageKind: shape
+    title: Read the literature
+    created: 1794930611004
+_ui_meta_revisions:
+  hermes-bots: 1

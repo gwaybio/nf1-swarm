@@ -4,3 +4,34 @@ __pycache__/
 *.egg-info/
 .pytest_cache/
 backups/
+
+# Hermes profile runtime data — never commit (may contain API keys / secrets).
+# Only SOUL.md, profile.yaml, gitconfig, and skills/ are safe to track.
+.hermes/profiles/*/config.yaml
+.hermes/profiles/*/state.db*
+.hermes/profiles/*/auth.lock
+.hermes/profiles/*/gateway.lock
+.hermes/profiles/*/log_hash_salt
+.hermes/profiles/*/memories/
+.hermes/profiles/*/sessions/
+.hermes/profiles/*/cache/
+.hermes/profiles/*/logs/
+.hermes/profiles/*/pairing/
+.hermes/profiles/*/platforms/
+.hermes/profiles/*/plugins/
+.hermes/profiles/*/plugin-update-checks/
+.hermes/profiles/*/runtime/
+.hermes/profiles/*/telemetry/
+.hermes/profiles/*/workspace/
+.hermes/profiles/*/assets/
+.hermes/profiles/*/audio_cache/
+.hermes/profiles/*/image_cache/
+.hermes/profiles/*/backups/
+.hermes/profiles/*/cron/
+.hermes/profiles/*/hooks/
+.hermes/profiles/*/home/
+.hermes/profiles/*/plans/
+.hermes/profiles/*/projects.db*
+.hermes/profiles/*/skins/
+.hermes/profiles/*/provider_models_cache*
+.hermes/profiles/*/context_length_cache*

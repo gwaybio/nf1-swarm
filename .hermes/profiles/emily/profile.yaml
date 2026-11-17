@@ -1,0 +1,12 @@
+description: Fix infrastructure — Emily is the nf1-swarm software engineer.
+  She fixes bugs in bootstrap, CI, Python tooling, seed Cypher, and database
+  configuration so every other agent can work without friction.
+description_auto: false
+ui_meta:
+  hermes-bots:
+    shape: blobatar::gear
+    imageKind: shape
+    title: Fix infrastructure
+    created: 1794938831000
+_ui_meta_revisions:
+  hermes-bots: 1
