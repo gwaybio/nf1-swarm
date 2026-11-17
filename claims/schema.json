@@ -242,7 +242,7 @@
       "description": "Biological Expression Language notation. Optional for molecular_function and pathway_interaction claims."
     }
   },
-  "oneOf": [
+  "anyOf": [
     {
       "required": [
         "source_pmid"
