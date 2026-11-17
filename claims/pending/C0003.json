@@ -12,10 +12,28 @@
   "verified_by": null,
   "curated_by": null,
   "status": "pending",
-  "semantic_triple": null,
-  "bel_notation": null,
+  "semantic_triple": {
+    "subject": "neurofibromin (NF1 GAP-related domain)",
+    "subject_id": "UniProtKB:P21359",
+    "predicate": "ASSOCIATED_WITH",
+    "object": "IRA1 (S. cerevisiae)",
+    "object_id": "NCBIGene:852437"
+  },
+  "bel_notation": "p(HGNC:NF1) association p(SGD:IRA1)",
   "supporting_dois": [],
   "confidence_score": null,
   "independence_flags": [],
-  "notes": "Full text unavailable (not in PMC), extracted from abstract. Strength capped at 3: sequence-similarity evidence, no biochemical GAP assay in this paper. DOI: 10.1016/0092-8674(90)90024-9 (omitted from source_doi because schema oneOf rejects pmid+doi together)."
+  "notes": "Full text unavailable (not in PMC), extracted from abstract. Strength capped at 3: sequence-similarity evidence, no biochemical GAP assay in this paper. DOI: 10.1016/0092-8674(90)90024-9 (omitted from source_doi because schema oneOf rejects pmid+doi together). | Grounded by Otto via RTX-KG2c PloverDB (kg2cploverdb.transltr.io) and SRI Node Normalizer (nodenormalization-sri.renci.org), accessed 2026-11-17. neurofibromin=UniProtKB:P21359; yeast IRA1=NCBIGene:852437 (SGD:S000000344, UniProtKB:P18963). Predicate is cross-species sequence homology (biolink:homologous_to/orthologous_to), mapped to ASSOCIATED_WITH as closest permitted edge type. No NF1-IRA1 edge exists in RTX-KG2. IRA1 is a functional RAS-GAP homolog in S. cerevisiae; this paper established the NF1-IRA1 evolutionary link.",
+  "related_nodes": [
+    {
+      "label": "Protein",
+      "identifier": "UniProtKB:P21359",
+      "edge_type": "ASSOCIATED_WITH"
+    },
+    {
+      "label": "Gene",
+      "identifier": "NCBIGene:852437",
+      "edge_type": "ASSOCIATED_WITH"
+    }
+  ]
 }

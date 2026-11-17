@@ -12,10 +12,43 @@
   "verified_by": null,
   "curated_by": null,
   "status": "pending",
-  "semantic_triple": null,
-  "bel_notation": null,
+  "semantic_triple": {
+    "subject": "NF1",
+    "subject_id": "NCBIGene:4763",
+    "predicate": "ASSOCIATED_WITH",
+    "object": "OMG/EVI2A/EVI2B (embedded genes)",
+    "object_id": "NCBIGene:4974|NCBIGene:2123|NCBIGene:2124"
+  },
+  "bel_notation": "g(HGNC:NF1) hasComponent list(g(HGNC:OMG), g(HGNC:EVI2A), g(HGNC:EVI2B))",
   "supporting_dois": [],
   "confidence_score": null,
   "independence_flags": [],
-  "notes": "Full text unavailable (not in PMC), extracted from abstract. Strength capped at 3: sequence-similarity evidence, no biochemical GAP assay in this paper. DOI: 10.1016/0092-8674(90)90024-9 (omitted from source_doi because schema oneOf rejects pmid+doi together)."
+  "notes": "Full text unavailable (not in PMC), extracted from abstract. Strength capped at 3: sequence-similarity evidence, no biochemical GAP assay in this paper. DOI: 10.1016/0092-8674(90)90024-9 (omitted from source_doi because schema oneOf rejects pmid+doi together). | Grounded by Otto via RTX-KG2c PloverDB (kg2cploverdb.transltr.io) and SRI Node Normalizer (nodenormalization-sri.renci.org), accessed 2026-11-17. NF1=NCBIGene:4763; OMG (oligodendrocyte myelin glycoprotein)=NCBIGene:4974 (HGNC:8135); EVI2A=NCBIGene:2123 (HGNC:3499); EVI2B=NCBIGene:2124 (HGNC:3500). These three genes reside within intron 27b of NF1 and are transcribed antisense to NF1. Predicate is genomic containment (no exact match in edge_constraints.yaml); ASSOCIATED_WITH used as closest permitted type. Object_id uses pipe-delimited multi-CURIE format for three genes. All three CURIEs verified via SRI Node Normalizer.",
+  "related_nodes": [
+    {
+      "label": "Gene",
+      "identifier": "NCBIGene:4763",
+      "edge_type": "ASSOCIATED_WITH"
+    },
+    {
+      "label": "Gene",
+      "identifier": "NCBIGene:4974",
+      "edge_type": "ASSOCIATED_WITH"
+    },
+    {
+      "label": "Gene",
+      "identifier": "NCBIGene:2123",
+      "edge_type": "ASSOCIATED_WITH"
+    },
+    {
+      "label": "Gene",
+      "identifier": "NCBIGene:2124",
+      "edge_type": "ASSOCIATED_WITH"
+    },
+    {
+      "label": "Protein",
+      "identifier": "UniProtKB:P21359",
+      "edge_type": "ASSOCIATED_WITH"
+    }
+  ]
 }

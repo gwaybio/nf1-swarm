@@ -12,10 +12,28 @@
   "verified_by": null,
   "curated_by": null,
   "status": "pending",
-  "semantic_triple": null,
-  "bel_notation": null,
+  "semantic_triple": {
+    "subject": "NF1",
+    "subject_id": "NCBIGene:4763",
+    "predicate": "ASSOCIATED_WITH",
+    "object": "t(1;17) translocation",
+    "object_id": "HGNC:karyotype:t(1;17)"
+  },
+  "bel_notation": "g(HGNC:NF1) association var(\"t(1;17)\")",
   "supporting_dois": [],
   "confidence_score": null,
   "independence_flags": [],
-  "notes": "Full text unavailable (not in PMC), extracted from abstract. Strength capped at 3: sequence-similarity evidence, no biochemical GAP assay in this paper. DOI: 10.1016/0092-8674(90)90024-9 (omitted from source_doi because schema oneOf rejects pmid+doi together)."
+  "notes": "Full text unavailable (not in PMC), extracted from abstract. Strength capped at 3: sequence-similarity evidence, no biochemical GAP assay in this paper. DOI: 10.1016/0092-8674(90)90024-9 (omitted from source_doi because schema oneOf rejects pmid+doi together). | Grounded by Otto via RTX-KG2c PloverDB (kg2cploverdb.transltr.io) and SRI Node Normalizer (nodenormalization-sri.renci.org), accessed 2026-11-17. NF1 gene=NCBIGene:4763. The t(1;17) translocation is a cytogenetic variant that disrupts NF1; no canonical CURIE exists in standard ontologies (checked RTX-KG2, ClinVar, HGVS). Using provisional ID HGNC:karyotype:t(1;17). This translocation was used as a mapping tool to localize NF1 on 17q11.2. Recommend Kim flag this node as needing manual curation for a stable identifier.",
+  "related_nodes": [
+    {
+      "label": "Gene",
+      "identifier": "NCBIGene:4763",
+      "edge_type": "ASSOCIATED_WITH"
+    },
+    {
+      "label": "Protein",
+      "identifier": "UniProtKB:P21359",
+      "edge_type": "ASSOCIATED_WITH"
+    }
+  ]
 }
