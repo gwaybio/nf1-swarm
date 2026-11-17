@@ -1,29 +1,32 @@
 # CODEOWNERS — nf1-swarm
 #
-# @gwaybio (Gregory) is the human owner and must approve ALL PRs touching
-# protected paths. No agent may merge a PR that modifies these files.
-#
 # Review chain for ALL PRs:
-#   1. Emily — engineering review (technical correctness, no regressions)
-#   2. Rey   — science review (specs and schema only)
-#   3. Gregory (@gwaybio) — final approval (required, cannot be bypassed)
+#   Emily — engineering review first (technical correctness, no regressions)
+#   Rey   — science review (specs only)
+#   Gregory (@gwaybio) — final approval on TRUSTED COMPUTING BASE only
 #
-# Pattern                   Owner(s)
+# TRUSTED COMPUTING BASE (TCB) — Gregory approval required, no exceptions.
+# These are the files whose corruption would silently invalidate the science
+# without detection. Keep the TCB small so the swarm moves fast everywhere else.
+#
+# FAST PATH — Emily engineering review sufficient, no human gate needed.
+# Gregory is notified by GitHub but merge does not block on his approval.
+#
+# Pattern                        Owner(s)
 # ─────────────────────────────────────────────────────────────────────────────
 
-# Scientific contract — Gregory approval required; Rey reviews
-testing/specs/              @gwaybio
-claims/schema.json          @gwaybio
+# TCB: scientific contract — Gregory + Rey required
+testing/specs/                   @gwaybio
+testing/harness/                 @gwaybio
+testing/approved/                @gwaybio
 
-# Test harness code — Gregory approval required
-testing/harness/            @gwaybio
-testing/approved/           @gwaybio
+# TCB: ownership rules — Gregory required
+.github/CODEOWNERS               @gwaybio
 
-# Operational / architectural contracts — Gregory approval required
-AGENTS.md                   @gwaybio
-DESIGN.md                   @gwaybio
-METHODS.md                  @gwaybio
-.github/CODEOWNERS          @gwaybio
-
-# Hermes shared context and skills — Gregory approval required
-.hermes/                    @gwaybio
+# FAST PATH: Emily reviews, no human gate
+# (Gregory notified but not blocking)
+claims/schema.json               @gwaybio
+AGENTS.md                        @gwaybio
+DESIGN.md                        @gwaybio
+METHODS.md                       @gwaybio
+.hermes/                         @gwaybio

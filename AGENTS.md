@@ -139,14 +139,34 @@ Graude tracks all of these simultaneously via open GitHub issues. The issue is t
 
 ## Task protocol
 
-1. **Graude** opens a GitHub issue using the appropriate template (`paper_read`, `verification`, `curation`, `graph_task`, `claim`, `engineering`)
-2. **Assigned agent** picks it up, works, deposits output in the right directory
-3. **Agent** commits with structured message, comments on the issue with output summary
-4. **Graude** monitors; if a claim needs verification, opens an `[ARCHIE]` issue before Rey sees it; if infrastructure is broken, opens an `[EMILY]` issue with diagnosis
-5. **Rey** curates pending claims in batches; tags Kim on accept
-6. **Kim** writes to graph, files migration, closes graph task issue
-7. **Stan** runs asynchronously; updates `confidence_score` and `independence_flags` on accepted claims as evidence grows
-8. **Emily** fixes infrastructure on demand; confirms CI green before closing her issue
+Every agent that touches a claim **must comment on the originating paper issue** (the `[DIRK]` issue that started the work). The issue is the audit trail for the full claim lifecycle — from extraction through graph insertion.
+
+**Required comments by stage:**
+
+| Stage | Agent | Comment must include |
+|-------|-------|---------------------|
+| Extract | Dirk | Claim IDs created, evidence_strength assigned, any caveats (paywall, abstract-only) |
+| Ground | Otto | CURIEs assigned per claim, RTX-KG2 version, any ambiguous groundings noted |
+| Verify | Archie | SUPPORTED / CONTRADICTED / INCONCLUSIVE per claim, evidence cited |
+| Curate | Rey | Accept/reject per claim, reason for any rejection, final status |
+| Graph write | Kim | Migration file committed, Neo4j node/edge counts added |
+| Confidence | Stan | confidence_score per claim, independence_flags if any, N supporting DOIs |
+
+Use structured prefixes: `STATUS:`, `BLOCKER:`, `QUESTION:`
+
+**When to close the issue:** Graude closes the paper issue only after all claims from that paper have reached `accepted` status and been written to the graph by Kim. Until then, the issue stays open as a live record of in-flight work.
+
+1. **Graude** opens a GitHub issue using the appropriate template (`paper_read`, `verification`, `curation`, `graph_task`, `claim`, `engineering`, `memory`)
+2. **Dirk** extracts claims → comments on paper issue with claim IDs and summary
+3. **Otto** grounds claims → comments on paper issue with CURIEs assigned
+4. **Graude** monitors; opens `[ARCHIE]` issue for claims needing deep verification
+5. **Archie** verifies → comments on paper issue with SUPPORTED/CONTRADICTED/INCONCLUSIVE
+6. **Rey** curates → comments on paper issue with accept/reject decisions
+7. **Kim** writes to graph → comments on paper issue with migration file and node counts
+8. **Stan** scores → updates claim JSONs with confidence_score; comments if divergence is significant
+9. **Emily** fixes infrastructure → comments on engineering issue with what changed
+10. **Milo** answers retrieval queries → comments on memory issue with findings
+11. **Graude** closes paper issue when all claims are in graph
 
 ## Claim schema
 
