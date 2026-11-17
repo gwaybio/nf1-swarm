@@ -22,7 +22,7 @@ This repository is the working home of an AI agent swarm that reads primary lite
 
 ```bash
 # 1. Install dependencies
-pip install -r requirements.txt
+uv sync
 
 # 2. Start Neo4j (must be running on bolt://localhost:7687)
 sudo systemctl start neo4j
@@ -31,7 +31,7 @@ sudo systemctl start neo4j
 # Default: neo4j/neo4j — change via http://localhost:7474
 
 # 4. Bootstrap the knowledge graph
-python knowledge_graph/seeds/bootstrap.py
+uv run python knowledge_graph/seeds/bootstrap.py
 
 # 5. Run the test suite
 bash testing/harness/run_tests.sh
