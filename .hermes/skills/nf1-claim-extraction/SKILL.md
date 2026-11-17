@@ -14,17 +14,33 @@ metadata:
 # NF1 Claim Extraction
 
 Two-stage biomedical claim extraction protocol for the nf1-swarm project.
-Implements the FETA (First Extract, Tag Afterwards) approach described in:
+Full citations for all referenced work are in `CITATION.cff`.
 
-> Shlyk D, Montanelli S, Mesiti M, Hunter L.
-> "Mind Your Steps in Biomedical Named Entity Recognition: First Extract, Tag Afterwards."
-> *Proceedings of the 1st Workshop on Linguistic Analysis for Health (HeaLing 2026)*,
-> pp. 127–141. ACL Anthology ID: 2026.healing-1.11
-> DOI: [10.18653/v1/2026.healing-1.11](https://doi.org/10.18653/v1/2026.healing-1.11)
+## Methodological basis
 
-Stage 1 (Extract) is Dirk's responsibility. Stage 2 (Tag/Ground) is Otto's.
+The extraction protocol follows **FETA** (First Extract, Tag Afterwards):
 
-See also `METHODS.md` for full methodological context and related work citations.
+> Shlyk D, Montanelli S, Mesiti M, Hunter L (2026). "Mind Your Steps in
+> Biomedical Named Entity Recognition: First Extract, Tag Afterwards."
+> *HeaLing 2026*, pp. 127–141. DOI: 10.18653/v1/2026.healing-1.11
+
+FETA's core finding: separating entity extraction from ontology grounding
+improves accuracy because LLMs hallucinate ontology identifiers when asked
+to do both simultaneously. Stage 1 extracts; Stage 2 grounds.
+
+The extract → verify → curate pipeline structure follows **SciClaims**
+(Ortega & Gómez-Pérez, EMNLP 2025, DOI: 10.18653/v1/2025.emnlp-demos.11),
+which integrates claim extraction, evidence retrieval, and LLM-based
+SUPPORT/REFUTE/NEI verification into a single end-to-end system.
+
+For entity grounding (Stage 2), we use **RTX-KG2** (Chamberlain et al., 2023)
+as the primary oracle — 73+ biomedical knowledge sources in a single
+Biolink-compliant TRAPI graph at `https://kg2cploverdb.transltr.io/query`.
+This supersedes direct SemMedDB queries; SemMedDB (Kilicoglu & Shin, 2012)
+was deprecated by NLM in December 2024 and is now incorporated into RTX-KG2.
+
+For identifying knowledge gaps in the NF1 literature to prioritize reading,
+see **GAPMAP** (Salem, White, Bada, Hunter, 2025, arXiv:2510.25055).
 
 ## When to Use
 
@@ -36,14 +52,12 @@ See also `METHODS.md` for full methodological context and related work citations
 
 - Repo at `~/repos/nf1-swarm`
 - Neo4j running: `sudo systemctl start neo4j`
-- Python env active: `cd ~/repos/nf1-swarm` (use `uv run python ...`)
+- Python env: `cd ~/repos/nf1-swarm` (use `uv run python ...`)
 - RTX-KG2 API: `https://kg2cploverdb.transltr.io/query`
 
 ## Stage 1 — Extract (Dirk)
 
 **Goal:** Identify falsifiable claim sentences. Do NOT ground to ontology yet.
-Separation of extraction from grounding is the core FETA principle — LLMs
-hallucinate ontology IDs when asked to do both steps simultaneously.
 
 1. Fetch paper:
    ```python
@@ -68,7 +82,7 @@ hallucinate ontology IDs when asked to do both steps simultaneously.
 4. Assign `evidence_strength` per `testing/specs/evidence_rubric.yaml`.
    Cap at 3 when only abstract is available.
 
-5. Reserve a claim ID (atomic counter, never assign manually):
+5. Reserve a claim ID (never assign manually):
    ```python
    from neo4j import GraphDatabase
    from knowledge_graph.queries.reserve_claim_id import next_claim_id
@@ -77,7 +91,7 @@ hallucinate ontology IDs when asked to do both steps simultaneously.
        cid = next_claim_id(s)
    ```
 
-6. Write claim JSON to `claims/pending/<cid>.json` per `claims/schema.json`.
+6. Write JSON to `claims/pending/<cid>.json` per `claims/schema.json`.
    Leave `semantic_triple` and `bel_notation` as `null` — Otto fills these.
 
 7. Validate: `uv run python testing/harness/claim_validator.py`
@@ -106,10 +120,10 @@ hallucinate ontology IDs when asked to do both steps simultaneously.
        "CHEMBL.COMPOUND:CHEMBL1614701", "HP:0009732",
        predicates=["biolink:treats"]
    )
-   # If existing: add supporting_dois from existing[0].pmids; report n_sources to Stan
+   # If existing: add pmids to supporting_dois; report n_sources to Stan
    ```
 
-4. Fill `semantic_triple` in the claim JSON:
+4. Fill `semantic_triple`:
    ```json
    {
      "subject": "Selumetinib",
@@ -131,16 +145,15 @@ hallucinate ontology IDs when asked to do both steps simultaneously.
 from literature.fetcher import PaperFetcher           # Stage 1: fetch
 from literature.extractor import extract_candidate_claims  # Stage 1: extract
 from literature.rtx_kg2 import ground_entity, check_edge_exists  # Stage 2: tag
-from knowledge_graph.queries.reserve_claim_id import next_claim_id  # both
+from knowledge_graph.queries.reserve_claim_id import next_claim_id
 ```
-
 ```bash
-uv run python testing/harness/claim_validator.py      # validate before commit
+uv run python testing/harness/claim_validator.py
 ```
 
 ## Pitfalls
 
-1. **Never ground entities in Stage 1.** This is the core FETA insight.
+1. **Never ground entities in Stage 1.** Core FETA principle.
 2. **SemMedDB is deprecated** (Dec 2024). Use RTX-KG2.
 3. **Ambiguous CURIEs:** NF1 gene = `NCBIGene:4763`; NF1 disease = `MONDO:0009981`.
 4. **Abstract-only:** Cap `evidence_strength` at 3; note in `notes` field.

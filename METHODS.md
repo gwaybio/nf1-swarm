@@ -7,52 +7,49 @@ pipeline and situates our approach relative to the state of the art.
 
 ## Claim extraction
 
-### Our approach: FETA-inspired two-stage extraction
+### FETA two-stage protocol
 
-We implement a protocol inspired by FETA (First Extract, Tag Afterwards):
+The extraction protocol follows FETA (First Extract, Tag Afterwards) [1].
 
-> Shlyk D, Montanelli S, Mesiti M, Hunter L. "Mind Your Steps in Biomedical Named
-> Entity Recognition: First Extract, Tag Afterwards."
-> *Proceedings of the 1st Workshop on Linguistic Analysis for Health (HeaLing 2026)*,
-> pp. 127–141. DOI: [10.18653/v1/2026.healing-1.11](https://doi.org/10.18653/v1/2026.healing-1.11)
+Stage 1 (Dirk) identifies candidate claim sentences from full text using
+heuristic pattern matching followed by LLM review. No ontology grounding
+at this stage — LLMs hallucinate ontology identifiers when asked to extract
+and ground simultaneously [1].
 
-**Stage 1 — Extract (Dirk):** Identify candidate claim sentences from full text using
-heuristic pattern matching followed by LLM review. Each candidate is a falsifiable,
-declarative statement. No ontology grounding at this stage — this separation is the
-key FETA insight: LLMs hallucinate ontology IDs when asked to do both steps simultaneously.
+Stage 2 (Otto) grounds each extracted entity to a canonical CURIE using
+RTX-KG2 [3] as the primary oracle, with a self-verification step to confirm
+the CURIE resolves to the intended concept.
 
-**Stage 2 — Tag (Otto):** Ground each extracted entity to a canonical CURIE using
-RTX-KG2 as the primary oracle. Self-verification step: Otto confirms the CURIE resolves
-to the intended concept before accepting it. Fills `semantic_triple` and optional
-`bel_notation` in the claim JSON.
+### Evidence retrieval and verification
 
-### Comparison to other state-of-the-art methods
+The extract → verify → curate pipeline structure follows SciClaims [2],
+which integrates claim extraction, PubMed evidence retrieval, and LLM-based
+SUPPORT/REFUTE/NEI verdict into a single system. This pipeline uses separate
+agents (Dirk, Otto, Archie, Rey) for each stage rather than a single model.
 
-| Method | Approach | Coverage | Our use |
-|--------|----------|----------|---------|
-| **FETA** (Shlyk et al., 2026) | Two-stage LLM NER | Multiple biomedical benchmarks | Direct inspiration for extraction protocol |
-| **SciClaims** (EMNLP 2025) | End-to-end extraction + verification | SciFact benchmark | Inspires our extract→verify→curate pipeline |
-| **SemRep/SemMedDB** (NLM) | Rule-based, UMLS-grounded | 37M PubMed abstracts | Deprecated Dec 2024; superseded by RTX-KG2 |
-| **BEL** (OpenBEL) | Formal language for biology | Standard | Optional `bel_notation` field in claim schema |
-| **Biolink Model** (NCATS) | Standardized predicates | 73 KG sources | Edge types in DESIGN.md aligned to Biolink |
+### Comparison to other approaches
+
+| Method | Reference | Our use |
+|--------|-----------|---------|
+| FETA | Shlyk et al., HeaLing 2026 [1] | Extraction protocol |
+| SciClaims | Ortega & Gómez-Pérez, EMNLP 2025 [2] | Pipeline structure |
+| SemRep/SemMedDB | Kilicoglu et al. [5,6] | Predicate vocabulary; deprecated Dec 2024 |
+| BEL | OpenBEL Community | Optional `bel_notation` field |
+| Biolink Model | NCATS Translator | Edge type vocabulary |
 
 ### Pipeline design
 
-The pipeline couples FETA extraction (Dirk/Otto) with claim verification (Archie),
-statistical confidence assessment (Stan), PI-level curation (Rey), and graph
-insertion (Kim). Each step is logged to Git and tracked via GitHub issues.
+The pipeline couples FETA extraction (Dirk/Otto) with claim verification
+(Archie), statistical confidence assessment (Stan), PI-level curation (Rey),
+and graph insertion (Kim). Each step is logged to Git and tracked via GitHub
+issues.
 
-SciClaims (EMNLP 2025) describes a related end-to-end automated pipeline for claim
-extraction, evidence retrieval, and verification. This pipeline follows a similar
-structure but includes manual curation steps appropriate for a small, high-stakes
-rare disease knowledge base.
 
 ---
 
 ## Knowledge graph backbone: RTX-KG2
 
-We use RTX-KG2 as our external knowledge oracle rather than querying each upstream
-source individually:
+We use RTX-KG2 [3] as our external knowledge oracle:
 
 > Chamberlain MT et al. "RTX-KG2: a system for building a semantically standardized
 > knowledge graph for translational biomedicine."
@@ -81,7 +78,7 @@ Evidence_strength (1–5) is a human judgment about a **single paper**. It does 
 account for the possibility that multiple confirmatory papers reflect publication bias,
 same-lab replication, or correlated datasets.
 
-We draw on the meta-analysis literature for a separate `confidence_score`:
+We draw on the meta-analysis literature for a separate `confidence_score` [7,8,9]:
 
 > Bartoš F et al. "Footprint of publication selection bias on meta-analyses in
 > medicine, environmental sciences, psychology, and economics."
@@ -103,15 +100,26 @@ We draw on the meta-analysis literature for a separate `confidence_score`:
 
 ---
 
-## Acknowledgements
+## References
 
-This project is inspired by and builds on the work of:
+Full citation metadata for all referenced works is in `CITATION.cff`.
 
-- **Lawrence E. Hunter** (University of Chicago) — foundational biomedical NLP,
-  FETA extraction framework, BioCreative evaluation standards
-- **NCATS Translator Program** — RTX-KG2 and the TRAPI standard
-- **NLM/NCBI** — PubMed, PMC E-utilities, SemMedDB (now incorporated into RTX-KG2)
-- **OpenBEL Community** — Biological Expression Language standard
-- **Biolink Model** — standardized biomedical knowledge graph predicates
-- **Ioannidis JPA** (2005) — "Why Most Published Research Findings Are False" —
-  the founding paper for our skepticism about raw citation counts
+1. Shlyk D, Montanelli S, Mesiti M, Hunter L. "Mind Your Steps in Biomedical Named Entity Recognition: First Extract, Tag Afterwards." *HeaLing 2026*, pp. 127–141. DOI: [10.18653/v1/2026.healing-1.11](https://doi.org/10.18653/v1/2026.healing-1.11)
+
+2. Ortega R, Gómez-Pérez JM. "SciClaims: An End-to-End Generative System for Biomedical Claim Analysis." *EMNLP 2025 Demos*, pp. 141–154. DOI: [10.18653/v1/2025.emnlp-demos.11](https://doi.org/10.18653/v1/2025.emnlp-demos.11)
+
+3. Chamberlain MT et al. "RTX-KG2: a system for building a semantically standardized knowledge graph for translational biomedicine." *BMC Bioinformatics* 2023. DOI: [10.1186/s12859-023-05311-2](https://doi.org/10.1186/s12859-023-05311-2)
+
+4. Salem NM, White E, Bada M, Hunter L. "GAPMAP: Mapping Scientific Knowledge Gaps in Biomedical Literature Using Large Language Models." arXiv:2510.25055 (2025).
+
+5. Kilicoglu H. "Broad-coverage biomedical relation extraction with SemRep." *BMC Bioinformatics* 2020. DOI: [10.1186/s12859-020-3517-7](https://doi.org/10.1186/s12859-020-3517-7)
+
+6. Kilicoglu H, Shin D et al. "SemMedDB: a PubMed-scale repository of biomedical semantic predications." *Bioinformatics* 2012. DOI: [10.1093/bioinformatics/bts591](https://doi.org/10.1093/bioinformatics/bts591)
+
+7. Ioannidis JPA. "Why Most Published Research Findings Are False." *PLOS Medicine* 2005. DOI: [10.1371/journal.pmed.0020124](https://doi.org/10.1371/journal.pmed.0020124)
+
+8. Bartoš F et al. "Footprint of publication selection bias on meta-analyses in medicine, environmental sciences, psychology, and economics." *Research Synthesis Methods* 2024. DOI: [10.1002/jrsm.1703](https://doi.org/10.1002/jrsm.1703)
+
+9. Langan D et al. "Rethinking publication bias analysis methods in clinical meta-analyses." PMC13244164 (2026).
+
+10. Gargano MA et al. "The Human Phenotype Ontology in 2024." *Nucleic Acids Research* 2024. DOI: [10.1093/nar/gkad1005](https://doi.org/10.1093/nar/gkad1005)

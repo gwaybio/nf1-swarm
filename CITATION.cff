@@ -1,0 +1,246 @@
+cff-version: 1.2.0
+message: "If you use this repository, please cite it using the metadata below."
+title: "nf1-swarm"
+abstract: >
+  An agentic AI swarm that compiles the known history of NF1
+  (Neurofibromatosis type 1) biology and clinical outcomes into a
+  structured, traversable Neo4j knowledge graph. The pipeline uses
+  a multi-agent team (Graude, Dirk, Otto, Archie, Stan, Kim, Rey)
+  to read primary literature, extract structured claims, ground
+  entities to canonical ontology identifiers, assess publication bias,
+  curate claims through PI-level review, and deposit them into the graph.
+authors:
+  - family-names: Way
+    given-names: Gregory
+    orcid: "https://orcid.org/0000-0002-0503-9348"
+    affiliation: "University of Colorado Anschutz Medical Campus"
+license: BSD-3-Clause
+repository-code: "https://github.com/gwaybio/nf1-swarm"
+version: "0.1.0"
+date-released: "2026-11-17"
+keywords:
+  - neurofibromatosis
+  - NF1
+  - knowledge graph
+  - agentic AI
+  - biomedical NLP
+  - literature mining
+  - Neo4j
+
+references:
+  # ── Claim extraction ──────────────────────────────────────────────────────
+
+  - type: conference-paper
+    title: "Mind Your Steps in Biomedical Named Entity Recognition: First Extract, Tag Afterwards"
+    abbreviation: "FETA"
+    authors:
+      - family-names: Shlyk
+        given-names: Darya
+      - family-names: Montanelli
+        given-names: Stefano
+      - family-names: Mesiti
+        given-names: Marco
+      - family-names: Hunter
+        given-names: Lawrence
+        orcid: "https://orcid.org/0000-0002-1973-7051"
+    year: 2026
+    collection-title: "Proceedings of the 1st Workshop on Linguistic Analysis for Health (HeaLing 2026)"
+    pages: "127-141"
+    location:
+      name: "Rabat, Morocco"
+    publisher:
+      name: "Association for Computational Linguistics"
+    identifiers:
+      - type: doi
+        value: "10.18653/v1/2026.healing-1.11"
+    notes: >
+      Core inspiration for the two-stage claim extraction protocol used by
+      Dirk (Stage 1: extract) and Otto (Stage 2: tag/ground).
+      Key finding: separating extraction from ontology grounding improves
+      accuracy because LLMs hallucinate identifiers when asked to do both steps simultaneously.
+
+  - type: conference-paper
+    title: "SciClaims: An End-to-End Generative System for Biomedical Claim Analysis"
+    abbreviation: "SciClaims"
+    authors:
+      - family-names: Ortega
+        given-names: Raúl
+      - family-names: Gómez-Pérez
+        given-names: José Manuel
+    year: 2025
+    collection-title: "Proceedings of EMNLP 2025 System Demonstrations"
+    pages: "141-154"
+    location:
+      name: "Suzhou, China"
+    publisher:
+      name: "Association for Computational Linguistics"
+    identifiers:
+      - type: doi
+        value: "10.18653/v1/2025.emnlp-demos.11"
+    notes: >
+      End-to-end LLM-based system for claim extraction, evidence retrieval,
+      and verification. SciClaims uses a two-pass extraction with Llama-3 7B
+      (generate then refine), followed by Elasticsearch retrieval over 4.7M
+      PubMed abstracts, then LLM-based SUPPORT/REFUTE/NEI verdict.
+      This pipeline informs the extract → verify → curate structure used here.
+
+  - type: article
+    title: "Broad-coverage biomedical relation extraction with SemRep"
+    abbreviation: "SemRep"
+    authors:
+      - family-names: Kilicoglu
+        given-names: Halil
+    year: 2020
+    journal: "BMC Bioinformatics"
+    volume: "21"
+    issue: "1"
+    identifiers:
+      - type: doi
+        value: "10.1186/s12859-020-3517-7"
+    notes: >
+      Rule-based subject-PREDICATE-object triple extraction over UMLS concepts.
+      Underpins SemMedDB (deprecated December 2024, final update May 2024).
+      SemMedDB's content is incorporated into RTX-KG2 alongside 72 other sources.
+      SemRep's predicate vocabulary (CAUSES, TREATS, ASSOCIATED_WITH, etc.)
+      informs the edge types in this project's schema.
+
+  - type: preprint
+    title: "GAPMAP: Mapping Scientific Knowledge Gaps in Biomedical Literature Using Large Language Models"
+    abbreviation: "GAPMAP"
+    authors:
+      - family-names: Salem
+        given-names: Nourah M.
+      - family-names: White
+        given-names: Elizabeth
+      - family-names: Bada
+        given-names: Michael
+      - family-names: Hunter
+        given-names: Lawrence
+        orcid: "https://orcid.org/0000-0002-1973-7051"
+    year: 2025
+    identifiers:
+      - type: other
+        value: "arXiv:2510.25055"
+    url: "https://arxiv.org/abs/2510.25055"
+    notes: >
+      Hunter lab work on using LLMs to identify explicit and implicit knowledge
+      gaps in biomedical literature. Introduces TABI (Toulmin-Abductive Bucketed
+      Inference) for implicit gap inference. Relevant to Graude's task-assignment
+      logic and to identifying under-explored areas of NF1 biology.
+
+  # ── Knowledge graph infrastructure ───────────────────────────────────────
+
+  - type: article
+    title: "RTX-KG2: a system for building a semantically standardized knowledge graph for translational biomedicine"
+    abbreviation: "RTX-KG2"
+    authors:
+      - family-names: Chamberlain
+        given-names: Matthew T.
+    year: 2023
+    journal: "BMC Bioinformatics"
+    identifiers:
+      - type: doi
+        value: "10.1186/s12859-023-05311-2"
+    notes: >
+      Integrates 73+ biomedical knowledge sources (SemMedDB, UniProt, DrugBank,
+      ChEMBL, OMIM, Orphanet, HPO, Reactome, GO, DisGeNET, GTEx, STRING, and more)
+      into a single Biolink-compliant graph queryable via TRAPI.
+      Used by Otto for entity grounding and edge-existence checking, and by Stan
+      for corroborating source enumeration.
+      API: https://kg2cploverdb.transltr.io/query
+
+  - type: article
+    title: "SemMedDB: a PubMed-scale repository of biomedical semantic predications"
+    abbreviation: "SemMedDB"
+    authors:
+      - family-names: Kilicoglu
+        given-names: Halil
+      - family-names: Shin
+        given-names: Dongwook
+    year: 2012
+    journal: "Bioinformatics"
+    volume: "28"
+    issue: "23"
+    pages: "3158-3160"
+    identifiers:
+      - type: doi
+        value: "10.1093/bioinformatics/bts591"
+    notes: >
+      130M+ semantic predications from 37M PubMed abstracts, generated by SemRep.
+      Deprecated by NLM December 2024 (final update May 2024). Now incorporated
+      into RTX-KG2. Historical baseline; we query RTX-KG2 rather than SemMedDB directly.
+
+  # ── Publication bias and confidence scoring ───────────────────────────────
+
+  - type: article
+    title: "Why Most Published Research Findings Are False"
+    abbreviation: "Ioannidis2005"
+    authors:
+      - family-names: Ioannidis
+        given-names: John P. A.
+    year: 2005
+    journal: "PLOS Medicine"
+    volume: "2"
+    issue: "8"
+    start: "e124"
+    identifiers:
+      - type: doi
+        value: "10.1371/journal.pmed.0020124"
+    notes: >
+      Foundational argument that most published research findings are false due to
+      publication bias, low prior probability, and underpowered studies.
+      Motivates our separation of evidence_strength (single paper) from
+      confidence_score (aggregate, bias-adjusted).
+
+  - type: article
+    title: "Footprint of publication selection bias on meta-analyses in medicine, environmental sciences, psychology, and economics"
+    abbreviation: "Bartos2024"
+    authors:
+      - family-names: Bartoš
+        given-names: František
+    year: 2024
+    journal: "Research Synthesis Methods"
+    identifiers:
+      - type: doi
+        value: "10.1002/jrsm.1703"
+    notes: >
+      Empirical demonstration that adjusting for publication bias using RoBMA-PSMA
+      reduces the fraction of meta-analyses with strong evidence from 20% to 5% in
+      medicine. Directly motivates Stan's confidence scoring approach.
+
+  - type: article
+    title: "Rethinking publication bias analysis methods in clinical meta-analyses"
+    abbreviation: "Langan2026"
+    authors:
+      - family-names: Langan
+        given-names: Dean
+    year: 2026
+    identifiers:
+      - type: other
+        value: "PMC13244164"
+    notes: >
+      Review of publication bias adjustment methods (trim-and-fill, PET-PEESE,
+      selection models, Bayesian approaches). Key conclusion: 'the appropriate
+      response to suspected publication bias is not statistical correction, but
+      transparent acknowledgment of uncertainty and proportionate calibration
+      of evidentiary claims.' Guides Stan's reporting conventions.
+
+  # ── Standards and ontologies ─────────────────────────────────────────────
+
+  - type: article
+    title: "The Human Phenotype Ontology in 2024: phenotypes around the world"
+    abbreviation: "HPO2024"
+    authors:
+      - family-names: Gargano
+        given-names: Michael A.
+    year: 2024
+    journal: "Nucleic Acids Research"
+    volume: "52"
+    issue: "D1"
+    pages: "D1333-D1346"
+    identifiers:
+      - type: doi
+        value: "10.1093/nar/gkad1005"
+    notes: >
+      HPO codes used for phenotype nodes (e.g. HP:0000957 café-au-lait spot,
+      HP:0009732 plexiform neurofibroma). Grounded by Otto via RTX-KG2.
