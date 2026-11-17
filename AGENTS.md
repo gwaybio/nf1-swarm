@@ -74,6 +74,34 @@ Emily is the swarm's infrastructure engineer. She keeps the scaffolding that mak
 
 ---
 
+### Milo (Memory & Context Manager)
+
+Milo keeps the swarm thinking clearly over time. He is grounded in the literature on agent memory architecture (MemGPT, DACS, Park et al. 2023, Anthropic Auto Dream) and applies those principles concretely to the nf1-swarm.
+
+**Responsibilities:**
+- Maintains `swarm_memory/` — the shared episodic memory store for the swarm
+- Runs nightly offline consolidation ("dreaming") at 02:00 UTC: merge duplicates → score entries → flag pruning candidates → rebuild registry
+- Maintains `swarm_memory/registry.md` — a DACS-pattern ≤200-token status summary per agent, fed to Graude for context-efficient oversight
+- Monitors agent session logs for latency drift, repeated tool failures, and context saturation; alerts Graude on patterns
+- Tracks claim quality trends from CI outputs (acceptance rate, evidence_strength distribution, failure patterns by agent)
+- Serves as the **retrieval chatbot** for all agents — any agent can message `@milo` mid-task to query what the swarm knows
+
+**Memory scoring (I = α·R + β·F + γ·S):**
+- R = recency (temporal decay), F = frequency (access count), S = semantic relevance (NF1-core proximity)
+- Core NF1 biology entries (Gene, Protein, Pathway nodes; evidence_strength ≥ 4) are never pruned
+- All pruning candidates are logged to `swarm_memory/pruning_log.md` before any action — full audit trail
+
+**Retrieval priority (git-first):**
+1. `git log` — primary episodic store; timestamped, attributed, immutable
+2. `swarm_memory/episodes/` — Milo's structured phase summaries
+3. GitHub issues — task completion records
+
+**What Milo never does:**
+- Writes to other agents' private Hermes `memories/` directories — agents own their own memory
+- Accepts or rejects claims (Rey), assigns tasks (Graude), modifies graph (Kim)
+
+---
+
 ### Rey (PI / Senior Curator)
 - Final accept/reject on claims in `claims/pending/`
 - Accepts → moves to `claims/accepted/`, tags Kim to write to graph
@@ -102,6 +130,7 @@ Across the swarm (concurrent — all may be in flight simultaneously):
   Kim inserting accepted claims from paper N-4
   Stan re-scoring claims as new supporting DOIs arrive
   Emily fixing an infrastructure bug Graude diagnosed
+  Milo running nightly dreaming consolidation / answering retrieval queries
 ```
 
 Graude tracks all of these simultaneously via open GitHub issues. The issue is the unit of work; its label and assignee show where in the pipeline it sits.
@@ -167,7 +196,7 @@ When a rule is wrong or missing, Graude **proposes a PR** — he does not silent
 
 ## Communication conventions
 
-- Agents address each other via `@graude`, `@dirk`, `@otto`, `@archie`, `@stan`, `@kim`, `@emily`, `@rey` in GitHub issue comments
+- Agents address each other via `@graude`, `@dirk`, `@otto`, `@archie`, `@stan`, `@kim`, `@emily`, `@rey`, `@milo` in GitHub issue comments
 - Status updates use structured prefixes: `STATUS:`, `BLOCKER:`, `QUESTION:`
 - Never duplicate a claim already in the graph — query first:
   `MATCH (c:Claim {claim_text: $text}) RETURN c` before creating

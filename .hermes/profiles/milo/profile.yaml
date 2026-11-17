@@ -1,0 +1,12 @@
+description: Manage memory and context — Milo monitors agent context windows,
+  runs nightly dreaming consolidation, maintains the swarm episodic memory store,
+  prunes stale entries, and serves as the retrieval chatbot for the team.
+description_auto: false
+ui_meta:
+  hermes-bots:
+    shape: blobatar::hexagon
+    imageKind: shape
+    title: Manage memory and context
+    created: 1794945000000
+_ui_meta_revisions:
+  hermes-bots: 1

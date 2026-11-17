@@ -1,0 +1,10 @@
+{
+  "last_updated": null,
+  "total_claims_pending": 0,
+  "total_claims_accepted": 0,
+  "total_claims_rejected": 0,
+  "acceptance_rate_history": [],
+  "evidence_strength_distribution": {},
+  "failure_patterns": [],
+  "agent_error_rates": {}
+}

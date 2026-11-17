@@ -1,0 +1,6 @@
+[user]
+	name = Milo (nf1-swarm)
+	email = milo@nf1-swarm.bot
+
+[commit]
+	template = ~/repos/nf1-swarm/.github/commit_template.txt

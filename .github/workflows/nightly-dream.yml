@@ -1,0 +1,49 @@
+name: Nightly Memory Consolidation (Milo Dream)
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+jobs:
+  dream:
+    name: Milo offline consolidation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Run dreaming pass
+        run: uv run python swarm_memory/milo_dream.py
+
+      - name: Commit updated memory store
+        run: |
+          git config user.name "Milo (nf1-swarm)"
+          git config user.email "milo@nf1-swarm.bot"
+          git add swarm_memory/
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git commit -m "chore(milo): nightly dream consolidation $(date -u +%Y-%m-%d)
+
+          Co-authored-by: Gregory Way <gregory.way@gmail.com>"
+          git push origin main
+
+      - name: Post dream summary
+        if: always()
+        run: |
+          echo "## Milo Dream Report" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Accepted claims | $(find claims/accepted -name '*.json' | wc -l) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Pending claims | $(find claims/pending -name '*.json' | wc -l) |" >> $GITHUB_STEP_SUMMARY
+          echo "| Episodes | $(find swarm_memory/episodes -name '*.md' 2>/dev/null | wc -l) |" >> $GITHUB_STEP_SUMMARY
