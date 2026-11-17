@@ -34,9 +34,11 @@ def get_driver(uri, user, password):
 def run_cypher_file(session, path):
     print(f"  {path.name}...")
     cypher = path.read_text()
-    # Split on semicolons, skip comments and blanks
-    statements = [s.strip() for s in cypher.split(";")
-                  if s.strip() and not s.strip().startswith("//")]
+    # Split on semicolons, skip blank chunks
+    # Note: do NOT filter on startswith("//") here — a chunk may begin with
+    # file-level comments but still contain a valid statement. The per-line
+    # comment strip below handles that correctly.
+    statements = [s.strip() for s in cypher.split(";") if s.strip()]
     for stmt in statements:
         if stmt:
             # Strip leading comment lines from each statement
