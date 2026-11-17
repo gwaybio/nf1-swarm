@@ -119,6 +119,22 @@ jobs:
           d.close()
           "
 
+      - name: Verify reserve_claim_id (APOC)
+        run: |
+          uv run python -c "
+          from neo4j import GraphDatabase
+          from knowledge_graph.queries.reserve_claim_id import next_claim_id
+          d = GraphDatabase.driver('bolt://localhost:7687', auth=('neo4j','nf1swarm'))
+          with d.session() as s:
+              cid = next_claim_id(s)
+              assert cid == 'C0001', f'expected C0001, got {cid}'
+              cid2 = next_claim_id(s)
+              assert cid2 == 'C0002', f'expected C0002, got {cid2}'
+              s.run(\"MATCH (c:Counter {name: 'claim_id'}) SET c.value = 0\")
+          d.close()
+          print('reserve_claim_id end-to-end OK (apoc.lock.nodes succeeded)')
+          "
+
       - name: Run graph assertions
         run: uv run python testing/harness/approval_checker.py
 
