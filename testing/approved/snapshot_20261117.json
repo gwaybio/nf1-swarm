@@ -1,0 +1,38 @@
+{
+  "seed_gene_nf1": {
+    "description": "NF1 gene node exists in the graph",
+    "count": 1,
+    "expected_min": 1,
+    "passed": true
+  },
+  "seed_protein_neurofibromin": {
+    "description": "Neurofibromin protein node exists",
+    "count": 1,
+    "expected_min": 1,
+    "passed": true
+  },
+  "seed_pathway_ras_mapk": {
+    "description": "RAS/MAPK pathway node exists",
+    "count": 1,
+    "expected_min": 1,
+    "passed": true
+  },
+  "seed_disease_nf1": {
+    "description": "NF1 disease node with OMIM ID exists",
+    "count": 1,
+    "expected_min": 1,
+    "passed": true
+  },
+  "nf1_encodes_neurofibromin": {
+    "description": "NF1 gene ENCODES Neurofibromin protein",
+    "count": 1,
+    "expected_min": 1,
+    "passed": true
+  },
+  "neurofibromin_part_of_ras": {
+    "description": "Neurofibromin is PART_OF RAS/MAPK pathway",
+    "count": 1,
+    "expected_min": 1,
+    "passed": true
+  }
+}
