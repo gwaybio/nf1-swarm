@@ -243,9 +243,7 @@ def _extract_text_from_pmc_xml(xml: str) -> Optional[str]:
                 text = "".join(elem.itertext()).strip()
                 if text:
                     parts.append(text)
-        text = "
-
-".join(parts)
+        text = "\n\n".join(parts)
         return text if len(text) > 200 else None
     except Exception:
         return None
