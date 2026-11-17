@@ -34,6 +34,24 @@ This document is the operational contract for the nf1-swarm agent team. All agen
 - Opens a GitHub issue before introducing any new node label or edge type
 - Commits graph updates as Cypher migration files in `knowledge_graph/migrations/`
 
+### Stan (Statistician)
+- Monitors accepted claims for accumulating evidence
+- Runs PET-PEESE / RoBMA-PSMA when N≥3 supporting DOIs on the same claim
+- Assigns `confidence_score` (0.0–1.0) adjusted for publication bias
+- Flags `independence_flags`: same lab, same dataset, same first author, same institution
+- **Does not modify** `evidence_strength` — that is Dirk's and Rey's domain
+- Reports to Rey only when confidence diverges significantly from strength
+- Knows its limits: N<3 is "insufficient replication," reports honestly
+
+### Otto (Ontologist)
+- Receives candidate claims from Dirk (Stage 2 of FETA protocol)
+- Grounds entities to canonical CURIEs using RTX-KG2 as primary oracle
+- Fallback: HGNC REST API (genes), Ontology Lookup Service (HPO/MONDO/GO), ChEMBL (drugs)
+- Checks whether the claimed relationship already exists in RTX-KG2
+- Fills `semantic_triple` and optional `bel_notation` in claim JSON
+- Always documents ontology version used in claim `notes` field
+- Commits: `git commit -m "ontology(otto): ground <claim_id>"`
+
 ### Rey (PI / Senior Curator)
 - Final accept/reject on claims in `claims/pending/`
 - Accepts → moves to `claims/accepted/`, tags Kim to write to graph

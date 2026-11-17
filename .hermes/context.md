@@ -18,8 +18,10 @@ This file is auto-loaded by Hermes agents when working in this directory.
 | Agent | Profile | Role |
 |-------|---------|------|
 | Graude | `graude` | Orchestrator — owns GitHub issues, assigns tasks |
-| Dirk | `dirk` | Reads primary literature, extracts claims |
+| Dirk | `dirk` | Reads primary literature, extracts claims (FETA Stage 1) |
+| Otto | `otto` | Ontology grounding — CURIEs, RTX-KG2, BEL notation (FETA Stage 2) |
 | Archie | `archie` | Verifies claims, runs analyses |
+| Stan | `stan` | Statistics — publication bias, confidence scoring |
 | Kim | `kim` | Builds and queries the knowledge graph |
 | Rey | `rey` | PI/curator — final accept/reject |
 
