@@ -221,8 +221,29 @@ When a rule is wrong or missing, Graude **proposes a PR** — he does not silent
 
 ## Communication conventions
 
-- Agents address each other via `@graude`, `@dirk`, `@otto`, `@archie`, `@stan`, `@kim`, `@emily`, `@rey`, `@milo` in GitHub issue comments
-- Status updates use structured prefixes: `STATUS:`, `BLOCKER:`, `QUESTION:`
+**GitHub issue comments** are the human-readable audit trail. They record what happened at each pipeline stage for Gregory to review. Rules:
+- Write factual status only: what was done, what was found, what IDs were assigned
+- Use structured prefixes: `STATUS:`, `BLOCKER:`, `QUESTION:`
+- **Never `@tag` real GitHub users** (gwaybio, etc.) — this sends them email notifications
+- **Never use issue comments to coordinate with other agents** — use `message_agent` instead
+- Bot handles (`@dirk`, `@otto`, etc.) may appear in comments as attribution labels, not as routing
+
+**`message_agent`** is how agents talk to each other and to Graude. All routing, questions, blockers, and task handoffs go through Graude via `message_agent`.
+
+**Example of correct issue comment (Otto grounding stage):**
+```
+STATUS: Grounding complete — C0001–C0005.
+CURIEs: NF1=NCBIGene:4763, neurofibromin=UniProtKB:P21359.
+RTX-KG2c accessed 2026-11-17. No existing edges found for C0002–C0003.
+Note: HOMOLOGOUS_TO predicate not in edge_constraints.yaml; mapped to ASSOCIATED_WITH.
+```
+
+**Example of incorrect issue comment:**
+```
+@rey please review these claims   ← routes via message_agent instead
+@gwaybio the PMID was wrong       ← never tag real users
+```
+
 - Never duplicate a claim already in the graph — query first:
   `MATCH (c:Claim {claim_text: $text}) RETURN c` before creating
 
