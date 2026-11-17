@@ -176,6 +176,70 @@
         "string",
         "null"
       ]
+    },
+    "supporting_dois": {
+      "type": "array",
+      "description": "Additional DOIs/PMIDs that support this claim. Grows as evidence accumulates. Stat bot reads this.",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "confidence_score": {
+      "type": [
+        "number",
+        "null"
+      ],
+      "minimum": 0.0,
+      "maximum": 1.0,
+      "description": "Stat bot computed confidence (0-1), adjusted for publication bias. NULL until Stat has evaluated."
+    },
+    "independence_flags": {
+      "type": "array",
+      "description": "Notes on correlated evidence: same lab, same dataset, same first author.",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "semantic_triple": {
+      "type": [
+        "object",
+        "null"
+      ],
+      "description": "Structured predication grounded to ontology IDs. Subject-PREDICATE-object.",
+      "properties": {
+        "subject": {
+          "type": "string"
+        },
+        "subject_id": {
+          "type": "string",
+          "description": "e.g. UniProt:P21359, HGNC:7765"
+        },
+        "predicate": {
+          "type": "string",
+          "description": "Must match an edge type in edge_constraints.yaml"
+        },
+        "object": {
+          "type": "string"
+        },
+        "object_id": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "subject",
+        "predicate",
+        "object"
+      ],
+      "additionalProperties": false
+    },
+    "bel_notation": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Biological Expression Language notation. Optional for molecular_function and pathway_interaction claims."
     }
   },
   "oneOf": [

@@ -58,6 +58,13 @@ def validate_claim_contract(claim, contract):
     if evidence_type and allowed and evidence_type not in allowed:
         errors.append(f"Contract: evidence_type '{evidence_type}' not allowed for '{claim_type}'. Allowed: {allowed}")
 
+    # Graude demands it: accepted claims must have curated_by and curation_date
+    if claim.get("status") == "accepted":
+        if claim.get("curated_by") not in ("rey", "human"):
+            errors.append("Contract: status='accepted' requires curated_by='rey' or 'human'")
+        if not claim.get("curation_date"):
+            errors.append("Contract: status='accepted' requires curation_date to be set")
+
     return errors
 
 
