@@ -201,14 +201,36 @@ When a rule is wrong or missing, Graude **proposes a PR** — he does not silent
 - Never duplicate a claim already in the graph — query first:
   `MATCH (c:Claim {claim_text: $text}) RETURN c` before creating
 
-## Commit convention — co-authorship
+## Commit convention — co-authorship and identity
 
-Every commit by a named bot agent must include a co-author trailer crediting Gregory:
+Every commit by a named bot agent must set their git identity in the repo before committing, then include the co-author trailer. All agents share one machine and one `$HOME`, so the per-agent identity must be set explicitly each session:
 
+```bash
+# Set at the start of every session before the first commit
+git config user.name "Dirk (nf1-swarm)"    # use your own name
+git config user.email "dirk@nf1-swarm.bot"  # use your own email
+
+# Then commit — the template adds the trailer automatically
+git commit -m "claim(dirk): short description"
+
+# Or append manually when using -m
+git commit -m "claim(dirk): short description
+
+Co-authored-by: Gregory Way <gregory.way@gmail.com>"
 ```
-Co-authored-by: Gregory Way <gregory.way@gmail.com>
-```
 
-This applies to all agents: Dirk, Otto, Archie, Stan, Kim, Emily, Rey, Graude.
-Each agent's gitconfig includes a `commit.template` that adds this automatically.
-The trailer appears in GitHub's commit view, linking all swarm output to the human PI.
+Agent identities (name / email):
+
+| Agent | Name | Email |
+|-------|------|-------|
+| graude | Graude (nf1-swarm) | graude@nf1-swarm.bot |
+| dirk | Dirk (nf1-swarm) | dirk@nf1-swarm.bot |
+| otto | Otto (nf1-swarm) | otto@nf1-swarm.bot |
+| archie | Archie (nf1-swarm) | archie@nf1-swarm.bot |
+| stan | Stan (nf1-swarm) | stan@nf1-swarm.bot |
+| kim | Kim (nf1-swarm) | kim@nf1-swarm.bot |
+| rey | Rey (nf1-swarm) | rey@nf1-swarm.bot |
+| emily | Emily (nf1-swarm) | emily@nf1-swarm.bot |
+| milo | Milo (nf1-swarm) | milo@nf1-swarm.bot |
+
+The `Co-authored-by: Gregory Way <gregory.way@gmail.com>` trailer appears on every commit.
