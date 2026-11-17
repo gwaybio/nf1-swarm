@@ -1,0 +1,5 @@
+claim_id,claim_text,claim_type,min_evidence_strength,evidence_type,required_gene,required_pathway,source_pmid,expect_valid
+C0001,NF1 encodes neurofibromin a RAS-GTPase activating protein that converts active RAS-GTP to inactive RAS-GDP,molecular_function,5,biochemical_proof,NF1,RAS/MAPK,1281417,true
+C0002,Loss of neurofibromin leads to sustained RAS-GTP accumulation and downstream MAPK activation,pathway_interaction,5,biochemical_proof,NF1,RAS/MAPK,1281417,true
+C0003,Selumetinib reduces plexiform neurofibroma volume by at least 20 percent in pediatric NF1 patients,clinical_outcome,4,rct,,,32187458,true
+C0004,NF1 is inherited in an autosomal dominant pattern with 50 percent transmission risk,genetic_association,5,systematic_review,NF1,,1281417,true

@@ -1,0 +1,57 @@
+# TRUSTED SPECIFICATION — HUMAN-OWNED
+# Only @gwaybio or Rey may modify this file.
+# Defines the 5-level evidence strength scale used across all claims.
+
+version: "1.0"
+authority: "Gregory Way (@gwaybio) + Rey"
+
+evidence_strength:
+  5:
+    label: "Definitive"
+    description: >
+      Multiple independent replications, systematic reviews with meta-analysis,
+      or foundational biochemical proof accepted as scientific consensus.
+    examples:
+      - "NF1 encodes neurofibromin, a RAS-GTPase activating protein"
+      - "Loss of neurofibromin leads to sustained RAS-GTP accumulation"
+    allowed_evidence_types: [biochemical_proof, systematic_review, rct]
+
+  4:
+    label: "Strong"
+    description: >
+      Single well-powered RCT, multiple independent cohort studies,
+      or replicated preclinical studies in validated models.
+    examples:
+      - "Selumetinib reduces plexiform neurofibroma volume (Phase 3 SPRINT trial)"
+    allowed_evidence_types: [rct, cohort_study, systematic_review, preclinical_in_vivo]
+
+  3:
+    label: "Moderate"
+    description: >
+      Preclinical evidence in validated NF1 models, small but well-designed clinical studies,
+      or cross-validated computational predictions.
+    examples:
+      - "Nf1+/- mice show increased RAS-GTP in Schwann cells"
+    allowed_evidence_types: [preclinical_in_vivo, preclinical_in_vitro, cohort_study, computational]
+
+  2:
+    label: "Preliminary"
+    description: >
+      Single small study, case reports, early-phase clinical observations,
+      or unvalidated computational predictions.
+    allowed_evidence_types: [case_report, preclinical_in_vitro, computational, expert_opinion]
+
+  1:
+    label: "Speculative"
+    description: >
+      Expert opinion, theoretical framework, single case report,
+      or hypothesis not yet tested experimentally.
+    allowed_evidence_types: [expert_opinion, computational]
+
+consistency_rules:
+  - evidence_strength: 5
+    forbidden_evidence_types: [expert_opinion, case_report]
+  - evidence_strength: 4
+    forbidden_evidence_types: [expert_opinion, case_report]
+  - evidence_strength: 1
+    forbidden_evidence_types: [rct, systematic_review, biochemical_proof]

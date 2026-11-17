@@ -1,0 +1,8 @@
+# Protected paths — require @gwaybio approval on all PRs
+
+testing/specs/   @gwaybio
+testing/harness/ @gwaybio
+testing/approved/ @gwaybio
+claims/schema.json @gwaybio
+DESIGN.md @gwaybio
+AGENTS.md @gwaybio

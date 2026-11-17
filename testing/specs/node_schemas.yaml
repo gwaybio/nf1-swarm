@@ -1,0 +1,60 @@
+# TRUSTED SPECIFICATION — HUMAN-OWNED
+# Only @gwaybio or Rey may modify this file.
+
+version: "1.0"
+authority: "Gregory Way (@gwaybio) + Rey"
+
+node_schemas:
+  Gene:
+    required: [symbol, hgnc_id]
+    optional: [chromosome, locus, description, ncbi_gene_id]
+    unique_on: [symbol]
+  Protein:
+    required: [name]
+    optional: [uniprot_id, function_summary, molecular_weight_kda]
+    unique_on: [name]
+  Pathway:
+    required: [name]
+    optional: [kegg_id, reactome_id, description]
+    unique_on: [name]
+  Mutation:
+    required: [hgvs_cdna]
+    optional: [hgvs_protein, clinvar_id, variant_class, clinical_significance]
+    unique_on: [hgvs_cdna]
+  Phenotype:
+    required: [hpo_id, name]
+    optional: [onset, frequency_in_nf1, severity]
+    unique_on: [hpo_id]
+  Disease:
+    required: [name]
+    optional: [omim_id, mondo_id, orpha_id, icd10, prevalence]
+    unique_on: [name]
+  Drug:
+    required: [name]
+    optional: [mechanism, approval_status, fda_indication, chembl_id]
+    unique_on: [name]
+  ClinicalTrial:
+    required: [nct_id, phase]
+    optional: [title, status, outcome_summary, enrollment, year_start]
+    unique_on: [nct_id]
+  Publication:
+    required: []
+    optional: [pmid, doi, title, year, journal, first_author]
+    unique_on: [pmid, doi]
+    at_least_one_of: [pmid, doi]
+  Claim:
+    required: [claim_id, claim_text, evidence_strength, claim_type, status]
+    optional: [evidence_type, extracted_by, curated_by, verified_by, notes]
+    unique_on: [claim_id]
+  CellLine:
+    required: [name]
+    optional: [cellosaurus_id, nf1_status, tissue_origin, species]
+    unique_on: [name]
+  AnimalModel:
+    required: [name, nf1_genotype]
+    optional: [background_strain, species, source]
+    unique_on: [name]
+  Dataset:
+    required: [name, source_url]
+    optional: [description, version, access_type]
+    unique_on: [name]

@@ -1,0 +1,193 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "NF1-Swarm Claim",
+  "description": "A structured scientific claim extracted from primary literature about NF1 biology or clinical outcomes",
+  "type": "object",
+  "required": [
+    "claim_id",
+    "claim_text",
+    "claim_type",
+    "evidence_strength",
+    "evidence_type",
+    "extracted_by",
+    "extraction_date",
+    "status"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "claim_id": {
+      "type": "string",
+      "pattern": "^C[0-9]{4}$"
+    },
+    "claim_text": {
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 500
+    },
+    "claim_type": {
+      "type": "string",
+      "enum": [
+        "molecular_function",
+        "pathway_interaction",
+        "clinical_outcome",
+        "genetic_association",
+        "drug_response",
+        "phenotype_association",
+        "model_validation"
+      ]
+    },
+    "evidence_strength": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 5
+    },
+    "evidence_type": {
+      "type": "string",
+      "enum": [
+        "biochemical_proof",
+        "rct",
+        "cohort_study",
+        "case_report",
+        "computational",
+        "preclinical_in_vivo",
+        "preclinical_in_vitro",
+        "systematic_review",
+        "expert_opinion"
+      ]
+    },
+    "source_pmid": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^[0-9]+$"
+    },
+    "source_doi": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_title": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_year": {
+      "type": [
+        "integer",
+        "null"
+      ],
+      "minimum": 1980,
+      "maximum": 2030
+    },
+    "extracted_by": {
+      "type": "string",
+      "enum": [
+        "dirk",
+        "graude",
+        "archie",
+        "kim",
+        "rey",
+        "human"
+      ]
+    },
+    "extraction_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "verified_by": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "archie",
+        "rey",
+        "human",
+        null
+      ]
+    },
+    "verification_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    },
+    "curated_by": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "rey",
+        "human",
+        null
+      ]
+    },
+    "curation_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "under_verification",
+        "verified",
+        "accepted",
+        "rejected"
+      ]
+    },
+    "rejection_reason": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "related_nodes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "label",
+          "identifier"
+        ],
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "identifier": {
+            "type": "string"
+          },
+          "edge_type": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "oneOf": [
+    {
+      "required": [
+        "source_pmid"
+      ]
+    },
+    {
+      "required": [
+        "source_doi"
+      ]
+    }
+  ]
+}

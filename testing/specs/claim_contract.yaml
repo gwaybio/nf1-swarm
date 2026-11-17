@@ -1,0 +1,90 @@
+# TRUSTED SPECIFICATION — HUMAN-OWNED
+# Only @gwaybio or Rey may modify this file.
+# This is the formal contract that defines a valid claim.
+# Corresponds to AlphaProof Code's "trusted specification" role.
+# Any claim failing these rules is rejected regardless of who wrote it.
+
+version: "1.0"
+authority: "Gregory Way (@gwaybio) + Rey"
+last_reviewed: "2026-11-17"
+
+claim_types:
+  molecular_function:
+    description: "What a molecule does (enzyme activity, binding, localization)"
+    min_evidence_strength: 2
+    allowed_evidence_types:
+      - biochemical_proof
+      - preclinical_in_vitro
+      - preclinical_in_vivo
+      - systematic_review
+      - computational
+    required_related_node_labels: [Gene, Protein]
+
+  pathway_interaction:
+    description: "How molecules interact in a signaling pathway"
+    min_evidence_strength: 2
+    allowed_evidence_types:
+      - biochemical_proof
+      - preclinical_in_vitro
+      - preclinical_in_vivo
+      - systematic_review
+    required_related_node_labels: [Pathway]
+
+  clinical_outcome:
+    description: "Treatment outcome, prognosis, or clinical phenotype"
+    min_evidence_strength: 2
+    required_fields: [source_year]
+    allowed_evidence_types:
+      - rct
+      - cohort_study
+      - case_report
+      - systematic_review
+    required_related_node_labels: [Disease]
+
+  genetic_association:
+    description: "Genotype-phenotype association or mutation effect"
+    min_evidence_strength: 2
+    allowed_evidence_types:
+      - cohort_study
+      - systematic_review
+      - biochemical_proof
+      - preclinical_in_vivo
+    required_related_node_labels: [Mutation, Phenotype]
+
+  drug_response:
+    description: "Drug efficacy, mechanism, or resistance"
+    min_evidence_strength: 2
+    required_fields: [source_year]
+    allowed_evidence_types:
+      - rct
+      - cohort_study
+      - preclinical_in_vivo
+      - preclinical_in_vitro
+      - systematic_review
+    required_related_node_labels: [Drug]
+
+  phenotype_association:
+    description: "Clinical features, frequency, or severity"
+    min_evidence_strength: 1
+    allowed_evidence_types:
+      - cohort_study
+      - case_report
+      - systematic_review
+      - expert_opinion
+    required_related_node_labels: [Phenotype, Disease]
+
+  model_validation:
+    description: "Validity or utility of an NF1 model (cell line, mouse)"
+    min_evidence_strength: 2
+    allowed_evidence_types:
+      - preclinical_in_vivo
+      - preclinical_in_vitro
+      - biochemical_proof
+    required_related_node_labels: [CellLine]
+
+global_rules:
+  - claim_text must be a declarative, falsifiable statement
+  - claim_text must not exceed 500 characters
+  - at least one of source_pmid or source_doi must be present
+  - extracted_by must be a registered agent or "human"
+  - evidence_strength must be consistent with evidence_type (see evidence_rubric.yaml)

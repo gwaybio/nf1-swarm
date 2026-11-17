@@ -1,0 +1,35 @@
+# Graph state assertions — agents add blocks, harness validates against live Neo4j
+# DO NOT modify structure — add new assertion blocks only
+
+version: "1.0"
+
+assertions:
+  - id: seed_gene_nf1
+    description: "NF1 gene node exists in the graph"
+    cypher: "MATCH (g:Gene {symbol: 'NF1'}) RETURN count(g) as n"
+    expected_min: 1
+
+  - id: seed_protein_neurofibromin
+    description: "Neurofibromin protein node exists"
+    cypher: "MATCH (p:Protein {name: 'Neurofibromin'}) RETURN count(p) as n"
+    expected_min: 1
+
+  - id: seed_pathway_ras_mapk
+    description: "RAS/MAPK pathway node exists"
+    cypher: "MATCH (p:Pathway {name: 'RAS/MAPK'}) RETURN count(p) as n"
+    expected_min: 1
+
+  - id: seed_disease_nf1
+    description: "NF1 disease node with OMIM ID exists"
+    cypher: "MATCH (d:Disease {omim_id: '162200'}) RETURN count(d) as n"
+    expected_min: 1
+
+  - id: nf1_encodes_neurofibromin
+    description: "NF1 gene ENCODES Neurofibromin protein"
+    cypher: "MATCH (:Gene {symbol: 'NF1'})-[:ENCODES]->(:Protein {name: 'Neurofibromin'}) RETURN count(*) as n"
+    expected_min: 1
+
+  - id: neurofibromin_part_of_ras
+    description: "Neurofibromin is PART_OF RAS/MAPK pathway"
+    cypher: "MATCH (:Protein {name: 'Neurofibromin'})-[:PART_OF]->(:Pathway {name: 'RAS/MAPK'}) RETURN count(*) as n"
+    expected_min: 1
