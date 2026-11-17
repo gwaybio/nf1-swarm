@@ -1,6 +1,6 @@
 version: 2
 updates:
-  # Python dependencies (uv / pip ecosystem)
+  # Python dependencies — ALL updates in one PR per week, never more
   - package-ecosystem: "pip"
     directory: "/"
     schedule:
@@ -11,12 +11,10 @@ updates:
     commit-message:
       prefix: "deps"
     groups:
-      neo4j:
-        patterns: ["neo4j*"]
-      testing:
-        patterns: ["jsonschema*", "pyyaml*", "pre-commit*"]
+      all-python:
+        patterns: ["*"]
 
-  # GitHub Actions
+  # GitHub Actions — ALL action updates in one PR per week
   - package-ecosystem: "github-actions"
     directory: "/"
     schedule:
@@ -26,3 +24,6 @@ updates:
     labels: ["infrastructure", "dependencies"]
     commit-message:
       prefix: "ci"
+    groups:
+      all-actions:
+        patterns: ["*"]

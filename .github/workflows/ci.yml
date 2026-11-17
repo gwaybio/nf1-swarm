@@ -80,22 +80,25 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
 
-    services:
-      neo4j:
-        # Pinned to match local (5.26.33). uv.lock pins Python only — Docker tags need pinning here.
-        image: neo4j:5.26-community
-        env:
-          NEO4J_AUTH: neo4j/nf1swarm
-        ports:
-          - 7687:7687
-        options: >-
-          --health-cmd "cypher-shell -u neo4j -p nf1swarm 'RETURN 1'"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 10
-
     steps:
       - uses: actions/checkout@v4
+
+      - name: Read Neo4j version
+        # .neo4j-version is the single source of truth for the server version.
+        # services: image tags can't use env vars, so we start Neo4j manually.
+        run: echo "NEO4J_VERSION=$(cat .neo4j-version)" >> "$GITHUB_ENV"
+
+      - name: Start Neo4j
+        run: |
+          docker run -d --name neo4j \
+            -p 7687:7687 -p 7474:7474 \
+            -e NEO4J_AUTH=neo4j/nf1swarm \
+            neo4j:${{ env.NEO4J_VERSION }}-community
+          echo "Waiting for Neo4j..."
+          for i in $(seq 1 30); do
+            docker exec neo4j cypher-shell -u neo4j -p nf1swarm "RETURN 1" 2>/dev/null && echo "ready" && break
+            sleep 3
+          done
 
       - uses: astral-sh/setup-uv@v5
         with:
@@ -107,14 +110,12 @@ jobs:
       - name: Bootstrap graph
         run: |
           uv run python knowledge_graph/seeds/bootstrap.py --password nf1swarm
-          # Seed the claim ID counter node (used by agents to get atomic IDs)
           uv run python -c "
           from neo4j import GraphDatabase
           d = GraphDatabase.driver('bolt://localhost:7687', auth=('neo4j','nf1swarm'))
           with d.session() as s:
               s.run(\"MERGE (c:Counter {name: 'claim_id'}) ON CREATE SET c.value = 0\")
           d.close()
-          print('Counter node ready')
           "
 
       - name: Run graph assertions
