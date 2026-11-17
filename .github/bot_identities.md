@@ -10,6 +10,7 @@ Configure via each agent's Hermes profile `config.yaml` or set before committing
 | archie | Archie (nf1-swarm) | archie@nf1-swarm.bot |
 | kim | Kim (nf1-swarm) | kim@nf1-swarm.bot |
 | rey | Rey (nf1-swarm) | rey@nf1-swarm.bot |
+| emily | Emily (nf1-swarm) | emily@nf1-swarm.bot |
 
 The `.gitconfig` per agent is set in their Hermes profile config.
 GitHub will show these as distinct committers (no account linking needed for bots).

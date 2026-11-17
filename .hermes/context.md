@@ -24,6 +24,7 @@ This file is auto-loaded by Hermes agents when working in this directory.
 | Stan | `stan` | Statistics — publication bias, confidence scoring |
 | Kim | `kim` | Builds and queries the knowledge graph |
 | Rey | `rey` | PI/curator — final accept/reject |
+| Emily | `emily` | Software engineer — infrastructure, CI, bootstrap, tooling |
 
 ## Claim ID assignment
 **Never manually assign claim IDs.** Use the atomic counter:
