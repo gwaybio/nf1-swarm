@@ -1,0 +1,21 @@
+{
+  "claim_id": "C0002",
+  "claim_text": "A 360-residue region of the predicted NF1 protein shows significant sequence similarity to the catalytic domains of both human and bovine GAP (GTPase activating protein).",
+  "claim_type": "molecular_function",
+  "evidence_strength": 3,
+  "evidence_type": "computational",
+  "source_pmid": "2116237",
+  "source_title": "The neurofibromatosis type 1 gene encodes a protein related to GAP",
+  "source_year": 1990,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-17",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "independence_flags": [],
+  "notes": "Full text unavailable (not in PMC), extracted from abstract. Strength capped at 3: sequence-similarity evidence, no biochemical GAP assay in this paper. DOI: 10.1016/0092-8674(90)90024-9 (omitted from source_doi because schema oneOf rejects pmid+doi together)."
+}
