@@ -52,9 +52,23 @@ jobs:
         id: health
         run: |
           uv run python testing/harness/approval_checker.py
-          uv run python testing/harness/claim_validator.py
+
+          set +e
+          uv run python testing/harness/claim_validator.py | tee /tmp/pending_validation.log
+          pending_rc=${PIPESTATUS[0]}
+          uv run python scripts/validate_accepted_claims.py | tee /tmp/accepted_validation.log
+          accepted_rc=${PIPESTATUS[0]}
+          set -e
+
           echo "claim_count=$(find claims/accepted -name '*.json' | wc -l)" >> $GITHUB_OUTPUT
           echo "pending_count=$(find claims/pending -name '*.json' | wc -l)" >> $GITHUB_OUTPUT
+          echo "pending_validation=$(tail -1 /tmp/pending_validation.log)" >> $GITHUB_OUTPUT
+          echo "accepted_validation=$(tail -1 /tmp/accepted_validation.log)" >> $GITHUB_OUTPUT
+
+          if [ "$pending_rc" -ne 0 ] || [ "$accepted_rc" -ne 0 ]; then
+            echo "Claim validation failed (pending_rc=$pending_rc, accepted_rc=$accepted_rc)"
+            exit 1
+          fi
 
       - name: Post health summary
         if: always()
@@ -66,4 +80,6 @@ jobs:
           echo "| Neo4j version | $(cat .neo4j-version) |" >> $GITHUB_STEP_SUMMARY
           echo "| Accepted claims | ${{ steps.health.outputs.claim_count }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Pending claims | ${{ steps.health.outputs.pending_count }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Pending claim validation | ${{ steps.health.outputs.pending_validation }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Accepted claim validation | ${{ steps.health.outputs.accepted_validation }} |" >> $GITHUB_STEP_SUMMARY
           echo "| Run | [${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |" >> $GITHUB_STEP_SUMMARY
