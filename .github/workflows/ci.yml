@@ -1,0 +1,113 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    name: Validate claims & schema
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Validate pending claims
+        run: uv run python testing/harness/claim_validator.py
+
+      - name: Check claim table format
+        run: |
+          uv run python - << 'EOF'
+          import csv, sys
+          from pathlib import Path
+          errors = []
+          required_cols = {"claim_id", "claim_text", "claim_type",
+                           "min_evidence_strength", "evidence_type", "expect_valid"}
+          for f in Path("testing/acceptance/claim_tables").glob("*.csv"):
+              rows = list(csv.DictReader(open(f)))
+              missing = required_cols - set(rows[0].keys()) if rows else set()
+              if missing:
+                  errors.append(f"{f.name}: missing columns {missing}")
+              else:
+                  print(f"  OK  {f.name} ({len(rows)} rows)")
+          if errors:
+              for e in errors: print(f"FAIL {e}", file=sys.stderr)
+              sys.exit(1)
+          EOF
+
+      - name: Validate YAML specs (trusted TCB)
+        run: |
+          uv run python - << 'EOF'
+          import yaml, sys
+          from pathlib import Path
+          errors = []
+          for f in Path("testing/specs").glob("*.yaml"):
+              try:
+                  yaml.safe_load(f.read_text())
+                  print(f"  OK  {f.name}")
+              except yaml.YAMLError as e:
+                  errors.append(f"{f.name}: {e}")
+          if errors:
+              for e in errors: print(f"FAIL {e}", file=sys.stderr)
+              sys.exit(1)
+          EOF
+
+      - name: Validate claims JSON schema
+        run: |
+          uv run python - << 'EOF'
+          import json, jsonschema, sys
+          from pathlib import Path
+          schema = json.loads(Path("claims/schema.json").read_text())
+          jsonschema.Draft7Validator.check_schema(schema)
+          print("  OK  claims/schema.json is a valid JSON Schema")
+          EOF
+
+  graph-health:
+    name: Graph assertions
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    services:
+      neo4j:
+        image: neo4j:5-community
+        env:
+          NEO4J_AUTH: neo4j/nf1swarm
+        ports:
+          - 7687:7687
+        options: >-
+          --health-cmd "cypher-shell -u neo4j -p nf1swarm 'RETURN 1'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Bootstrap graph
+        run: uv run python knowledge_graph/seeds/bootstrap.py --password nf1swarm
+
+      - name: Run graph assertions
+        run: uv run python testing/harness/approval_checker.py
+
+      - name: Run full test harness
+        run: uv run python testing/harness/claim_validator.py && uv run python testing/harness/approval_checker.py

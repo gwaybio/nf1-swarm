@@ -22,5 +22,10 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=7.0", "pytest-cov"]
 
+[dependency-groups]
+dev = [
+    "pre-commit>=4.7.0",
+]
+
 [tool.pytest.ini_options]
 testpaths = ["testing"]

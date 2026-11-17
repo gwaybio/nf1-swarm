@@ -1,0 +1,38 @@
+# Pre-commit hooks for human commits.
+# Install: uv run pre-commit install
+# Run manually: uv run pre-commit run --all-files
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: check-json
+        name: Validate JSON files
+      - id: check-yaml
+        name: Validate YAML files
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+
+  - repo: local
+    hooks:
+      - id: validate-claims
+        name: Validate pending claims
+        entry: uv run python testing/harness/claim_validator.py
+        language: system
+        pass_filenames: false
+        files: "^claims/pending/.*\\.json$"
+
+      - id: validate-claim-schema
+        name: Validate claims/schema.json
+        entry: uv run python -c "import json,jsonschema; jsonschema.Draft7Validator.check_schema(json.loads(open('claims/schema.json').read())); print('schema OK')"
+        language: system
+        pass_filenames: false
+        files: "^claims/schema\\.json$"
+
+      - id: check-cypher
+        name: Check Cypher for semicolons in strings
+        entry: uv run python testing/harness/check_cypher.py
+        language: system
+        pass_filenames: false
+        files: "\\.cypher$"

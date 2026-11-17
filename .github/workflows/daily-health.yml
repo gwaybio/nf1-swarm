@@ -1,0 +1,57 @@
+name: Daily Graph Health
+
+on:
+  schedule:
+    - cron: '0 8 * * *'   # 08:00 UTC daily
+  workflow_dispatch:
+
+jobs:
+  health:
+    name: Knowledge graph health
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    services:
+      neo4j:
+        image: neo4j:5-community
+        env:
+          NEO4J_AUTH: neo4j/nf1swarm
+        ports:
+          - 7687:7687
+        options: >-
+          --health-cmd "cypher-shell -u neo4j -p nf1swarm 'RETURN 1'"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Bootstrap
+        run: uv run python knowledge_graph/seeds/bootstrap.py --password nf1swarm
+
+      - name: Full health check
+        id: health
+        run: |
+          uv run python testing/harness/approval_checker.py
+          uv run python testing/harness/claim_validator.py
+          echo "claim_count=$(find claims/accepted -name '*.json' | wc -l)" >> $GITHUB_OUTPUT
+          echo "pending_count=$(find claims/pending -name '*.json' | wc -l)" >> $GITHUB_OUTPUT
+
+      - name: Post health summary
+        if: always()
+        run: |
+          echo "## Daily Health Check" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "| Metric | Value |" >> $GITHUB_STEP_SUMMARY
+          echo "|--------|-------|" >> $GITHUB_STEP_SUMMARY
+          echo "| Accepted claims | ${{ steps.health.outputs.claim_count }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Pending claims | ${{ steps.health.outputs.pending_count }} |" >> $GITHUB_STEP_SUMMARY
+          echo "| Run | [${{ github.run_number }}](${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}) |" >> $GITHUB_STEP_SUMMARY
