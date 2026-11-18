@@ -11,12 +11,12 @@ from literature.rtx_kg2 import ground_entity, check_edge_exists, get_nf1_edges
 
 # 1. Ground each entity mentioned in the claim_text
 nodes = ground_entity("neurofibromin", categories=["biolink:Protein"])
-# [{"id": "UniProt:P21359", "name": "Neurofibromin", "category": [...], "synonyms": [...]}]
+# [{"id": "UniProtKB:P21359", "name": "Neurofibromin", "category": [...], "synonyms": [...]}]
 
 # 2. Check whether the relationship already exists in RTX-KG2 — do this BEFORE
 #    writing semantic_triple. If it exists with many sources, that corroborates
 #    the claim and should feed Stan's confidence scoring later.
-triples = check_edge_exists("UniProt:P21359", "HP:0009732", predicates=["biolink:causes"])
+triples = check_edge_exists("UniProtKB:P21359", "HP:0009732", predicates=["biolink:causes"])
 for t in triples:
     print(t.n_sources, t.pmids)
 
@@ -30,18 +30,53 @@ edges = get_nf1_edges()
 ```json
 "semantic_triple": {
   "subject": "Neurofibromin",
-  "subject_id": "UniProt:P21359",
+  "subject_id": "UniProtKB:P21359",
   "predicate": "ACTIVATES",
   "object": "RAS",
   "object_id": "UniProt:P01111"
 }
 ```
 
-- `predicate` must match an edge type in `testing/specs/edge_constraints.yaml`
-  (`CAUSES`, `ENCODES`, `ACTIVATES`, `INHIBITS`, `TREATS`, `TARGETS`,
-  `ASSOCIATED_WITH`, `PART_OF`, `VALIDATED_IN`, ...). Check the allowed
-  `from`/`to` node labels there before picking one.
+- `predicate` must **exactly** match an edge type in `testing/specs/edge_constraints.yaml`.
+  The validator enforces this — wrong predicates now cause `claim_validator.py` to FAIL.
+  Current allowed predicates:
+  `CAUSES`, `ENCODES`, `ACTIVATES`, `INHIBITS`, `TREATS`, `TARGETS`,
+  `ASSOCIATED_WITH`, `PART_OF`, `EXTRACTED_FROM`, `SUPPORTS`, `CONTRADICTS`,
+  `VALIDATED_IN`, `FOUND_IN`, `HOMOLOGOUS_TO`
+  Check `testing/specs/edge_constraints.yaml` for the authoritative list and
+  the allowed `from`/`to` node labels for each predicate.
 - `subject`/`object` are human-readable names; `subject_id`/`object_id` are CURIEs.
+
+## Validator requirements (run before every commit)
+
+```bash
+uv run python testing/harness/claim_validator.py
+```
+
+The validator runs three post-grounding checks the moment `semantic_triple` is
+present. All three must pass or the claim is rejected:
+
+| Check | What it catches | Example failure |
+|-------|----------------|-----------------|
+| **CURIE format** | `subject_id`/`object_id` must match `PREFIX:identifier` — no pipes, no whitespace | `NCBIGene:4974\|NCBIGene:5921` (multi-CURIE) |
+| **Predicate in spec** | predicate must exist in `edge_constraints.yaml` | `HOMOLOGOUS` (not a defined edge type) |
+| **related_nodes not empty** | `related_nodes` must list at least subject and object when triple is set | `"related_nodes": []` with a populated triple |
+
+The JSON Schema (`claims/schema.json`) also enforces the CURIE pattern directly
+on `subject_id`/`object_id` — a malformed CURIE will fail JSON Schema validation
+before even reaching the post-grounding checks.
+
+### HOMOLOGOUS_TO (new — pending PR #19 merge)
+
+For ortholog/paralog relationships between proteins or genes:
+```json
+"predicate": "HOMOLOGOUS_TO",
+"subject_id": "UniProtKB:P21359",   // human neurofibromin
+"object_id":  "UniProtKB:P97679"    // mouse Nf1 protein
+```
+`HOMOLOGOUS_TO` accepts `{from: [Protein, Gene], to: [Protein, Gene]}`.
+Use it only after PR #19 merges to main (the predicate will fail validation
+until it's in `edge_constraints.yaml`).
 
 ## BEL notation (optional, molecular_function / pathway_interaction only)
 
@@ -75,6 +110,12 @@ genetic_association claims — forcing BEL onto those produces noise.
    relationship Dirk's claim describes with many independent sources, note the
    PMIDs in `notes` — don't silently drop the claim. Rey decides whether it's
    redundant.
+7. **Never put multiple CURIEs in one field** — `subject_id` and `object_id`
+   must each be a single CURIE. If a claim involves multiple objects, write
+   multiple claims (one per CURIE). The validator will FAIL pipe-delimited
+   values like `NCBIGene:4974|NCBIGene:2123`.
+8. **`UniProt:` vs `UniProtKB:`** — the canonical prefix is `UniProtKB:`.
+   Both may resolve in RTX-KG2 but `UniProtKB:` is the OBO-compliant form.
 
 ## Commit
 
