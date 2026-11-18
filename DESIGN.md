@@ -38,7 +38,7 @@ This document records architectural decisions, their rationale, and the constrai
 | `AnimalModel` | name, background, nf1_genotype | Nf1+/- C57BL/6 |
 | `Dataset` | name, source_url | NF Data Portal |
 
-## Edge types (21)
+## Edge types (22)
 
 ```
 CAUSES              Mutation ──► Disease/Phenotype
@@ -55,6 +55,7 @@ CONTRADICTS         Claim ──► Claim
 VALIDATED_IN        Claim ──► CellLine/AnimalModel
 FOUND_IN            Gene/Dataset ──► Dataset/Gene
 HOMOLOGOUS_TO       Protein/Gene ──► Protein/Gene
+ABOUT               Claim ──► Gene/Protein/Pathway/Mutation/Phenotype/Disease/Drug/ClinicalTrial/CellLine/AnimalModel/Dataset
 ```
 
 ## Testing architecture

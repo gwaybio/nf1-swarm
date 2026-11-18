@@ -19,6 +19,7 @@ edge_types:
   VALIDATED_IN: {from: [Claim], to: [CellLine, AnimalModel]}
   FOUND_IN:     {from: [Gene, Dataset], to: [Dataset, Gene]}
   HOMOLOGOUS_TO: {from: [Protein, Gene], to: [Protein, Gene]}
+  ABOUT:        {from: [Claim], to: [Gene, Protein, Pathway, Mutation, Phenotype, Disease, Drug, ClinicalTrial, CellLine, AnimalModel, Dataset]}
 
 forbidden_patterns:
   - description: "Circular SUPPORTS edges not permitted"
