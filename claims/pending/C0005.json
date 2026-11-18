@@ -10,8 +10,8 @@
   "extracted_by": "dirk",
   "extraction_date": "2026-11-17",
   "verified_by": null,
-  "curated_by": null,
-  "status": "pending",
+  "curated_by": "rey",
+  "status": "rejected",
   "semantic_triple": {
     "subject": "NF1",
     "subject_id": "NCBIGene:4763",
@@ -50,5 +50,7 @@
       "identifier": "UniProtKB:P21359",
       "edge_type": "ASSOCIATED_WITH"
     }
-  ]
+  ],
+  "curation_date": "2026-11-17",
+  "rejection_reason": "Multiple issues: (1) ASSOCIATED_WITH from Gene\u2192Gene violates edge_constraints.yaml (permitted: Gene/Mutation \u2192 Phenotype/Disease); (2) pipe-delimited multi-CURIE format in object_id ('NCBIGene:4974|NCBIGene:2123|NCBIGene:2124') is non-standard \u2014 schema expects a single CURIE string; (3) related_nodes includes Protein (UniProtKB:P21359) which is not relevant to this genomic containment claim. The biological relationship (genomic containment / CONTAINS) needs a new edge type. Consider splitting into three separate claims (one per embedded gene) with proper single-CURIE object_ids."
 }

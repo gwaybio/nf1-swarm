@@ -10,8 +10,8 @@
   "extracted_by": "dirk",
   "extraction_date": "2026-11-17",
   "verified_by": null,
-  "curated_by": null,
-  "status": "pending",
+  "curated_by": "rey",
+  "status": "rejected",
   "semantic_triple": {
     "subject": "NF1",
     "subject_id": "NCBIGene:4763",
@@ -35,5 +35,7 @@
       "identifier": "UniProtKB:P21359",
       "edge_type": "ASSOCIATED_WITH"
     }
-  ]
+  ],
+  "curation_date": "2026-11-17",
+  "rejection_reason": "Multiple issues: (1) object_id 'HGNC:karyotype:t(1;17)' is a provisional CURIE not grounded to any canonical ontology \u2014 no standard identifier exists for cytogenetic variants in our node schemas; (2) related_nodes include Protein (UniProtKB:P21359) but the claim does not mention neurofibromin \u2014 semantic_triple/related_nodes mismatch; (3) ASSOCIATED_WITH from Gene to a karyotype object does not match edge_constraints (Gene/Mutation \u2192 Phenotype/Disease only). This claim requires a new node type for cytogenetic variants and a suitable edge type before it can be properly represented."
 }

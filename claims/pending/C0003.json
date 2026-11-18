@@ -10,8 +10,8 @@
   "extracted_by": "dirk",
   "extraction_date": "2026-11-17",
   "verified_by": null,
-  "curated_by": null,
-  "status": "pending",
+  "curated_by": "rey",
+  "status": "rejected",
   "semantic_triple": {
     "subject": "neurofibromin (NF1 GAP-related domain)",
     "subject_id": "UniProtKB:P21359",
@@ -35,5 +35,7 @@
       "identifier": "NCBIGene:852437",
       "edge_type": "ASSOCIATED_WITH"
     }
-  ]
+  ],
+  "curation_date": "2026-11-17",
+  "rejection_reason": "ASSOCIATED_WITH predicate misused: edge_constraints.yaml defines ASSOCIATED_WITH as {from: [Gene, Mutation], to: [Phenotype, Disease]}, but this claim uses Protein\u2192Gene for cross-species sequence homology (NF1\u2192IRA1). Same issue as C0002. Resubmit after HOMOLOGOUS_TO edge type is added to edge_constraints.yaml."
 }

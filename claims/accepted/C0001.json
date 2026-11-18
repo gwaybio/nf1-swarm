@@ -10,8 +10,8 @@
   "extracted_by": "dirk",
   "extraction_date": "2026-11-17",
   "verified_by": null,
-  "curated_by": null,
-  "status": "pending",
+  "curated_by": "rey",
+  "status": "accepted",
   "semantic_triple": {
     "subject": "NF1",
     "subject_id": "NCBIGene:4763",
@@ -35,5 +35,6 @@
       "identifier": "UniProtKB:P21359",
       "edge_type": "ENCODES"
     }
-  ]
+  ],
+  "curation_date": "2026-11-17"
 }
