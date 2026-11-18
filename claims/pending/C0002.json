@@ -28,15 +28,15 @@
     {
       "label": "Protein",
       "identifier": "UniProtKB:P21359",
-      "edge_type": "HOMOLOGOUS_TO"
+      "edge_type": "ABOUT"
     },
     {
       "label": "Gene",
       "identifier": "NCBIGene:5921",
-      "edge_type": "HOMOLOGOUS_TO"
+      "edge_type": "ABOUT"
     }
   ],
   "curation_date": null,
   "rejection_reason": null,
-  "rejection_class": "structural"
+  "rejection_class": null
 }
