@@ -52,5 +52,5 @@
     }
   ],
   "curation_date": "2026-11-17",
-  "rejection_reason": "Multiple issues: (1) ASSOCIATED_WITH from Gene\u2192Gene violates edge_constraints.yaml (permitted: Gene/Mutation \u2192 Phenotype/Disease); (2) pipe-delimited multi-CURIE format in object_id ('NCBIGene:4974|NCBIGene:2123|NCBIGene:2124') is non-standard \u2014 schema expects a single CURIE string; (3) related_nodes includes Protein (UniProtKB:P21359) which is not relevant to this genomic containment claim. The biological relationship (genomic containment / CONTAINS) needs a new edge type. Consider splitting into three separate claims (one per embedded gene) with proper single-CURIE object_ids."
+  "rejection_reason": "object_id contains three pipe-delimited CURIEs (NCBIGene:4974|NCBIGene:2123|NCBIGene:2124). Each claim must have exactly one subject and one object. Refile as three separate claims \u2014 one per gene (IDB1/NCBIGene:4974, EVI2A/NCBIGene:2123, EVI2B/NCBIGene:2124) \u2014 each with predicate FOUND_IN or a suitable equivalent."
 }
