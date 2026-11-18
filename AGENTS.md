@@ -221,28 +221,22 @@ When a rule is wrong or missing, Graude **proposes a PR** — he does not silent
 
 ## Communication conventions
 
-**GitHub issue comments** are the human-readable audit trail. They record what happened at each pipeline stage for Gregory to review. Rules:
-- Write factual status only: what was done, what was found, what IDs were assigned
-- Use structured prefixes: `STATUS:`, `BLOCKER:`, `QUESTION:`
-- **Never `@tag` real GitHub users** (gwaybio, etc.) — this sends them email notifications
-- **Never use issue comments to coordinate with other agents** — use `message_agent` instead
-- Bot handles (`@dirk`, `@otto`, etc.) may appear in comments as attribution labels, not as routing
+There are exactly two communication channels in this swarm. Using the wrong channel for the wrong purpose breaks the system.
 
-**`message_agent`** is how agents talk to each other and to Graude. All routing, questions, blockers, and task handoffs go through Graude via `message_agent`.
+**GitHub issues — paper and claim tracking only**
+- Issues track the lifecycle of papers and claims through the pipeline
+- Comments are factual status records: what was done, what IDs were assigned, what was found
+- Written for Gregory to read, not for agents to coordinate
+- Use prefixes: `STATUS:`, `BLOCKER:`, `QUESTION:`
+- Never `@tag` real GitHub users — this triggers email notifications
+- Never ask questions of other agents here — that is Hermes's job
 
-**Example of correct issue comment (Otto grounding stage):**
-```
-STATUS: Grounding complete — C0001–C0005.
-CURIEs: NF1=NCBIGene:4763, neurofibromin=UniProtKB:P21359.
-RTX-KG2c accessed 2026-11-17. No existing edges found for C0002–C0003.
-Note: HOMOLOGOUS_TO predicate not in edge_constraints.yaml; mapped to ASSOCIATED_WITH.
-```
+**Hermes `message_agent` — all agent coordination**
+- This is the only channel for agents to talk to each other
+- All task handoffs, questions, blockers, and routing go through Graude via `message_agent`
+- Agents do not message each other directly — they message Graude, Graude routes
 
-**Example of incorrect issue comment:**
-```
-@rey please review these claims   ← routes via message_agent instead
-@gwaybio the PMID was wrong       ← never tag real users
-```
+**The rule in one sentence:** GitHub is for humans to track the science. Hermes is for agents to coordinate the work.
 
 - Never duplicate a claim already in the graph — query first:
   `MATCH (c:Claim {claim_text: $text}) RETURN c` before creating
