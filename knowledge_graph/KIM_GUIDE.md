@@ -145,6 +145,55 @@ not a pip package — already enabled locally and in CI).
    Cypher change that only exists in the Neo4j instance you ran it in is
    invisible to CI's bootstrap and to anyone who re-clones the repo.
 
+## Writing refuted claims to Neo4j
+
+Claims with `rejection_class: biological` are **not discarded** — the biology
+was judged wrong or unsupported, but that is itself a scientific fact worth
+preserving. Write them to the graph with `status: refuted`.
+
+**When to write:** Rey sets status=refuted and rejection_class=biological.
+Graude opens a `[KIM]` issue. Kim writes the node.
+
+**Pattern — same as accepted claims, with two differences:**
+
+```python
+# 1. Set status=refuted on the Claim node (not "accepted")
+session.run("""
+    MERGE (c:Claim {claim_id: $claim_id})
+    SET c.claim_text   = $claim_text,
+        c.status       = 'refuted',
+        c.rejection_class = 'biological',
+        c.rejection_reason = $rejection_reason,
+        c.curated_by   = $curated_by,
+        c.curation_date = $curation_date
+""", **claim)
+
+# 2. EXTRACTED_FROM edge to Publication (same as accepted)
+session.run("""
+    MATCH (c:Claim {claim_id: $cid})
+    MERGE (p:Publication {pmid: $pmid})
+    MERGE (c)-[:EXTRACTED_FROM]->(p)
+""", cid=claim["claim_id"], pmid=claim["source_pmid"])
+
+# 3. CONTRADICTS edge to any conflicting accepted Claim (optional but preferred)
+#    Only add if Rey identified a specific conflicting claim.
+session.run("""
+    MATCH (refuted:Claim {claim_id: $refuted_id})
+    MATCH (accepted:Claim {claim_id: $accepted_id, status: 'accepted'})
+    MERGE (refuted)-[:CONTRADICTS]->(accepted)
+""", refuted_id="C0004", accepted_id="C0001")
+```
+
+**Do NOT create ABOUT edges** for refuted claims — those connect a claim to the
+entities it describes, and a refuted claim's entity links are scientifically
+unreliable. EXTRACTED_FROM (source) and CONTRADICTS (conflict) are sufficient.
+
+**Migration file naming:** use the same `NNN_description.cypher` pattern as
+accepted claims. Mark it clearly:
+```
+knowledge_graph/migrations/005_refuted_C0004.cypher
+```
+
 ## Commit
 
 ```
