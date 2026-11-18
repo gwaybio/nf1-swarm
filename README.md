@@ -145,3 +145,37 @@ Everything else is fast-path: Emily reviews, no human gate needed.
 ## References
 
 See `CITATION.cff` for the full reference list covering FETA extraction, RTX-KG2, publication bias methodology, MemGPT, DACS, and all other methods implemented in this project.
+
+---
+
+## Evidence strength scale
+
+Every claim carries an `evidence_strength` (1–5) and `evidence_type`. These are assigned by Dirk at extraction and may be revised by Rey at curation.
+
+| Strength | Label | Meaning | Allowed evidence types |
+|----------|-------|---------|----------------------|
+| **5** | Definitive | Scientific consensus — multiple independent replications, systematic review with meta-analysis, or foundational biochemical proof replicated across labs | `biochemical_proof`, `systematic_review`, `rct` |
+| **4** | Strong | Single well-powered RCT, multiple independent cohort studies, or replicated preclinical studies in validated models | `rct`, `cohort_study`, `systematic_review`, `preclinical_in_vivo` |
+| **3** | Moderate | Preclinical evidence in validated NF1 models, small but well-designed clinical studies, cross-validated computational predictions. Also: any claim extracted from abstract-only (no full text) is capped at 3 regardless of underlying evidence | `preclinical_in_vivo`, `preclinical_in_vitro`, `cohort_study`, `computational` |
+| **2** | Preliminary | Single small study, case reports, early-phase clinical observations, unvalidated computational predictions | `case_report`, `preclinical_in_vitro`, `computational`, `expert_opinion` |
+| **1** | Speculative | Expert opinion, theoretical framework, hypothesis not yet experimentally tested | `expert_opinion`, `computational` |
+
+**On `biochemical_proof`:** This evidence type measures mechanism directly — purified protein, direct assay, observed activity. It is not correlative. For molecular function claims (what does neurofibromin *do*?), biochemical proof is the gold standard and the only path to strength 5. Example: Xu et al. 1990 expressed the NF1 catalytic domain, added it to RAS-GTP, and directly measured GTP hydrolysis rate — that is biochemical proof.
+
+**On convergent evidence:** `evidence_strength` reflects a single paper. As more supporting papers accumulate in `supporting_dois`, Stan computes a `confidence_score` (0–1) adjusted for publication bias, correlated evidence, and independence. A claim at strength 3 with five independent replications may carry a higher confidence_score than a strength 4 claim with a single study.
+
+## Biological context fields
+
+Claims carry optional biological context that scopes where the evidence was obtained:
+
+| Field | Type | Description | Grounded by |
+|-------|------|-------------|-------------|
+| `organism` | enum | `human`, `mouse`, `rat`, `zebrafish`, `drosophila`, `yeast`, `in_vitro`, `other` | Dirk (at extraction) |
+| `cell_type` | free text | E.g. "Schwann cell", "astrocyte", "mast cell" | Dirk (at extraction) |
+| `cell_type_id` | CL CURIE | Cell Ontology identifier. E.g. `CL:0002573` | Otto (at grounding) |
+| `tissue` | free text | E.g. "peripheral nerve", "optic nerve", "skin" | Dirk (at extraction) |
+| `tissue_id` | UBERON CURIE | Anatomy ontology identifier. E.g. `UBERON:0001021` | Otto (at grounding) |
+
+These fields are optional — not all claims have cell-type or tissue specificity. When present, they make the graph queryable by biological context: "which claims about NF1 were demonstrated specifically in Schwann cells?" or "which drug response claims come from human tissue vs. mouse models?"
+
+NF1's phenotypic diversity is partly explained by cell-type-specific effects of neurofibromin loss. A claim true in Schwann cells may not hold in astrocytes. These fields make that distinction computable.

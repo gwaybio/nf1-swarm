@@ -255,6 +255,54 @@
         "null"
       ],
       "description": "Biological Expression Language notation. Optional for molecular_function and pathway_interaction claims."
+    },
+    "organism": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "human",
+        "mouse",
+        "rat",
+        "zebrafish",
+        "drosophila",
+        "yeast",
+        "in_vitro",
+        "other",
+        null
+      ],
+      "description": "Organism in which the claim was demonstrated. Null if not specified or not applicable."
+    },
+    "cell_type": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Cell type in which the claim was demonstrated, as free text. Otto grounds to cell_type_id via Cell Ontology (CL). E.g. 'Schwann cell', 'astrocyte', 'mast cell'."
+    },
+    "cell_type_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^(CL:[0-9]+|[A-Za-z][A-Za-z0-9._-]*:[^\\s|]+)?$",
+      "description": "Cell Ontology CURIE grounded by Otto. E.g. CL:0002573 (Schwann cell)."
+    },
+    "tissue": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "description": "Tissue or anatomical context, as free text. Otto grounds to tissue_id via UBERON. E.g. 'peripheral nerve', 'optic nerve', 'skin'."
+    },
+    "tissue_id": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "pattern": "^(UBERON:[0-9]+|[A-Za-z][A-Za-z0-9._-]*:[^\\s|]+)?$",
+      "description": "UBERON anatomy CURIE grounded by Otto. E.g. UBERON:0001021 (sciatic nerve)."
     }
   },
   "anyOf": [
