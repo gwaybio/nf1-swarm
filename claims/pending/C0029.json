@@ -1,0 +1,22 @@
+{
+  "claim_id": "C0029",
+  "claim_text": "Somatic second-hit NF1 pathogenic variants are typically identified in every NF1-associated tumor, including cutaneous and plexiform neurofibromas, and in cafe-au-lait macules, resulting in biallelic NF1 inactivation.",
+  "claim_type": "genetic_association",
+  "evidence_strength": 3,
+  "evidence_type": "cohort_study",
+  "notes": "Full text (PMC8354850). Data cited from a primary study (secondary citation in a consensus paper): refs incl. 37 (CALM melanocytes). Primary paper should be read directly and may support a higher strength.",
+  "source_pmid": "34012067",
+  "source_doi": "10.1038/s41436-021-01170-5",
+  "source_title": "Revised diagnostic criteria for neurofibromatosis type 1 and Legius syndrome: an international consensus recommendation",
+  "source_year": 2021,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-17",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "independence_flags": []
+}

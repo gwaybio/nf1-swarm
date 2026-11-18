@@ -1,0 +1,22 @@
+{
+  "claim_id": "C0030",
+  "claim_text": "The estimated birth prevalence of NF1 is 1/2,000 to 1/3,000, compared with 1/46,000 to 1/75,000 for Legius syndrome.",
+  "claim_type": "phenotype_association",
+  "evidence_strength": 3,
+  "evidence_type": "cohort_study",
+  "notes": "Full text (PMC8354850). Data cited from a primary study (secondary citation in a consensus paper): refs 15, 16. Primary paper should be read directly and may support a higher strength.",
+  "source_pmid": "34012067",
+  "source_doi": "10.1038/s41436-021-01170-5",
+  "source_title": "Revised diagnostic criteria for neurofibromatosis type 1 and Legius syndrome: an international consensus recommendation",
+  "source_year": 2021,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-17",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "independence_flags": []
+}

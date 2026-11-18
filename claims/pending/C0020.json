@@ -1,0 +1,22 @@
+{
+  "claim_id": "C0020",
+  "claim_text": "The 2021 consensus revised NF1 diagnostic criteria add a heterozygous pathogenic NF1 variant (variant allele fraction 50%) in apparently normal tissue such as white blood cells as a new diagnostic criterion, without implying that genetic testing is required.",
+  "claim_type": "phenotype_association",
+  "evidence_strength": 2,
+  "evidence_type": "expert_opinion",
+  "notes": "Full text (PMC8354850). Modified Delphi expert consensus (74/76 experts); rubric forbids expert_opinion at strength >=4, so capped at 2. Recommendation, not an empirical finding.",
+  "source_pmid": "34012067",
+  "source_doi": "10.1038/s41436-021-01170-5",
+  "source_title": "Revised diagnostic criteria for neurofibromatosis type 1 and Legius syndrome: an international consensus recommendation",
+  "source_year": 2021,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-17",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "independence_flags": []
+}
