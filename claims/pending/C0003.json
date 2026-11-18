@@ -10,32 +10,32 @@
   "extracted_by": "dirk",
   "extraction_date": "2026-11-17",
   "verified_by": null,
-  "curated_by": "rey",
-  "status": "rejected",
+  "curated_by": null,
+  "status": "pending",
   "semantic_triple": {
     "subject": "neurofibromin (NF1 GAP-related domain)",
     "subject_id": "UniProtKB:P21359",
-    "predicate": "ASSOCIATED_WITH",
+    "predicate": "HOMOLOGOUS_TO",
     "object": "IRA1 (S. cerevisiae)",
     "object_id": "NCBIGene:852437"
   },
-  "bel_notation": "p(HGNC:NF1) association p(SGD:IRA1)",
+  "bel_notation": "p(HGNC:NF1) orthologousTo p(SGD:IRA1)",
   "supporting_dois": [],
   "confidence_score": null,
   "independence_flags": [],
-  "notes": "Full text unavailable (not in PMC), extracted from abstract. Strength capped at 3: sequence-similarity evidence, no biochemical GAP assay in this paper. DOI: 10.1016/0092-8674(90)90024-9 (omitted from source_doi because schema oneOf rejects pmid+doi together). | Grounded by Otto via RTX-KG2c PloverDB (kg2cploverdb.transltr.io) and SRI Node Normalizer (nodenormalization-sri.renci.org), accessed 2026-11-17. neurofibromin=UniProtKB:P21359; yeast IRA1=NCBIGene:852437 (SGD:S000000344, UniProtKB:P18963). Predicate is cross-species sequence homology (biolink:homologous_to/orthologous_to), mapped to ASSOCIATED_WITH as closest permitted edge type. No NF1-IRA1 edge exists in RTX-KG2. IRA1 is a functional RAS-GAP homolog in S. cerevisiae; this paper established the NF1-IRA1 evolutionary link.",
+  "notes": "Full text unavailable (not in PMC), extracted from abstract. Strength capped at 3: sequence-similarity evidence, no biochemical GAP assay in this paper. DOI: 10.1016/0092-8674(90)90024-9 (omitted from source_doi because schema oneOf rejects pmid+doi together). | Grounded by Otto via RTX-KG2c PloverDB (kg2cploverdb.transltr.io) and SRI Node Normalizer (nodenormalization-sri.renci.org), accessed 2026-11-17. neurofibromin=UniProtKB:P21359; yeast IRA1=NCBIGene:852437 (SGD:S000000344, UniProtKB:P18963). Predicate is cross-species sequence homology (biolink:homologous_to/orthologous_to), now mapped to HOMOLOGOUS_TO per edge_constraints.yaml v1.0 (added 2026-11-17). No NF1-IRA1 edge exists in RTX-KG2. IRA1 is a functional RAS-GAP homolog in S. cerevisiae; this paper established the NF1-IRA1 evolutionary link. | Re-grounded 2026-11-17: predicate corrected from ASSOCIATED_WITH to HOMOLOGOUS_TO after edge type was added to edge_constraints.yaml.",
   "related_nodes": [
     {
       "label": "Protein",
       "identifier": "UniProtKB:P21359",
-      "edge_type": "ASSOCIATED_WITH"
+      "edge_type": "HOMOLOGOUS_TO"
     },
     {
       "label": "Gene",
       "identifier": "NCBIGene:852437",
-      "edge_type": "ASSOCIATED_WITH"
+      "edge_type": "HOMOLOGOUS_TO"
     }
   ],
-  "curation_date": "2026-11-17",
-  "rejection_reason": "ASSOCIATED_WITH predicate misused: edge_constraints.yaml defines ASSOCIATED_WITH as {from: [Gene, Mutation], to: [Phenotype, Disease]}, but this claim uses Protein\u2192Gene for cross-species sequence homology (NF1\u2192IRA1). Same issue as C0002. Resubmit after HOMOLOGOUS_TO edge type is added to edge_constraints.yaml."
+  "curation_date": null,
+  "rejection_reason": null
 }

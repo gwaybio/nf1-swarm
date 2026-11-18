@@ -1,0 +1,45 @@
+{
+  "claim_id": "C0008",
+  "claim_text": "The OMG gene lies within an intron of NF1 and is transcribed in the orientation opposite to NF1.",
+  "claim_type": "molecular_function",
+  "evidence_strength": 3,
+  "evidence_type": "preclinical_in_vitro",
+  "source_pmid": "2116237",
+  "source_title": "The neurofibromatosis type 1 gene encodes a protein related to GAP",
+  "source_year": 1990,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-17",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": {
+    "subject": "OMG",
+    "subject_id": "NCBIGene:4974",
+    "predicate": "FOUND_IN",
+    "object": "NF1",
+    "object_id": "NCBIGene:4763"
+  },
+  "bel_notation": "g(HGNC:OMG) containedIn g(HGNC:NF1)",
+  "supporting_dois": [],
+  "confidence_score": null,
+  "independence_flags": [],
+  "notes": "Split from C0005 (rejected: multi-CURIE object_id). Grounded by Otto via RTX-KG2c PloverDB (kg2cploverdb.transltr.io) and SRI Node Normalizer (nodenormalization-sri.renci.org), accessed 2026-11-17. OMG=NCBIGene:4974 (HGNC:8135); NF1=NCBIGene:4763. OMG resides within intron 27b of NF1 and is transcribed antisense to NF1. FOUND_IN used as the permitted edge type for Gene->Gene genomic containment per edge_constraints.yaml.",
+  "related_nodes": [
+    {
+      "label": "Gene",
+      "identifier": "NCBIGene:4974",
+      "edge_type": "FOUND_IN"
+    },
+    {
+      "label": "Gene",
+      "identifier": "NCBIGene:4763",
+      "edge_type": "FOUND_IN"
+    },
+    {
+      "label": "Protein",
+      "identifier": "UniProtKB:P21359",
+      "edge_type": "FOUND_IN"
+    }
+  ],
+  "rejection_reason": null
+}
