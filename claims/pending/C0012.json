@@ -1,0 +1,22 @@
+{
+  "claim_id": "C0012",
+  "claim_text": "Among 93 age-matched untreated NF1 patients in the NCI natural-history study, 73 (78%) had a plexiform neurofibroma volume increase of at least 20% over 3.2 years, with 15% progression-free at 3 years (median 1.3 years), and none had shrinkage of more than 20%.",
+  "claim_type": "clinical_outcome",
+  "evidence_strength": 3,
+  "evidence_type": "cohort_study",
+  "notes": " Full text (PMC7305659). Single-arm phase 2 (n=50, stratum 1 only), unblinded central MRI volumetry; capped at 3 because there is no randomized control (RCT/strength 4 criteria not met). Comparator is a non-randomized external natural-history cohort (NCT00924196).",
+  "source_pmid": "32187457",
+  "source_doi": "10.1056/NEJMoa1912735",
+  "source_title": "Selumetinib in Children with Inoperable Plexiform Neurofibromas",
+  "source_year": 2020,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-17",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "independence_flags": []
+}

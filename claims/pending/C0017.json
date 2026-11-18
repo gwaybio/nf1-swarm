@@ -1,0 +1,22 @@
+{
+  "claim_id": "C0017",
+  "claim_text": "The most common toxic effects of selumetinib in children with NF1 plexiform neurofibromas were grade 1-2 gastrointestinal symptoms, asymptomatic creatine phosphokinase elevation, acneiform rash, and paronychia.",
+  "claim_type": "drug_response",
+  "evidence_strength": 3,
+  "evidence_type": "cohort_study",
+  "notes": " Full text (PMC7305659). Single-arm phase 2 (n=50, stratum 1 only), unblinded central MRI volumetry; capped at 3 because there is no randomized control (RCT/strength 4 criteria not met).",
+  "source_pmid": "32187457",
+  "source_doi": "10.1056/NEJMoa1912735",
+  "source_title": "Selumetinib in Children with Inoperable Plexiform Neurofibromas",
+  "source_year": 2020,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-17",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "independence_flags": []
+}
