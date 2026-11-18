@@ -46,10 +46,30 @@ edges = get_nf1_edges()
   Current allowed predicates:
   `CAUSES`, `ENCODES`, `ACTIVATES`, `INHIBITS`, `TREATS`, `TARGETS`,
   `ASSOCIATED_WITH`, `PART_OF`, `EXTRACTED_FROM`, `SUPPORTS`, `CONTRADICTS`,
-  `VALIDATED_IN`, `FOUND_IN`, `HOMOLOGOUS_TO`
+  `VALIDATED_IN`, `FOUND_IN`, `HOMOLOGOUS_TO`, `ABOUT`
   Check `testing/specs/edge_constraints.yaml` for the authoritative list and
   the allowed `from`/`to` node labels for each predicate.
 - `subject`/`object` are human-readable names; `subject_id`/`object_id` are CURIEs.
+
+## Filling `related_nodes` — use ABOUT, not biological edges
+
+`related_nodes` lists the graph entities this claim is *about*. Use edge_type `ABOUT`
+for every entity the claim describes. **Do not** use biological edge types
+(ENCODES, ACTIVATES, etc.) here — those are graph relationships Kim writes when
+inserting the claim into Neo4j, not claim metadata Otto sets.
+
+```json
+"related_nodes": [
+  {"label": "Gene",    "identifier": "NCBIGene:4763",    "edge_type": "ABOUT"},
+  {"label": "Protein", "identifier": "UniProtKB:P21359", "edge_type": "ABOUT"}
+]
+```
+
+Rule of thumb: every entity mentioned in `claim_text` whose CURIE you resolved
+gets an ABOUT entry. The subject and object of `semantic_triple` both get one.
+If the claim mentions a third entity (e.g. a pathway or disease) that is not the
+subject or object, add it too — Kim uses these entries to build the full set of
+ABOUT edges in the graph.
 
 ## Validator requirements (run before every commit)
 
