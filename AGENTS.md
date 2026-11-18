@@ -249,6 +249,22 @@ Every commit by a named bot agent must set their git identity in the repo before
 # Set at the start of every session before the first commit
 git config user.name "Dirk (nf1-swarm)"    # use your own name
 git config user.email "dirk@nf1-swarm.bot"  # use your own email
+```
+
+## Python environment — always use the shared project venv
+
+**Never use bare `python3` in this repo. Never create a private venv.**
+
+The project venv at `~/repos/nf1-swarm/.venv` has all required packages (neo4j, pyyaml, requests, jsonschema, biopython). Always use:
+
+```bash
+cd ~/repos/nf1-swarm
+uv run python <script>          # preferred — always uses the right venv
+# or
+source .venv/bin/activate       # then use python normally
+```
+
+If `import neo4j` or any other import fails, the problem is that you are using the wrong Python interpreter — not that the package is missing. Fix: use `uv run`. Never `pip install` or `python3 -m venv` inside this repo or in your profile directory.
 
 # Then commit — the template adds the trailer automatically
 git commit -m "claim(dirk): short description"
