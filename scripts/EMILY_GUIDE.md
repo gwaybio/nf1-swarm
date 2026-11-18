@@ -155,3 +155,13 @@ bash scripts/restore_graph.sh backups/nf1_graph_<timestamp>.dump
 
 Both require `sudo` to stop/start the Neo4j service — run interactively, not
 from an unattended agent call that can't supply a password.
+
+## GitHub commenting rules
+
+- **No `@handle` syntax anywhere** — not in issue comments, PR bodies, PR titles,
+  or review comments. It fires email notifications to real people. Refer to
+  teammates by name: Gregory, Rey, Graude, Otto, Dirk, Stan, Kim, Emily.
+- Comments are factual status records for Gregory to read. Keep them concise:
+  what was done, what IDs were assigned, what failed and why.
+- Use `message_agent` (Hermes) for all agent-to-agent coordination — GitHub is
+  for humans to track the science, not for agents to talk to each other.

@@ -67,3 +67,13 @@ When full text is unavailable (`paper.full_text_source == "unavailable"`):
 | 1 | Expert opinion, hypothesis, your inference |
 
 When in doubt, go lower. Rey will upgrade if warranted.
+
+## GitHub commenting rules
+
+- **No `@handle` syntax anywhere** — not in issue comments, PR bodies, PR titles,
+  or review comments. It fires email notifications to real people. Refer to
+  teammates by name: Gregory, Rey, Graude, Otto, Dirk, Stan, Kim, Emily.
+- Comments are factual status records for Gregory to read. Keep them concise:
+  what was done, what IDs were assigned, what failed and why.
+- Use `message_agent` (Hermes) for all agent-to-agent coordination — GitHub is
+  for humans to track the science, not for agents to talk to each other.

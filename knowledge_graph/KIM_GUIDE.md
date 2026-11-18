@@ -146,3 +146,13 @@ not a pip package — already enabled locally and in CI).
 ```
 git commit -m "feat(graph): write C0042 to Neo4j, migration 004"
 ```
+
+## GitHub commenting rules
+
+- **No `@handle` syntax anywhere** — not in issue comments, PR bodies, PR titles,
+  or review comments. It fires email notifications to real people. Refer to
+  teammates by name: Gregory, Rey, Graude, Otto, Dirk, Stan, Kim, Emily.
+- Comments are factual status records for Gregory to read. Keep them concise:
+  what was done, what IDs were assigned, what failed and why.
+- Use `message_agent` (Hermes) for all agent-to-agent coordination — GitHub is
+  for humans to track the science, not for agents to talk to each other.

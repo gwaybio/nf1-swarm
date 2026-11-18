@@ -228,7 +228,7 @@ There are exactly two communication channels in this swarm. Using the wrong chan
 - Comments are factual status records: what was done, what IDs were assigned, what was found
 - Written for Gregory to read, not for agents to coordinate
 - Use prefixes: `STATUS:`, `BLOCKER:`, `QUESTION:`
-- Never `@tag` real GitHub users — this triggers email notifications
+- Never `@tag` anyone — no `@handle` syntax anywhere in GitHub (issues, PRs, comments, titles). It fires email notifications to real users. Refer to people by name: Gregory, Rey, Graude, Otto, etc.
 - Never ask questions of other agents here — that is Hermes's job
 
 **Hermes `message_agent` — all agent coordination**

@@ -123,3 +123,13 @@ genetic_association claims — forcing BEL onto those produces noise.
 git add claims/pending/C<id>.json
 git commit -m "ontology(otto): ground C<id>"
 ```
+
+## GitHub commenting rules
+
+- **No `@handle` syntax anywhere** — not in issue comments, PR bodies, PR titles,
+  or review comments. It fires email notifications to real people. Refer to
+  teammates by name: Gregory, Rey, Graude, Otto, Dirk, Stan, Kim, Emily.
+- Comments are factual status records for Gregory to read. Keep them concise:
+  what was done, what IDs were assigned, what failed and why.
+- Use `message_agent` (Hermes) for all agent-to-agent coordination — GitHub is
+  for humans to track the science, not for agents to talk to each other.

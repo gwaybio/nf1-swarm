@@ -102,3 +102,13 @@ important part is the message states what claim and why.
 3. **`claims/schema.json` and `testing/specs/` are not yours to edit.** If the
    rubric or schema seems wrong for scoring purposes, flag it to Graude —
    don't work around it by stuffing scores into `notes`.
+
+## GitHub commenting rules
+
+- **No `@handle` syntax anywhere** — not in issue comments, PR bodies, PR titles,
+  or review comments. It fires email notifications to real people. Refer to
+  teammates by name: Gregory, Rey, Graude, Otto, Dirk, Stan, Kim, Emily.
+- Comments are factual status records for Gregory to read. Keep them concise:
+  what was done, what IDs were assigned, what failed and why.
+- Use `message_agent` (Hermes) for all agent-to-agent coordination — GitHub is
+  for humans to track the science, not for agents to talk to each other.
