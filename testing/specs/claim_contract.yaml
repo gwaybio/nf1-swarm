@@ -88,3 +88,6 @@ global_rules:
   - at least one of source_pmid or source_doi must be present
   - extracted_by must be a registered agent or "human"
   - evidence_strength must be consistent with evidence_type (see evidence_rubric.yaml)
+  - if status is 'rejected' or 'refuted', rejection_class must be 'structural' or 'biological' (not null)
+  - rejection_class structural = encoding problem, route back to Otto for re-grounding
+  - rejection_class biological = biology wrong or unsupported, Kim writes to graph with status=refuted
