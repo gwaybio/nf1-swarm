@@ -1,39 +1,40 @@
 # Swarm Agent Registry
-Maintained by Milo. Last dream: 2026-11-17 22:31 UTC
-Graph: 0 accepted claims, 0 pending.
+Maintained by Milo. Last dream: 2026-11-18 13:55 UTC
+Graph: 1 accepted claims, 29 pending.
 ---
 ## @graude
-Last commit: 6ab75a1 feat(milo): add memory & context manager bot
-Context health: OK (avg 8.5s)
+Last commit: 623a82e fix(schema): add ABOUT edge type — Claim to subject-entity link
+Context health: UNKNOWN
 
 ## @dirk
-Last commit: (none yet)
-Context health: OK (avg 11.8s)
+Last commit: 563778a claim(dirk): Legius 2021 revised NF1 diagnostic criteria
+Context health: UNKNOWN
 
 ## @otto
-Last commit: (none yet)
+Last commit: 2eb61d8 ontology(otto): reground C0002-C0003, split C0005 into C0006-C0008
 Context health: UNKNOWN
 
 ## @archie
 Last commit: (none yet)
-Context health: OK (avg 5.4s)
+Context health: UNKNOWN
 
 ## @stan
 Last commit: (none yet)
 Context health: UNKNOWN
 
 ## @kim
-Last commit: (none yet)
-Context health: OK (avg 4.7s)
+Last commit: 2dfca6a fix(validator): add post-grounding checks — CURIE format, predicate, related_nodes
+Context health: UNKNOWN
 
 ## @rey
-Last commit: (none yet)
-Context health: OK (avg 15.8s)
+Last commit: 32357e9 curation(rey): accept C0001, reject C0002-C0005 Xu 1990
+Context health: UNKNOWN
 
 ## @emily
-Last commit: 8311448 fix(ci): enable APOC plugin in Neo4j container
-Context health: OK (avg 5.1s)
+Last commit: e96595b docs(otto): add ABOUT edge usage for related_nodes; update predicate list
+Context health: UNKNOWN
 
 ## @milo
-Last commit: b9c1382 memory(milo): initial dream run — registry rebuilt, performance baseline set
-Context health: OK (avg 3.4s)
+Last commit: 73331ba memory(milo): self-register first commit hash in registry
+Context health: UNKNOWN
+
