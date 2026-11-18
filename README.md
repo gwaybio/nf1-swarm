@@ -6,61 +6,142 @@ An agentic AI swarm compiling the known history of NF1 (Neurofibromatosis type 1
 
 NF1 is a rare genetic disease (OMIM #162200) caused by loss-of-function mutations in the *NF1* gene encoding neurofibromin, a RAS-GTPase activating protein. It is one of the most common single-gene disorders affecting the nervous system (1:3000 births), with broad phenotypic expression spanning skin, nervous system, eyes, bones, vasculature, and cognition.
 
-This repository is the working home of an AI agent swarm that reads primary literature, extracts structured claims, verifies them against raw data, curates them through PI-level review, and deposits them into a Neo4j knowledge graph. All work is auditable, versioned, and traceable to source.
+This repository is the working home of an AI agent swarm that reads primary literature, extracts structured claims, grounds them to canonical ontology identifiers, verifies them against raw data, curates them through PI-level review, and deposits them into a Neo4j knowledge graph. All work is auditable, versioned, and traceable to source via git history.
 
 ## The team
 
-| Agent | Role | Primary skills |
-|-------|------|----------------|
-| **Graude** | Orchestrator — assigns tasks, owns GitHub, tracks progress | github, llm-wiki |
-| **Dirk** | Reads primary literature, extracts claims with evidence strength | arxiv, pdf, grounded-citations |
-| **Archie** | Fact-checks claims, runs simulations, pulls raw data | python-debugpy, codebase-inspection, github |
-| **Kim** | Builds and traverses the knowledge graph | python-debugpy, codebase-inspection, spike |
-| **Rey** | PI/senior curator — final accept/reject decisions | systematic-debugging, requesting-code-review |
+| Agent | Role |
+|-------|------|
+| **Graude** | Orchestrator — owns GitHub issues as task board, routes work, tracks pipeline state |
+| **Dirk** | Reads primary literature, extracts falsifiable claims (FETA Stage 1) |
+| **Otto** | Grounds extracted entities to canonical CURIEs via RTX-KG2 (FETA Stage 2) |
+| **Archie** | Fact-checks claims against raw data; returns SUPPORTED / CONTRADICTED / INCONCLUSIVE |
+| **Stan** | Statistician — publication bias analysis, confidence scoring (PET-PEESE / RoBMA-PSMA) |
+| **Kim** | Builds and traverses the Neo4j knowledge graph |
+| **Rey** | PI/senior curator — final accept/reject decisions on all claims |
+| **Emily** | Software engineer — CI, tooling, schema mechanics, infrastructure |
+| **Milo** | Memory & context manager — episodic store, nightly dreaming, DACS registry, retrieval |
+
+All bot commits are co-authored by Gregory Way (PI). See `.github/bot_identities.md` for git identities.
+
+## Claim pipeline
+
+Claims flow through a strict per-claim lifecycle. Across papers and claims, agents work concurrently.
+
+```
+Dirk          →  Otto          →  [Archie]      →  Rey           →  Kim           →  [Stan]
+Stage 1:          Stage 2:          optional:        curate:          write to         confidence
+extract           ground to         deep verify      accept /         Neo4j            scoring
+falsifiable       CURIEs via        against raw      reject
+sentences         RTX-KG2           data
+```
+
+GitHub issues are the audit trail — every agent comments their stage output on the originating paper issue. Hermes `message_agent` is how agents coordinate with each other (never GitHub comments).
+
+## Communication model
+
+**GitHub issues** — human-readable audit trail for Gregory. Factual STATUS updates only. No agent-to-agent routing.
+
+**Hermes `message_agent`** — all agent coordination flows through Graude. Agents do not message each other directly.
 
 ## Quick start
 
 ```bash
-# 1. Install dependencies
+# 1. Install dependencies (Python 3.11+, uv required)
 uv sync
 
-# 2. Start Neo4j (must be running on bolt://localhost:7687)
-sudo systemctl start neo4j
+# 2. Install git hooks (enforces co-author trailer on bot commits)
+uv run pre-commit install
 
-# 3. Set Neo4j password (first run only)
-# Default: neo4j/neo4j — change via http://localhost:7474
+# 3. Start Neo4j (bolt://localhost:7687, credentials: neo4j/nf1swarm)
+sudo systemctl start neo4j
 
 # 4. Bootstrap the knowledge graph
 uv run python knowledge_graph/seeds/bootstrap.py
 
-# 5. Run the test suite
-bash testing/harness/run_tests.sh
+# 5. Run the test harness
+uv run python testing/harness/claim_validator.py
+uv run python testing/harness/approval_checker.py
 ```
+
+> **Always use `uv run python`** — never bare `python3`. The project venv at `.venv/` has all required packages.
 
 ## Repository structure
 
 ```
 nf1-swarm/
-├── AGENTS.md                    # Agent roles, task protocol, communication
-├── DESIGN.md                    # Architecture and design decisions
-├── knowledge_graph/             # Neo4j schema, seeds, queries
-├── claims/                      # Claim pipeline (pending → accepted)
-├── literature/                  # Paper tracking
-├── testing/                     # Agentic testing framework
-├── agents/                      # Per-agent protocols
-└── data/                        # External resource links
+├── AGENTS.md                    # Agent roles, pipeline protocol, communication rules
+├── DESIGN.md                    # Architecture, node/edge schema, design decisions
+├── METHODS.md                   # FETA extraction, RTX-KG2, publication bias methodology
+├── CITATION.cff                 # Full reference list for all methods used
+│
+├── claims/
+│   ├── pending/                 # Claims awaiting curation (Dirk deposits, Otto grounds, Rey curates)
+│   ├── accepted/                # Rey-accepted claims awaiting graph insertion by Kim
+│   └── schema.json              # JSON Schema for all claims
+│
+├── literature/
+│   ├── queue.md                 # Papers assigned to Dirk (PENDING / IN_PROGRESS / DONE)
+│   ├── processed.md             # Papers completed with claim IDs
+│   ├── fetcher.py               # PubMed / PMC / bioRxiv fetcher
+│   ├── extractor.py             # FETA Stage 1 heuristic pre-filter
+│   └── rtx_kg2.py               # RTX-KG2 TRAPI client for Otto
+│
+├── knowledge_graph/
+│   ├── seeds/                   # Bootstrap Cypher (core NF1 biology, phenotypes, treatments)
+│   ├── migrations/              # Numbered idempotent Cypher migrations (Kim writes)
+│   ├── queries/                 # Read queries + reserve_claim_id.py
+│   └── schema/                  # Constraints and indexes
+│
+├── swarm_memory/                # Milo's shared episodic memory store
+│   ├── registry.md              # DACS ≤200-token status per agent
+│   ├── episodes/                # Completed work-phase summaries
+│   ├── pruning_log.md           # Audit trail for memory pruning decisions
+│   └── milo_dream.py            # Nightly consolidation script (02:00 UTC cron)
+│
+├── scripts/
+│   ├── verify_paper.py          # Pre-flight PMID/DOI verification (Graude uses before assigning)
+│   ├── enforce_coauthor.sh      # commit-msg hook — blocks bot commits missing co-author trailer
+│   ├── backup_graph.sh          # Neo4j dump (7-day retention)
+│   └── restore_graph.sh         # Neo4j restore from dump
+│
+├── testing/
+│   ├── specs/                   # TRUSTED: human-written scientific contract (TCB — Gregory only)
+│   ├── harness/                 # PROTECTED: human-owned test runner (TCB — Gregory only)
+│   ├── acceptance/              # Agent-writable test data tables
+│   └── approved/                # Approval snapshots of known-good graph state
+│
+└── .hermes/
+    ├── context.md               # Auto-loaded repo context for all agents
+    ├── skills/                  # Shared Hermes skills (nf1-claim-extraction)
+    └── profiles/                # Agent identity files (SOUL.md, profile.yaml, gitconfig)
 ```
 
 ## Knowledge graph
 
-Stored in Neo4j (bolt://localhost:7687). Schema spans 13 node types and 20 relationship types covering: genes, proteins, pathways, mutations, phenotypes, diseases, drugs, clinical trials, publications, claims, cell lines, animal models, and datasets.
+Neo4j Community Edition, `bolt://localhost:7687`. Schema spans 13 node types and 20+ relationship types: Gene, Protein, Pathway, Mutation, Phenotype, Disease, Drug, ClinicalTrial, Publication, Claim, CellLine, AnimalModel, Dataset.
+
+RTX-KG2 (73+ integrated biomedical sources) is the external knowledge oracle for entity grounding and edge existence checks. See `METHODS.md` for full methodology.
 
 ## Testing philosophy
 
-This project adopts two emerging principles for agentic codebases:
+This project adopts two principles for agentic codebases:
 
-1. **Tests as data** (Vaccari, 2026): Acceptance tests live as tables and DSL files, not code. Agents write rows into test tables — they do not modify the test harness. The harness (`testing/harness/`) is human-owned and protected.
+1. **Tests as data** (Vaccari, 2026): Acceptance tests live as tables and YAML files, not code. Agents write rows into test tables — they never modify the harness. `testing/harness/` is human-owned and CODEOWNERS-protected.
 
-2. **Specification-first verification** (AlphaProof Code, DeepMind, 2026): Humans write the *specifications* (what correctness means: `testing/specs/`). Agents prove compliance. A claim that cannot pass the validator against the spec is rejected regardless of who wrote it.
+2. **Specification-first verification** (AlphaProof Code, DeepMind, 2026): Humans write the specifications (`testing/specs/`). Agents prove compliance. A claim failing the validator is rejected regardless of who wrote it.
 
-See `testing/README.md` for full details.
+## Trusted Computing Base (TCB)
+
+The TCB is kept minimal so the swarm moves fast everywhere else. Only these paths require Gregory's approval to merge:
+
+- `testing/specs/` — scientific contract
+- `testing/harness/` — enforcement code
+- `testing/approved/` — gold standard snapshots
+- `.github/CODEOWNERS` — the ownership rules themselves
+
+Everything else is fast-path: Emily reviews, no human gate needed.
+
+## References
+
+See `CITATION.cff` for the full reference list covering FETA extraction, RTX-KG2, publication bias methodology, MemGPT, DACS, and all other methods implemented in this project.
