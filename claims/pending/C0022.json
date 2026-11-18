@@ -4,7 +4,7 @@
   "claim_type": "phenotype_association",
   "evidence_strength": 2,
   "evidence_type": "expert_opinion",
-  "notes": "Full text (PMC8354850). Modified Delphi expert consensus (74/76 experts); rubric forbids expert_opinion at strength >=4, so capped at 2. Recommendation, not an empirical finding.",
+  "notes": "Full text (PMC8354850). Modified Delphi expert consensus (74/76 experts); rubric forbids expert_opinion at strength >=4, so capped at 2. Recommendation, not an empirical finding. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-18. Diagnostic criterion refinement. Subject and object are same disease (family history context). CMMRD=MONDO:0031219 mentioned as differential.",
   "source_pmid": "34012067",
   "source_doi": "10.1038/s41436-021-01170-5",
   "source_title": "Revised diagnostic criteria for neurofibromatosis type 1 and Legius syndrome: an international consensus recommendation",
@@ -14,9 +14,27 @@
   "verified_by": null,
   "curated_by": null,
   "status": "pending",
-  "semantic_triple": null,
+  "semantic_triple": {
+    "subject": "neurofibromatosis type 1",
+    "subject_id": "MONDO:0018975",
+    "predicate": "ASSOCIATED_WITH",
+    "object": "neurofibromatosis type 1",
+    "object_id": "MONDO:0018975"
+  },
   "bel_notation": null,
   "supporting_dois": [],
   "confidence_score": null,
-  "independence_flags": []
+  "independence_flags": [],
+  "related_nodes": [
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0018975",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0031219",
+      "edge_type": "ABOUT"
+    }
+  ]
 }

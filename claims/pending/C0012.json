@@ -4,7 +4,7 @@
   "claim_type": "clinical_outcome",
   "evidence_strength": 3,
   "evidence_type": "cohort_study",
-  "notes": " Full text (PMC7305659). Single-arm phase 2 (n=50, stratum 1 only), unblinded central MRI volumetry; capped at 3 because there is no randomized control (RCT/strength 4 criteria not met). Comparator is a non-randomized external natural-history cohort (NCT00924196).",
+  "notes": " Full text (PMC7305659). Single-arm phase 2 (n=50, stratum 1 only), unblinded central MRI volumetry; capped at 3 because there is no randomized control (RCT/strength 4 criteria not met). Comparator is a non-randomized external natural-history cohort (NCT00924196). | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-18. Natural history comparator. No Disease->Disease predicate in edge_constraints.yaml; ASSOCIATED_WITH used descriptively. Recommend PROGRESSES_IN edge type for natural history claims.",
   "source_pmid": "32187457",
   "source_doi": "10.1056/NEJMoa1912735",
   "source_title": "Selumetinib in Children with Inoperable Plexiform Neurofibromas",
@@ -14,9 +14,27 @@
   "verified_by": null,
   "curated_by": null,
   "status": "pending",
-  "semantic_triple": null,
+  "semantic_triple": {
+    "subject": "plexiform neurofibroma",
+    "subject_id": "MONDO:0003304",
+    "predicate": "ASSOCIATED_WITH",
+    "object": "neurofibromatosis type 1",
+    "object_id": "MONDO:0018975"
+  },
   "bel_notation": null,
   "supporting_dois": [],
   "confidence_score": null,
-  "independence_flags": []
+  "independence_flags": [],
+  "related_nodes": [
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0003304",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0018975",
+      "edge_type": "ABOUT"
+    }
+  ]
 }

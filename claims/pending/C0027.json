@@ -4,7 +4,7 @@
   "claim_type": "phenotype_association",
   "evidence_strength": 3,
   "evidence_type": "cohort_study",
-  "notes": "Full text (PMC8354850). Data cited from a primary study (secondary citation in a consensus paper): refs 13, 14. Primary paper should be read directly and may support a higher strength.",
+  "notes": "Full text (PMC8354850). Data cited from a primary study (secondary citation in a consensus paper): refs 13, 14. Primary paper should be read directly and may support a higher strength. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-18. SPRED1=NCBIGene:161742 causes Legius syndrome=MONDO:0012669. RTX-KG2 confirms: NCBIGene:161742 biolink:causes MONDO:0012669 (2 sources). CAUSES predicate requires Mutation->Disease in edge_constraints; SPRED1 pathogenic variant class used as subject.",
   "source_pmid": "34012067",
   "source_doi": "10.1038/s41436-021-01170-5",
   "source_title": "Revised diagnostic criteria for neurofibromatosis type 1 and Legius syndrome: an international consensus recommendation",
@@ -14,9 +14,37 @@
   "verified_by": null,
   "curated_by": null,
   "status": "pending",
-  "semantic_triple": null,
+  "semantic_triple": {
+    "subject": "SPRED1",
+    "subject_id": "NCBIGene:161742",
+    "predicate": "CAUSES",
+    "object": "Legius syndrome",
+    "object_id": "MONDO:0012669"
+  },
   "bel_notation": null,
   "supporting_dois": [],
   "confidence_score": null,
-  "independence_flags": []
+  "independence_flags": [],
+  "related_nodes": [
+    {
+      "label": "Gene",
+      "identifier": "NCBIGene:161742",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0012669",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Phenotype",
+      "identifier": "HP:0000957",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Phenotype",
+      "identifier": "HP:0001480",
+      "edge_type": "ABOUT"
+    }
+  ]
 }
