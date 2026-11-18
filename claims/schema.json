@@ -214,7 +214,8 @@
         },
         "subject_id": {
           "type": "string",
-          "description": "e.g. UniProt:P21359, HGNC:7765"
+          "description": "e.g. UniProtKB:P21359, NCBIGene:4763",
+          "pattern": "^[A-Za-z][A-Za-z0-9._-]*:[^\\s|]+$"
         },
         "predicate": {
           "type": "string",
@@ -224,7 +225,8 @@
           "type": "string"
         },
         "object_id": {
-          "type": "string"
+          "type": "string",
+          "pattern": "^[A-Za-z][A-Za-z0-9._-]*:[^\\s|]+$"
         }
       },
       "required": [

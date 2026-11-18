@@ -5,10 +5,13 @@ Validates claims in claims/pending/ against:
   - claims/schema.json (JSON Schema)
   - testing/specs/claim_contract.yaml (claim type rules)
   - testing/specs/evidence_rubric.yaml (strength/type consistency)
+  - testing/specs/edge_constraints.yaml (predicate + CURIE checks, post-grounding)
 
-Agents write claims; this validator checks them. The validator is not modifiable by agents.
+Agents write claims; this validator checks them. The validator is not modifiable
+by agents without a PR reviewed and approved by @gwaybio.
 """
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -23,14 +26,23 @@ REPO_ROOT = Path(__file__).parent.parent.parent
 SCHEMA_PATH = REPO_ROOT / "claims" / "schema.json"
 CONTRACT_PATH = REPO_ROOT / "testing" / "specs" / "claim_contract.yaml"
 RUBRIC_PATH = REPO_ROOT / "testing" / "specs" / "evidence_rubric.yaml"
+EDGE_CONSTRAINTS_PATH = REPO_ROOT / "testing" / "specs" / "edge_constraints.yaml"
 PENDING_DIR = REPO_ROOT / "claims" / "pending"
+ACCEPTED_DIR = REPO_ROOT / "claims" / "accepted"
+
+# CURIE format: PREFIX:identifier — no pipes, no whitespace.
+# Valid:   NCBIGene:4763  UniProtKB:P21359  MONDO:0009981  HP:0000957
+# Invalid: NCBIGene:4974|NCBIGene:5921   (pipe-delimited multi-CURIE)
+#          HGNC:7765 (space in identifier)
+CURIE_RE = re.compile(r'^[A-Za-z][A-Za-z0-9._-]*:[^\s|]+$')
 
 
 def load_specs():
     schema = json.loads(SCHEMA_PATH.read_text())
     contract = yaml.safe_load(CONTRACT_PATH.read_text())
     rubric = yaml.safe_load(RUBRIC_PATH.read_text())
-    return schema, contract, rubric
+    edge_constraints = yaml.safe_load(EDGE_CONSTRAINTS_PATH.read_text())
+    return schema, contract, rubric, edge_constraints
 
 
 def validate_json_schema(claim, schema):
@@ -81,7 +93,48 @@ def validate_rubric(claim, rubric):
     return errors
 
 
-def validate_file(path, schema, contract, rubric):
+def validate_post_grounding(claim, edge_constraints):
+    """Checks that only run when semantic_triple is present (after Otto grounds the claim).
+
+    Three mechanical checks:
+      1. subject_id / object_id must be single valid CURIEs (no pipes, no whitespace).
+      2. predicate must exist in testing/specs/edge_constraints.yaml.
+      3. related_nodes must not be empty when semantic_triple is populated.
+    """
+    errors = []
+    triple = claim.get("semantic_triple")
+    if not triple:
+        return errors  # pre-grounding claim — skip all post-grounding checks
+
+    # 1. CURIE format
+    for field in ("subject_id", "object_id"):
+        val = triple.get(field)
+        if val and not CURIE_RE.match(val):
+            errors.append(
+                f"Grounding: {field} \"{val}\" is not a valid CURIE "
+                f"(must match PREFIX:identifier — no pipes, no spaces)"
+            )
+
+    # 2. Predicate must exist in edge_constraints.yaml
+    predicate = triple.get("predicate")
+    allowed_predicates = set(edge_constraints.get("edge_types", {}).keys())
+    if predicate and predicate not in allowed_predicates:
+        errors.append(
+            f"Grounding: predicate \"{predicate}\" not in edge_constraints.yaml "
+            f"(allowed: {', '.join(sorted(allowed_predicates))})"
+        )
+
+    # 3. related_nodes must not be empty when semantic_triple is set
+    if not claim.get("related_nodes"):
+        errors.append(
+            "Grounding: semantic_triple is populated but related_nodes is empty — "
+            "list at least the subject and object nodes"
+        )
+
+    return errors
+
+
+def validate_file(path, schema, contract, rubric, edge_constraints):
     try:
         claim = json.loads(path.read_text())
     except json.JSONDecodeError as e:
@@ -90,18 +143,25 @@ def validate_file(path, schema, contract, rubric):
     if not errors:
         errors += validate_claim_contract(claim, contract)
         errors += validate_rubric(claim, rubric)
+        errors += validate_post_grounding(claim, edge_constraints)
     return len(errors) == 0, errors
 
 
 def main():
-    schema, contract, rubric = load_specs()
-    pending = list(PENDING_DIR.glob("*.json"))
-    if not pending:
-        print("No pending claims to validate.")
+    schema, contract, rubric, edge_constraints = load_specs()
+
+    claim_files = sorted(
+        list(PENDING_DIR.glob("*.json")) + list(ACCEPTED_DIR.glob("*.json"))
+    )
+    claim_files = [f for f in claim_files if f.name != ".gitkeep"]
+
+    if not claim_files:
+        print("No claims to validate.")
         return 0
+
     passed = failed = 0
-    for path in sorted(pending):
-        ok, errors = validate_file(path, schema, contract, rubric)
+    for path in claim_files:
+        ok, errors = validate_file(path, schema, contract, rubric, edge_constraints)
         if ok:
             print(f"  PASS  {path.name}")
             passed += 1
