@@ -91,3 +91,58 @@ Trusted computing base:
 
 All Neo4j schema changes are numbered Cypher migration files in `knowledge_graph/migrations/`.
 Migrations are idempotent (use MERGE/IF NOT EXISTS) and run in order by `bootstrap.py`.
+
+---
+
+## Graph epistemics — representing what we know, what we've ruled out, and what's untested
+
+**Decision:** The graph distinguishes three epistemic states for any potential relationship.
+
+**Rationale:** A missing edge between two nodes is ambiguous. It could mean:
+1. Nobody has tested this relationship yet (untested)
+2. Someone tested it and found no effect (null result, unpublished)
+3. Someone tested it and it was explicitly refuted (falsified)
+4. We haven't processed the relevant paper yet (pipeline gap)
+
+Treating all four as "no edge" destroys information. Falsified claims have scientific value —
+they tell future agents and researchers what has been ruled out, prevent redundant work, and
+provide anchor points when knowledge evolves (a claim falsified with 1990 tools may warrant
+re-examination in 2026).
+
+**Three epistemic states:**
+
+| State | Graph representation | When |
+|-------|---------------------|------|
+| **Asserted** | Claim node with `status: accepted`, ABOUT edges to entities | Rey accepts |
+| **Refuted** | Claim node with `status: refuted`, CONTRADICTS edge to any conflicting accepted Claim | Rey rejects as `biological`, Archie returns CONTRADICTED |
+| **Untested** | No Claim node — but discoverable: if RTX-KG2 also has no edge, it is genuinely untested; if RTX-KG2 has an edge we haven't processed, it is a pipeline gap |
+
+**Key principle:** Biological rejections do NOT remove claims from the graph. Kim writes refuted
+claims as Claim nodes with `status: refuted`. This creates a queryable record of what has been
+tested and found false — essential for gap analysis and for agents that need to know what NOT
+to re-derive.
+
+**Future: gap map queries**
+Milo will eventually run systematic gap queries: for every Gene-Disease pair in the graph,
+is there an asserted relationship? A refuted one? Or silence? High-value missing edges
+(entities that appear frequently but lack certain relationship types) surface as literature
+queue candidates for Graude.
+
+**Future: metadata annotation**
+As knowledge accumulates, existing nodes and edges gain new properties:
+- Stan updates `confidence_score` on Claim nodes as evidence accumulates
+- Kim writes `MATCH ... SET` migrations to add properties to existing nodes
+- Edges gain `{status: 'refuted', refuted_by: 'C0042'}` properties when contradicted
+The numbered migration pattern already supports this — no architectural change needed.
+
+## Claim node: rejection classification
+
+Claim nodes carry a `rejection_class` property when `status` is `rejected` or `refuted`:
+
+| rejection_class | Meaning | Next action |
+|----------------|---------|-------------|
+| `structural` | Encoding problem (bad CURIE, wrong predicate, needs splitting) | Route back to Otto for re-grounding |
+| `biological` | Biology is wrong, unsupported, or out of scope | Kim writes to graph as `status: refuted`; terminal |
+
+Graude routes `structural` rejections back to Otto immediately.
+`biological` rejections are routed to Kim for graph insertion as refuted claims.

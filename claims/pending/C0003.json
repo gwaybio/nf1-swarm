@@ -37,5 +37,6 @@
     }
   ],
   "curation_date": null,
-  "rejection_reason": null
+  "rejection_reason": null,
+  "rejection_class": "structural"
 }

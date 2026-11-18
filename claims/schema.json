@@ -141,7 +141,8 @@
         "under_verification",
         "verified",
         "accepted",
-        "rejected"
+        "rejected",
+        "refuted"
       ]
     },
     "rejection_reason": {
@@ -149,6 +150,18 @@
         "string",
         "null"
       ]
+    },
+    "rejection_class": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "enum": [
+        "structural",
+        "biological",
+        null
+      ],
+      "description": "structural = encoding problem, route back to Otto for re-grounding. biological = biology wrong/unsupported, Kim writes to graph as refuted. Null when status is not rejected/refuted."
     },
     "related_nodes": {
       "type": "array",
