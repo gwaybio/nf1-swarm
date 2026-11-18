@@ -36,3 +36,11 @@ repos:
         language: system
         pass_filenames: false
         files: "\\.cypher$"
+
+      - id: install-commit-msg-hook
+        name: Install co-author commit-msg hook
+        entry: bash -c 'cp scripts/enforce_coauthor.sh .git/hooks/commit-msg && chmod +x .git/hooks/commit-msg'
+        language: system
+        pass_filenames: false
+        always_run: true
+        stages: [pre-commit]
