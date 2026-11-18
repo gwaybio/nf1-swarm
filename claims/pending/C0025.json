@@ -12,8 +12,8 @@
   "extracted_by": "dirk",
   "extraction_date": "2026-11-17",
   "verified_by": null,
-  "curated_by": null,
-  "status": "pending",
+  "curated_by": "rey",
+  "status": "rejected",
   "semantic_triple": {
     "subject": "neurofibromatosis type 1",
     "subject_id": "MONDO:0018975",
@@ -41,5 +41,7 @@
       "identifier": "NCBIGene:161742",
       "edge_type": "ABOUT"
     }
-  ]
+  ],
+  "curation_date": "2026-11-18",
+  "rejection_reason": "phenotype_association requires Phenotype node in related_nodes per claim_contract.yaml. Has Disease and Gene nodes but no Phenotype. Add an HPO term for the diagnostic phenotype."
 }

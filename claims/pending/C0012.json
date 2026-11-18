@@ -12,8 +12,8 @@
   "extracted_by": "dirk",
   "extraction_date": "2026-11-17",
   "verified_by": null,
-  "curated_by": null,
-  "status": "pending",
+  "curated_by": "rey",
+  "status": "rejected",
   "semantic_triple": {
     "subject": "plexiform neurofibroma",
     "subject_id": "MONDO:0003304",
@@ -36,5 +36,7 @@
       "identifier": "MONDO:0018975",
       "edge_type": "ABOUT"
     }
-  ]
+  ],
+  "curation_date": "2026-11-18",
+  "rejection_reason": "Semantic triple uses Disease (MONDO:0003304) ASSOCIATED_WITH Disease (MONDO:0018975). Edge_constraints define ASSOCIATED_WITH as {from: [Gene, Mutation], to: [Phenotype, Disease]} \u2014 Disease as source is not permitted, and Disease\u2192Disease is semantically nonsensical for this claim. The claim describes natural history disease progression rates, not a genotype-phenotype association. No suitable predicate exists. Consider adding a natural history/progression edge type."
 }

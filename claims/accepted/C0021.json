@@ -12,8 +12,8 @@
   "extracted_by": "dirk",
   "extraction_date": "2026-11-17",
   "verified_by": null,
-  "curated_by": null,
-  "status": "pending",
+  "curated_by": "rey",
+  "status": "accepted",
   "semantic_triple": {
     "subject": "neurofibromatosis type 1",
     "subject_id": "MONDO:0018975",
@@ -36,5 +36,6 @@
       "identifier": "HP:0009737",
       "edge_type": "ABOUT"
     }
-  ]
+  ],
+  "curation_date": "2026-11-18"
 }

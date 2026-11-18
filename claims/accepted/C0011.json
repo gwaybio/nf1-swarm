@@ -1,10 +1,10 @@
 {
-  "claim_id": "C0018",
-  "claim_text": "In the phase 2 selumetinib trial in 50 children with NF1 plexiform neurofibromas, 14 patients (28%) required dose reductions for toxic effects and 5 (10%) discontinued treatment because of toxic effects possibly related to selumetinib.",
-  "claim_type": "drug_response",
+  "claim_id": "C0011",
+  "claim_text": "In children with NF1 and symptomatic plexiform neurofibromas treated with selumetinib, progression-free survival was 84% at 3 years after treatment start, and median progression-free survival was not reached.",
+  "claim_type": "clinical_outcome",
   "evidence_strength": 3,
   "evidence_type": "cohort_study",
-  "notes": " Full text (PMC7305659). Single-arm phase 2 (n=50, stratum 1 only), unblinded central MRI volumetry; capped at 3 because there is no randomized control (RCT/strength 4 criteria not met). | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-18. Tolerability claim. Same entities as C0009.",
+  "notes": " Full text (PMC7305659). Single-arm phase 2 (n=50, stratum 1 only), unblinded central MRI volumetry; capped at 3 because there is no randomized control (RCT/strength 4 criteria not met). | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-18. PFS outcome, same CHEBI:90227->MONDO:0003304 edge.",
   "source_pmid": "32187457",
   "source_doi": "10.1056/NEJMoa1912735",
   "source_title": "Selumetinib in Children with Inoperable Plexiform Neurofibromas",
@@ -12,8 +12,8 @@
   "extracted_by": "dirk",
   "extraction_date": "2026-11-17",
   "verified_by": null,
-  "curated_by": null,
-  "status": "pending",
+  "curated_by": "rey",
+  "status": "accepted",
   "semantic_triple": {
     "subject": "selumetinib",
     "subject_id": "CHEBI:90227",
@@ -41,5 +41,6 @@
       "identifier": "MONDO:0018975",
       "edge_type": "ABOUT"
     }
-  ]
+  ],
+  "curation_date": "2026-11-18"
 }

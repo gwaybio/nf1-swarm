@@ -12,8 +12,8 @@
   "extracted_by": "dirk",
   "extraction_date": "2026-11-17",
   "verified_by": null,
-  "curated_by": null,
-  "status": "pending",
+  "curated_by": "rey",
+  "status": "rejected",
   "semantic_triple": {
     "subject": "NF1",
     "subject_id": "NCBIGene:4763",
@@ -36,5 +36,7 @@
       "identifier": "MONDO:0018975",
       "edge_type": "ABOUT"
     }
-  ]
+  ],
+  "curation_date": "2026-11-18",
+  "rejection_reason": "phenotype_association claim_type requires Phenotype node in related_nodes per claim_contract.yaml (required_related_node_labels: [Phenotype, Disease]). Only Gene and Disease nodes are present. Re-ground with an appropriate HPO phenotype term in related_nodes."
 }
