@@ -18,6 +18,7 @@ edge_types:
   CONTRADICTS:  {from: [Claim], to: [Claim]}
   VALIDATED_IN: {from: [Claim], to: [CellLine, AnimalModel]}
   FOUND_IN:     {from: [Gene, Dataset], to: [Dataset, Gene]}
+  HOMOLOGOUS_TO: {from: [Protein, Gene], to: [Protein, Gene]}
 
 forbidden_patterns:
   - description: "Circular SUPPORTS edges not permitted"
