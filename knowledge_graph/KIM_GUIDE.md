@@ -1,5 +1,9 @@
 # Kim's Graph-Building Guide
 
+> **Python environment:** Always use `uv run python` (or activate `.venv` first).
+> Never use bare `python3`, never `pip install`, never create a private venv.
+> If an import fails, the interpreter is wrong — not the package. Fix: `cd ~/repos/nf1-swarm && uv run python <script>`.
+
 ## Writing an accepted claim to Neo4j
 
 Only write claims that are in `claims/accepted/` (Rey moved them there).

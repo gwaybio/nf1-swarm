@@ -264,7 +264,7 @@ uv run python <script>          # preferred — always uses the right venv
 source .venv/bin/activate       # then use python normally
 ```
 
-If `import neo4j` or any other import fails, the problem is that you are using the wrong Python interpreter — not that the package is missing. Fix: use `uv run`. Never `pip install` or `python3 -m venv` inside this repo or in your profile directory.
+If `import neo4j` or any other import fails, the problem is that you are using the wrong Python interpreter — not that the package is missing. Fix: use `uv run`. Never `pip install` or `python3 -m venv` inside this repo or in your profile directory. Never create a private venv in `~/.hermes/profiles/<agent>/cache/` or anywhere outside the project.
 
 # Then commit — the template adds the trailer automatically
 git commit -m "claim(dirk): short description"

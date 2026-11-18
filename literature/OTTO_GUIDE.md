@@ -1,5 +1,9 @@
 # Otto's Ontology Grounding Guide
 
+> **Python environment:** Always use `uv run python` (or activate `.venv` first).
+> Never use bare `python3`, never `pip install`, never create a private venv.
+> If an import fails, the interpreter is wrong — not the package. Fix: `cd ~/repos/nf1-swarm && uv run python <script>`.
+
 ## Grounding workflow (FETA Stage 2)
 
 Otto receives claims Dirk already extracted (Stage 1) and fills `semantic_triple`
