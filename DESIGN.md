@@ -135,6 +135,91 @@ As knowledge accumulates, existing nodes and edges gain new properties:
 - Edges gain `{status: 'refuted', refuted_by: 'C0042'}` properties when contradicted
 The numbered migration pattern already supports this — no architectural change needed.
 
+## Temporal knowledge graph — point-in-time queries
+
+**Decision:** The temporal history of NF1 science is encoded entirely in claim source dates.
+No special event nodes, no bitemporal fields, no graph versioning infrastructure needed.
+
+**Rationale:** Every claim knows when its source paper was published (`source_year`,
+`source_date`). The graph state "as of year X" is simply the set of claims whose source
+publications existed at that point. A claim that was accepted consensus in 1995 and refuted
+in 2010 is correctly present in the 1995 graph and correctly qualified in the 2010 graph —
+the refuting claim's source date handles this automatically.
+
+**Point-in-time query:**
+```cypher
+MATCH (c:Claim)-[:EXTRACTED_FROM]->(p:Publication)
+WHERE p.year <= 1995
+RETURN c, p ORDER BY p.year
+```
+
+**Graph diff between two dates:**
+```cypher
+// What entered the graph between 1995 and 2010?
+MATCH (c:Claim)-[:EXTRACTED_FROM]->(p:Publication)
+WHERE p.year > 1995 AND p.year <= 2010
+RETURN c, p ORDER BY p.year
+```
+
+**Schema:** `source_date` (ISO date string, YYYY-MM-DD) is added to Claim nodes alongside
+the existing `source_year` integer. `source_year` is kept for fast year-level filtering.
+Publication nodes carry both `year` (integer) and `date` (ISO string) properties.
+
+---
+
+## Temporal graph — tracking how knowledge changes over time
+
+**Decision:** Implement a `ClaimEvent` node type to record every state change in a Claim's
+lifecycle. The Claim node holds current state; the event chain holds history.
+
+**Rationale:** Knowledge evolves. A claim accepted in 2026 may be refuted in 2027 and
+resurrected in 2029 as new methods emerge. The git commit history provides transaction-time
+audit (when did we record it) but not queryable temporal graph state (what did the graph
+*believe* at a given point in time). We want to answer: "what did we know about NF1→RAS
+signaling on January 1, 2027?" — that requires event history in the graph, not just in git.
+
+**Two time dimensions:**
+- **Valid time** — when was the claim true in the world (the biology)
+- **Transaction time** — when did we record or change it (covered by git + ClaimEvent.date)
+
+**ClaimEvent node schema:**
+```
+(c:Claim)-[:HAD_EVENT]->(e:ClaimEvent)
+
+ClaimEvent properties:
+  event_type:  extracted | grounded | verified | accepted | rejected | refuted | resurrected
+  date:        ISO date
+  agent:       dirk | otto | archie | rey | stan | kim | graude | human
+  reason:      optional — reason for rejection/refutation/resurrection
+  pmid:        optional — paper that triggered the event
+```
+
+**Example lifecycle:**
+```
+C0001 -[:HAD_EVENT]-> {extracted,  2026-11-17, dirk}
+      -[:HAD_EVENT]-> {grounded,   2026-11-17, otto}
+      -[:HAD_EVENT]-> {accepted,   2026-11-18, rey}
+      -[:HAD_EVENT]-> {refuted,    2027-03-15, archie, 'contradicted by PMID:38291847'}
+      -[:HAD_EVENT]-> {resurrected,2028-01-10, rey,    'new evidence PMID:40112934'}
+```
+
+**Temporal query pattern:**
+```cypher
+// What claims were accepted as of a given date?
+MATCH (c:Claim)-[:HAD_EVENT]->(e:ClaimEvent {event_type: 'accepted'})
+WHERE e.date <= date('2027-01-01')
+AND NOT EXISTS {
+  MATCH (c)-[:HAD_EVENT]->(e2:ClaimEvent)
+  WHERE e2.event_type IN ['refuted', 'rejected']
+  AND e2.date <= date('2027-01-01')
+}
+RETURN c
+```
+
+**Implementation status:** Designed, not yet built. See GitHub issue for implementation tasks.
+Kim writes ClaimEvent nodes when changing Claim status. No breaking schema change required —
+ClaimEvent is additive.
+
 ## Claim node: rejection classification
 
 Claim nodes carry a `rejection_class` property when `status` is `rejected` or `refuted`:
