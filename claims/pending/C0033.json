@@ -12,8 +12,8 @@
   "extracted_by": "dirk",
   "extraction_date": "2026-11-17",
   "verified_by": null,
-  "curated_by": null,
-  "status": "pending",
+  "curated_by": "rey",
+  "status": "rejected",
   "semantic_triple": {
     "subject": "neurofibromin (NF1 GAP-related domain)",
     "subject_id": "UniProtKB:P21359",
@@ -25,8 +25,8 @@
   "supporting_dois": [],
   "confidence_score": null,
   "independence_flags": [],
-  "curation_date": null,
-  "rejection_reason": null,
+  "curation_date": "2026-11-18",
+  "rejection_reason": "Semantic triple uses INHIBITS but the claim describes a NEGATIVE RESULT \u2014 NF1 GRD does NOT stimulate oncogenic mutant RAS GTPase. 'Does not stimulate' \u2260 'inhibits'. INHIBITS implies active suppression; the claim shows ABSENCE of effect on mutant RAS. The BEL notation correctly uses 'cnc' (causesNoChange). No suitable predicate exists for negative results in edge_constraints.yaml. Consider adding DOES_NOT_ACTIVATE or representing as a refuted claim (C0032's positive claim does not hold for oncogenic mutants). Re-ground with a predicate that doesn't misrepresent the biology.",
   "related_nodes": [
     {
       "label": "Protein",
@@ -49,5 +49,5 @@
       "edge_type": "ABOUT"
     }
   ],
-  "rejection_class": null
+  "rejection_class": "structural"
 }
