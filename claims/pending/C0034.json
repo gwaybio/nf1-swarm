@@ -3,8 +3,8 @@
   "claim_text": "The GST-fused GAP-related NF1 domain does not stimulate the GTPase activity of a yeast RAS2 effector-domain mutant.",
   "claim_type": "molecular_function",
   "evidence_strength": 3,
-  "evidence_type": "biochemical_proof",
-  "notes": "Full text unavailable, extracted from abstract. Capped at 3 per abstract-only rule; the underlying experiments are foundational and replicated for decades, so Rey may upgrade (strength 5 needs full-text/independent replication linked via supporting_dois).",
+  "evidence_type": "preclinical_in_vitro",
+  "notes": "Full text unavailable, extracted from abstract. Capped at 3 per abstract-only rule; the underlying experiments are foundational and replicated for decades, so Rey may upgrade (strength 5 needs full-text/independent replication linked via supporting_dois). | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-18. evidence_type changed from biochemical_proof to preclinical_in_vitro. NEGATIVE RESULT: NF1 GRD does not stimulate GTPase of a yeast RAS2 effector-domain mutant. ACTIVATES predicate used structurally (the relationship class) but claim describes lack of effect on mutant. neurofibromin=UniProtKB:P21359; yeast RAS2=NCBIGene:855625.",
   "source_pmid": "2121369",
   "source_doi": "10.1016/0092-8674(90)90149-9",
   "source_title": "The catalytic domain of the neurofibromatosis type 1 gene product stimulates ras GTPase and complements ira mutants of S. cerevisiae",
@@ -12,13 +12,37 @@
   "extracted_by": "dirk",
   "extraction_date": "2026-11-17",
   "verified_by": null,
-  "curated_by": "rey",
-  "status": "rejected",
-  "semantic_triple": null,
-  "bel_notation": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": {
+    "subject": "neurofibromin (NF1 GAP-related domain)",
+    "subject_id": "UniProtKB:P21359",
+    "predicate": "ACTIVATES",
+    "object": "RAS2 (S. cerevisiae)",
+    "object_id": "NCBIGene:855625"
+  },
+  "bel_notation": "p(HGNC:NF1, frag(\"GAP-related domain\")) cnc gtp(p(SGD:RAS2, var(\"effector-domain mutant\")))",
   "supporting_dois": [],
   "confidence_score": null,
   "independence_flags": [],
-  "curation_date": "2026-11-18",
-  "rejection_reason": "Ungrounded claim: semantic_triple is null and related_nodes absent. molecular_function claims require Gene and Protein in related_nodes per claim_contract.yaml. Additionally, evidence_type 'biochemical_proof' is not in the allowed_evidence_types for strength 3 per evidence_rubric.yaml (allowed: preclinical_in_vivo, preclinical_in_vitro, cohort_study, computational). Either upgrade strength (requires full text + replication) or reclassify evidence_type to preclinical_in_vitro. Needs Stage 2 (Otto) grounding."
+  "curation_date": null,
+  "rejection_reason": null,
+  "related_nodes": [
+    {
+      "label": "Protein",
+      "identifier": "UniProtKB:P21359",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Gene",
+      "identifier": "NCBIGene:4763",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Gene",
+      "identifier": "NCBIGene:855625",
+      "edge_type": "ABOUT"
+    }
+  ],
+  "rejection_class": null
 }

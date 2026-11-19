@@ -4,7 +4,7 @@
   "claim_type": "molecular_function",
   "evidence_strength": 3,
   "evidence_type": "preclinical_in_vivo",
-  "notes": "Full text unavailable, extracted from abstract. Capped at 3 per abstract-only rule; the underlying experiments are foundational and replicated for decades, so Rey may upgrade (strength 5 needs full-text/independent replication linked via supporting_dois).",
+  "notes": "Full text unavailable, extracted from abstract. Capped at 3 per abstract-only rule; the underlying experiments are foundational and replicated for decades, so Rey may upgrade (strength 5 needs full-text/independent replication linked via supporting_dois). | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-18. neurofibromin=UniProtKB:P21359; IRA1=NCBIGene:852437 (SGD:S000000344); IRA2=NCBIGene:854073. ACTIVATES used: NF1 GRD functionally complements yeast IRA loss (Protein->Protein per edge_constraints). Yeast complementation assay = preclinical_in_vivo (whole organism).",
   "source_pmid": "2121369",
   "source_doi": "10.1016/0092-8674(90)90149-9",
   "source_title": "The catalytic domain of the neurofibromatosis type 1 gene product stimulates ras GTPase and complements ira mutants of S. cerevisiae",
@@ -12,13 +12,42 @@
   "extracted_by": "dirk",
   "extraction_date": "2026-11-17",
   "verified_by": null,
-  "curated_by": "rey",
-  "status": "rejected",
-  "semantic_triple": null,
-  "bel_notation": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": {
+    "subject": "neurofibromin (NF1 GAP-related domain)",
+    "subject_id": "UniProtKB:P21359",
+    "predicate": "ACTIVATES",
+    "object": "IRA1 pathway (yeast RAS regulation)",
+    "object_id": "NCBIGene:852437"
+  },
+  "bel_notation": "p(HGNC:NF1, frag(\"GAP-related domain\")) -| act(p(SGD:RAS2))",
   "supporting_dois": [],
   "confidence_score": null,
   "independence_flags": [],
-  "curation_date": "2026-11-18",
-  "rejection_reason": "Ungrounded claim: semantic_triple is null and related_nodes absent. molecular_function claims require Gene and Protein in related_nodes per claim_contract.yaml. This claim needs Stage 2 (Otto) grounding before curation."
+  "curation_date": null,
+  "rejection_reason": null,
+  "related_nodes": [
+    {
+      "label": "Protein",
+      "identifier": "UniProtKB:P21359",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Gene",
+      "identifier": "NCBIGene:4763",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Gene",
+      "identifier": "NCBIGene:852437",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Gene",
+      "identifier": "NCBIGene:854073",
+      "edge_type": "ABOUT"
+    }
+  ],
+  "rejection_class": null
 }
