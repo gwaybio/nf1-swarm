@@ -10,17 +10,11 @@
   "source_title": "Revised diagnostic criteria for neurofibromatosis type 1 and Legius syndrome: an international consensus recommendation",
   "source_year": 2021,
   "extracted_by": "dirk",
-  "extraction_date": "2026-11-17",
+  "extraction_date": "2026-11-18",
   "verified_by": null,
   "curated_by": "rey",
-  "status": "rejected",
-  "semantic_triple": {
-    "subject": "neurofibromatosis type 1",
-    "subject_id": "MONDO:0018975",
-    "predicate": "ASSOCIATED_WITH",
-    "object": "neurofibromatosis type 1",
-    "object_id": "MONDO:0018975"
-  },
+  "status": "pending",
+  "semantic_triple": null,
   "bel_notation": null,
   "supporting_dois": [],
   "confidence_score": null,
@@ -35,8 +29,12 @@
       "label": "Disease",
       "identifier": "MONDO:0031219",
       "edge_type": "ABOUT"
+    },
+    {
+      "label": "Phenotype",
+      "identifier": "HP:0000006",
+      "edge_type": "ABOUT"
     }
   ],
-  "curation_date": "2026-11-18",
-  "rejection_reason": "Multiple issues: (1) self-referential semantic triple \u2014 subject and object are both 'neurofibromatosis type 1' (MONDO:0018975), which is semantically meaningless as an ASSOCIATED_WITH edge; (2) phenotype_association requires Phenotype in related_nodes but only Disease nodes are present."
+  "curation_date": "2026-11-18"
 }
