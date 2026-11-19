@@ -75,6 +75,16 @@ jobs:
           print("  OK  claims/schema.json is a valid JSON Schema")
           EOF
 
+      - name: Notify Discord on failure
+        if: failure()
+        env:
+          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          curl -s -X POST "$WEBHOOK" \
+            -H 'Content-Type: application/json' \
+            -d "{\"content\": \"CI validate failed (claim_validator / schema check)\nRun: ${RUN_URL}\"}"
+
   graph-health:
     name: Graph assertions
     runs-on: ubuntu-latest
@@ -140,3 +150,13 @@ jobs:
 
       - name: Run full test harness
         run: uv run python testing/harness/claim_validator.py && uv run python testing/harness/approval_checker.py
+
+      - name: Notify Discord on failure
+        if: failure()
+        env:
+          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          curl -s -X POST "$WEBHOOK" \
+            -H 'Content-Type: application/json' \
+            -d "{\"content\": \"CI graph-health failed (approval_checker / graph assertions)\nRun: ${RUN_URL}\"}"

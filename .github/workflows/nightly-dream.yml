@@ -49,3 +49,13 @@ jobs:
           echo "| Accepted claims | $(find claims/accepted -name '*.json' | wc -l) |" >> $GITHUB_STEP_SUMMARY
           echo "| Pending claims | $(find claims/pending -name '*.json' | wc -l) |" >> $GITHUB_STEP_SUMMARY
           echo "| Episodes | $(find swarm_memory/episodes -name '*.md' 2>/dev/null | wc -l) |" >> $GITHUB_STEP_SUMMARY
+
+      - name: Notify Discord on failure
+        if: failure()
+        env:
+          WEBHOOK: ${{ secrets.DISCORD_WEBHOOK_URL }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: |
+          curl -s -X POST "$WEBHOOK" \
+            -H 'Content-Type: application/json' \
+            -d "{\"content\": \"Nightly dream (Milo) failed — memory consolidation broken\nRun: ${RUN_URL}\"}"
