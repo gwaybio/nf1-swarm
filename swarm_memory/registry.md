@@ -1,13 +1,13 @@
 # Swarm Agent Registry
-Maintained by Milo. Last dream: 2026-11-18 13:55 UTC
-Graph: 1 accepted claims, 29 pending.
+Maintained by Milo. Last dream: 2026-11-19 09:46 UTC
+Graph: 22 accepted claims, 14 pending.
 ---
 ## @graude
-Last commit: 623a82e fix(schema): add ABOUT edge type — Claim to subject-entity link
+Last commit: 1737aff fix(process): no @tags anywhere in GitHub — not in issues, PRs, or comments
 Context health: UNKNOWN
 
 ## @dirk
-Last commit: 563778a claim(dirk): Legius 2021 revised NF1 diagnostic criteria
+Last commit: b2dd167 fix(validator): enforce rejection_class on rejected/refuted claims
 Context health: UNKNOWN
 
 ## @otto
@@ -23,18 +23,18 @@ Last commit: (none yet)
 Context health: UNKNOWN
 
 ## @kim
-Last commit: 2dfca6a fix(validator): add post-grounding checks — CURIE format, predicate, related_nodes
+Last commit: dfca48e feat(graph): write C0031, C0032, C0035 to Neo4j, migration 005
 Context health: UNKNOWN
 
 ## @rey
-Last commit: 32357e9 curation(rey): accept C0001, reject C0002-C0005 Xu 1990
+Last commit: fd4ea0a curation(rey): accept C0031/C0032/C0035, reject C0033/C0034 — Xu 1990 biochemical proof
 Context health: UNKNOWN
 
 ## @emily
-Last commit: e96595b docs(otto): add ABOUT edge usage for related_nodes; update predicate list
+Last commit: dfb46ce ontology(otto): ground C0031-C0035 Xu 1990 biochemical (PMID:2121369)
 Context health: UNKNOWN
 
 ## @milo
-Last commit: 73331ba memory(milo): self-register first commit hash in registry
+Last commit: 8930a06 chore(milo): nightly dream consolidation 2026-11-18
 Context health: UNKNOWN
 
