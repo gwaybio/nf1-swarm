@@ -10,6 +10,8 @@ jobs:
     name: Knowledge graph health
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    env:
+      NEO4J_PASSWORD: ${{ secrets.NEO4J_PASSWORD }}
 
     steps:
       - uses: actions/checkout@v7
