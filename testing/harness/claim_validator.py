@@ -77,6 +77,16 @@ def validate_claim_contract(claim, contract):
         if not claim.get("curation_date"):
             errors.append("Contract: status='accepted' requires curation_date to be set")
 
+    # Rejected/refuted claims must carry a rejection_class so the routing
+    # decision (structural→Otto, biological→Kim/graph) is unambiguous.
+    if claim.get("status") in ("rejected", "refuted"):
+        rc = claim.get("rejection_class")
+        if rc not in ("structural", "biological"):
+            errors.append(
+                f"Contract: status='{claim['status']}' requires rejection_class "
+                f"to be 'structural' or 'biological', got {rc!r}"
+            )
+
     return errors
 
 

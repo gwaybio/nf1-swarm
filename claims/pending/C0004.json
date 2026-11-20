@@ -37,6 +37,6 @@
     }
   ],
   "curation_date": "2026-11-17",
-  "rejection_reason": "Multiple issues: (1) object_id 'HGNC:karyotype:t(1;17)' is a provisional CURIE not grounded to any canonical ontology \u2014 no standard identifier exists for cytogenetic variants in our node schemas; (2) related_nodes include Protein (UniProtKB:P21359) but the claim does not mention neurofibromin \u2014 semantic_triple/related_nodes mismatch; (3) ASSOCIATED_WITH from Gene to a karyotype object does not match edge_constraints (Gene/Mutation \u2192 Phenotype/Disease only). This claim requires a new node type for cytogenetic variants and a suitable edge type before it can be properly represented.",
-  "rejection_class": "biological"
+  "rejection_reason": "Multiple structural issues: (1) No standard CURIE exists for cytogenetic variant t(1;17) \u2014 HGNC:karyotype: is non-standard; (2) ASSOCIATED_WITH from Gene to karyotype object not permitted by edge_constraints; (3) related_nodes Protein entry not relevant to this genomic mapping claim. Needs: cytogenetic variant node type or Mutation node with hgvs_cdna notation, plus correct edge type.",
+  "rejection_class": "structural"
 }
