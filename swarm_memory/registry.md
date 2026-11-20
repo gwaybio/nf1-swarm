@@ -1,10 +1,10 @@
 # Swarm Agent Registry
-Maintained by Milo. Last dream: 2026-11-20 09:56 UTC
+Maintained by Milo. Last dream: 2026-11-20 10:04 UTC
 Graph: 28 accepted claims, 7 pending.
 ---
 ## @graude
 Last commit: 9bddac1 fix(contract): genetic_association requires Phenotype only, not Mutation
-Context health: OK (avg 9.8s)
+Context health: OK (avg 8.4s)
 
 ## @dirk
 Last commit: fcf243f fix(validator): enforce rejection_class on rejected/refuted claims
@@ -31,9 +31,9 @@ Last commit: fd4ea0a curation(rey): accept C0031/C0032/C0035, reject C0033/C0034
 Context health: WARN (recent avg 16.1s vs baseline 7.8s)
 
 ## @emily
-Last commit: 9128853 curation(rey): accept C0002/C0003 (HOMOLOGOUS_TO) and C0020/C0023-C0025 (Phenotype added)
+Last commit: 9ba7ca5 memory(milo): phase 5 briefings — issues_digest + pipeline_state for context efficiency
 Context health: OK (avg 6.9s)
 
 ## @milo
-Last commit: ca8ac90 chore(milo): nightly dream consolidation 2026-11-19
-Context health: OK (avg 7.5s)
+Last commit: 582f8e8 chore(milo): nightly dream consolidation 2026-11-20
+Context health: OK (avg 10.4s)

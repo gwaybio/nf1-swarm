@@ -28,6 +28,7 @@ REGISTRY_PATH = SWARM_MEM / "registry.md"
 PRUNING_LOG = SWARM_MEM / "pruning_log.md"
 ISSUES_DIGEST = SWARM_MEM / "issues_digest.md"
 PIPELINE_STATE = SWARM_MEM / "pipeline_state.md"
+GRAUDE_BRIEFING = SWARM_MEM / "graude_briefing.md"
 PERFORMANCE_DIR = SWARM_MEM / "performance"
 CLAIMS_ACCEPTED = REPO_ROOT / "claims" / "accepted"
 CLAIMS_PENDING = REPO_ROOT / "claims" / "pending"
@@ -247,6 +248,112 @@ def _age_days(iso_str: str) -> int:
         return 0
 
 
+def _recommended_next_action(issues: list[dict], pending: int, accepted: int,
+                              paper_issues: list[dict], blocked: int) -> str:
+    """Derive a 1-2 sentence next action from current pipeline state."""
+    # Priority order: blockers > pending curation > literature queue > idle agents
+    if blocked > 0:
+        blocked_titles = [i["title"] for i in paper_issues
+                          if "PAYWALLED" in i["title"].upper() or "BLOCKED" in i["title"].upper()]
+        pmids = []
+        for t in blocked_titles[:2]:
+            # extract PMID hint from title if present
+            if "PMID:" in t:
+                pmids.append(t.split("PMID:")[1].split()[0].rstrip(")"))
+        pmid_str = ", ".join(pmids) if pmids else "see issues above"
+        return (f"BLOCKER: {blocked} paper(s) paywalled ({pmid_str}). "
+                f"Provide full-text access to unblock Dirk's queue.")
+
+    if pending > 0:
+        return (f"{pending} claim(s) in pending/ awaiting Rey curation. "
+                f"Route to Rey for accept/reject — Kim is blocked until claims clear.")
+
+    unread = len(paper_issues)
+    if unread > 0:
+        # Find the highest-priority open paper issue
+        next_issue = min(paper_issues, key=lambda x: x["number"])
+        short = next_issue["title"][:60]
+        return (f"Literature queue has {unread} paper(s) unread. "
+                f"Assign Dirk to #{next_issue['number']}: {short}...")
+
+    # Check for stalled agents (no commits in registry)
+    reg_text = REGISTRY_PATH.read_text(errors="replace") if REGISTRY_PATH.exists() else ""
+    idle_agents = []
+    for line in reg_text.splitlines():
+        if line.startswith("Context health:") and "IDLE" in line:
+            # find the agent from previous ## line
+            pass  # simplified — just note if Kim/Rey are idle
+    if accepted > 0:
+        return (f"Pipeline nominal: {accepted} accepted claims. "
+                f"Consider running Stan confidence scoring or Kim graph verification.")
+
+    return "Pipeline is idle. File a new paper_read issue to begin the next extraction cycle."
+
+
+def _write_graude_briefing(issues: list[dict], pending: int, accepted: int,
+                            rejected: int, paper_issues: list[dict], blocked: int,
+                            now: str):
+    """Write swarm_memory/graude_briefing.md — compact session-start anchor.
+
+    Target: under 400 tokens. Self-contained: Graude reads one file, not gh + git.
+    """
+    # Last 3 commits across all agents
+    result = subprocess.run(
+        ["git", "log", "--oneline", "-3"],
+        cwd=REPO_ROOT, capture_output=True, text=True
+    )
+    recent_commits = result.stdout.strip().splitlines()
+
+    # Collect BLOCKER flags from issues
+    blockers = []
+    for iss in issues:
+        labels = {lb["name"] for lb in iss.get("labels", [])}
+        if "blocker" in labels:
+            blockers.append(f"  #{iss['number']} {iss['title'][:60]}")
+    if blocked > 0:
+        for iss in paper_issues:
+            if "PAYWALLED" in iss["title"].upper() or "BLOCKED" in iss["title"].upper():
+                blockers.append(f"  #{iss['number']} PAYWALLED: {iss['title'][:55]}")
+
+    next_action = _recommended_next_action(issues, pending, accepted, paper_issues, blocked)
+
+    # Build the briefing — ruthlessly compact, every section earns its tokens
+    lines = [
+        "# Graude Session Briefing\n",
+        f"Generated: {now}  |  Load this file first. Do not call gh issue list.\n",
+        "\n",
+        "## Pipeline\n",
+        f"  accepted: {accepted}  pending: {pending}  rejected: {rejected}\n",
+        f"  papers queued: {len(paper_issues)}  blocked (paywalled): {blocked}\n",
+        "\n",
+        "## Recent commits\n",
+    ]
+    for c in recent_commits:
+        lines.append(f"  {c}\n")
+    lines.append("\n")
+
+    lines.append("## Open issues\n")
+    agent_labels = {"dirk", "otto", "archie", "stan", "kim", "rey", "emily", "milo"}
+    for iss in sorted(issues, key=lambda x: x["number"]):
+        labels = {lb["name"] for lb in iss.get("labels", [])}
+        assigned = next((lb for lb in agent_labels if lb in labels), "graude")
+        age = _age_days(iss.get("createdAt", ""))
+        title = iss["title"][:65]
+        lines.append(f"  #{iss['number']:3d} [{assigned:5s}] {age:2d}d  {title}\n")
+    lines.append("\n")
+
+    if blockers:
+        lines.append("## BLOCKERS\n")
+        for b in blockers:
+            lines.append(f"{b}\n")
+        lines.append("\n")
+
+    lines.append("## Recommended next action\n")
+    lines.append(f"  {next_action}\n")
+
+    GRAUDE_BRIEFING.write_text("".join(lines))
+
+
 def phase_briefings():
     """Generate compact, token-efficient briefing artifacts for agents.
 
@@ -325,6 +432,10 @@ def phase_briefings():
 
     PIPELINE_STATE.write_text("".join(p_lines))
     print(f"  BRIEF  issues_digest.md ({len(issues)} issues) + pipeline_state.md written")
+
+    # ── graude_briefing.md ────────────────────────────────────────────────────
+    _write_graude_briefing(issues, pending, accepted, rejected, paper_issues, blocked, now)
+    print("  BRIEF  graude_briefing.md written")
 
 
 # ── Performance update ────────────────────────────────────────────────────────
