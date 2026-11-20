@@ -1,17 +1,17 @@
 # Swarm Agent Registry
-Maintained by Milo. Last dream: 2026-11-19 09:46 UTC
-Graph: 22 accepted claims, 14 pending.
+Maintained by Milo. Last dream: 2026-11-20 09:35 UTC
+Graph: 28 accepted claims, 7 pending.
 ---
 ## @graude
-Last commit: 1737aff fix(process): no @tags anywhere in GitHub — not in issues, PRs, or comments
+Last commit: 9bddac1 fix(contract): genetic_association requires Phenotype only, not Mutation
 Context health: UNKNOWN
 
 ## @dirk
-Last commit: b2dd167 fix(validator): enforce rejection_class on rejected/refuted claims
+Last commit: fcf243f fix(validator): enforce rejection_class on rejected/refuted claims
 Context health: UNKNOWN
 
 ## @otto
-Last commit: 2eb61d8 ontology(otto): reground C0002-C0003, split C0005 into C0006-C0008
+Last commit: 4266233 feat(schema+fetcher): source_date, biological context fields, guide updates
 Context health: UNKNOWN
 
 ## @archie
@@ -23,7 +23,7 @@ Last commit: (none yet)
 Context health: UNKNOWN
 
 ## @kim
-Last commit: dfca48e feat(graph): write C0031, C0032, C0035 to Neo4j, migration 005
+Last commit: a484434 feat(graph): write C0002, C0003, C0020, C0023-C0025 to Neo4j, migrations 006-007
 Context health: UNKNOWN
 
 ## @rey
@@ -31,10 +31,10 @@ Last commit: fd4ea0a curation(rey): accept C0031/C0032/C0035, reject C0033/C0034
 Context health: UNKNOWN
 
 ## @emily
-Last commit: dfb46ce ontology(otto): ground C0031-C0035 Xu 1990 biochemical (PMID:2121369)
+Last commit: 9128853 curation(rey): accept C0002/C0003 (HOMOLOGOUS_TO) and C0020/C0023-C0025 (Phenotype added)
 Context health: UNKNOWN
 
 ## @milo
-Last commit: 8930a06 chore(milo): nightly dream consolidation 2026-11-18
+Last commit: ca8ac90 chore(milo): nightly dream consolidation 2026-11-19
 Context health: UNKNOWN
 
