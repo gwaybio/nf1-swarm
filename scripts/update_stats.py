@@ -17,6 +17,7 @@ README = REPO_ROOT / "README.md"
 CLAIMS_ACCEPTED = REPO_ROOT / "claims" / "accepted"
 CLAIMS_PENDING  = REPO_ROOT / "claims" / "pending"
 PROCESSED_MD    = REPO_ROOT / "literature" / "processed.md"
+QUEUE_MD        = REPO_ROOT / "literature" / "queue.md"
 
 
 def count_json(directory: Path) -> int:
@@ -25,21 +26,18 @@ def count_json(directory: Path) -> int:
 
 
 def count_processed_papers() -> int:
-    """Count data rows in literature/processed.md (skip header + separator)."""
-    if not PROCESSED_MD.exists():
-        return 0
-    rows = [
-        ln for ln in PROCESSED_MD.read_text().splitlines()
-        if ln.startswith("|") and not ln.startswith("| Paper") and not ln.startswith("|---")
-    ]
-    return len(rows)
+    """Count papers marked [DONE] in literature/queue.md."""
+    for path in (QUEUE_MD, PROCESSED_MD):
+        if path.exists():
+            return sum(1 for ln in path.read_text().splitlines() if "[DONE]" in ln)
+    return 0
 
 
 def build_stats_block(accepted: int, pending: int, papers: int, updated: str) -> str:
     return (
         "<!-- STATS_START -->\n"
-        "| 🧬 Accepted claims | ⏳ Pending | 📄 Papers processed | 🕐 Updated |\n"
-        "|:-----------------:|:----------:|:-------------------:|:----------:|\n"
+        "| 🧬 Accepted claims | ⏳ Pending claims | 📄 Papers processed | 🕐 Updated |\n"
+        "|:-----------------:|:-----------------:|:-------------------:|:----------:|\n"
         f"| {accepted} | {pending} | {papers} | {updated} |\n"
         "<!-- STATS_END -->"
     )

@@ -3,9 +3,9 @@
 An agentic AI swarm compiling the known history of NF1 (Neurofibromatosis type 1) biology and clinical outcomes into a structured, traversable knowledge graph.
 
 <!-- STATS_START -->
-| 🧬 Accepted claims | ⏳ Pending | 📄 Papers processed | 🕐 Updated |
-|:-----------------:|:----------:|:-------------------:|:----------:|
-| 28 | 7 | 0 | 2026-11-20 UTC |
+| 🧬 Accepted claims | ⏳ Pending claims | 📄 Papers processed | 🕐 Updated |
+|:-----------------:|:-----------------:|:-------------------:|:----------:|
+| 28 | 7 | 1 | 2026-11-20 UTC |
 <!-- STATS_END -->
 
 ## What this is
