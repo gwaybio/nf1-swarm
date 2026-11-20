@@ -156,6 +156,10 @@ Use structured prefixes: `STATUS:`, `BLOCKER:`, `QUESTION:`
 
 **When to close the issue:** Graude closes the paper issue only after all claims from that paper have reached `accepted` status and been written to the graph by Kim. Until then, the issue stays open as a live record of in-flight work.
 
+**Message Graude when done.** Every agent must send a Hermes message to Graude upon completing their stage — not just comment on the GitHub issue. The GitHub comment is the audit trail for humans. The Hermes message is what triggers Graude to route to the next stage immediately. Without it, work sits idle until Graude polls or Gregory prompts.
+
+Required message content: what was done, any blockers or flags, whether the next stage is ready. Keep it brief.
+
 1. **Graude** opens a GitHub issue using the appropriate template (`paper_read`, `verification`, `curation`, `graph_task`, `claim`, `engineering`, `memory`)
 2. **Dirk** extracts claims → comments on paper issue with claim IDs and summary
 3. **Otto** grounds claims → comments on paper issue with CURIEs assigned
