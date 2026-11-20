@@ -4,7 +4,7 @@
   "claim_type": "molecular_function",
   "evidence_strength": 3,
   "evidence_type": "preclinical_in_vitro",
-  "notes": "Full text unavailable, extracted from abstract. Capped at 3 per abstract-only rule; the underlying experiments are foundational and replicated for decades, so Rey may upgrade (strength 5 needs full-text/independent replication linked via supporting_dois). | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-18. evidence_type changed from biochemical_proof to preclinical_in_vitro. NEGATIVE RESULT: NF1 GRD does NOT stimulate GTPase of oncogenic ras mutants (H-rasVal-12, RAS2Val-19). BEL 'cnc' = causesNoChange. INHIBITS predicate used structurally but claim describes lack of effect on mutant RAS. neurofibromin=UniProtKB:P21359; HRAS=NCBIGene:3265; yeast RAS2=NCBIGene:855625.",
+  "notes": "Full text unavailable, extracted from abstract. Capped at 3 per abstract-only rule; the underlying experiments are foundational and replicated for decades, so Rey may upgrade (strength 5 needs full-text/independent replication linked via supporting_dois). | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-18. evidence_type changed from biochemical_proof to preclinical_in_vitro. NEGATIVE RESULT: NF1 GRD does NOT stimulate GTPase of oncogenic ras mutants (H-rasVal-12, RAS2Val-19). BEL 'cnc' = causesNoChange. INHIBITS predicate used structurally but claim describes lack of effect on mutant RAS. neurofibromin=UniProtKB:P21359; HRAS=NCBIGene:3265; yeast RAS2=NCBIGene:855625. | Re-grounded 2026-11-19: semantic_triple set to null. NEGATIVE RESULT claim: NF1 GRD does NOT stimulate GTPase of oncogenic mutant ras (H-rasVal-12, RAS2Val-19). No existing predicate in edge_constraints.yaml correctly represents a negative functional result. Entities verified: neurofibromin=UniProtKB:P21359; HRAS=NCBIGene:3265; yeast RAS2=NCBIGene:855625. Awaiting DOES_NOT_ACTIVATE or similar edge type. BEL: p(HGNC:NF1, frag(\"GAP-related domain\")) cnc gtp(p(HGNC:HRAS, var(\"p.Gly12Val\"))).",
   "source_pmid": "2121369",
   "source_doi": "10.1016/0092-8674(90)90149-9",
   "source_title": "The catalytic domain of the neurofibromatosis type 1 gene product stimulates ras GTPase and complements ira mutants of S. cerevisiae",
@@ -12,21 +12,15 @@
   "extracted_by": "dirk",
   "extraction_date": "2026-11-17",
   "verified_by": null,
-  "curated_by": "rey",
-  "status": "rejected",
-  "semantic_triple": {
-    "subject": "neurofibromin (NF1 GAP-related domain)",
-    "subject_id": "UniProtKB:P21359",
-    "predicate": "INHIBITS",
-    "object": "HRAS",
-    "object_id": "NCBIGene:3265"
-  },
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
   "bel_notation": "p(HGNC:NF1, frag(\"GAP-related domain\")) cnc gtp(p(HGNC:HRAS, var(\"p.Gly12Val\")))",
   "supporting_dois": [],
   "confidence_score": null,
   "independence_flags": [],
-  "curation_date": "2026-11-18",
-  "rejection_reason": "Semantic triple uses INHIBITS but the claim describes a NEGATIVE RESULT \u2014 NF1 GRD does NOT stimulate oncogenic mutant RAS GTPase. 'Does not stimulate' \u2260 'inhibits'. INHIBITS implies active suppression; the claim shows ABSENCE of effect on mutant RAS. The BEL notation correctly uses 'cnc' (causesNoChange). No suitable predicate exists for negative results in edge_constraints.yaml. Consider adding DOES_NOT_ACTIVATE or representing as a refuted claim (C0032's positive claim does not hold for oncogenic mutants). Re-ground with a predicate that doesn't misrepresent the biology.",
+  "curation_date": null,
+  "rejection_reason": null,
   "related_nodes": [
     {
       "label": "Protein",
@@ -49,5 +43,5 @@
       "edge_type": "ABOUT"
     }
   ],
-  "rejection_class": "structural"
+  "rejection_class": null
 }
