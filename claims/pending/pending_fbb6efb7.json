@@ -10,16 +10,39 @@
   "verified_by": null,
   "curated_by": null,
   "status": "pending",
-  "semantic_triple": null,
-  "bel_notation": null,
+  "semantic_triple": {
+    "subject": "selumetinib",
+    "subject_id": "CHEBI:90227",
+    "predicate": "TREATS",
+    "object": "plexiform neurofibroma",
+    "object_id": "MONDO:0003304"
+  },
+  "bel_notation": "a(CHEBI:90227) -| path(MONDO:0003304)",
   "supporting_dois": [],
   "confidence_score": null,
   "claim_text": "In a phase 1 trial of selumetinib in 24 children with inoperable NF1-related plexiform neurofibromas, 17 (71%) achieved a confirmed partial response (>20% volume decrease on MRI), with no complete responses.",
   "claim_type": "drug_response",
   "evidence_strength": 3,
   "evidence_type": "cohort_study",
-  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Dombi 2016 (PMID 28029918, ref 20). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading.",
+  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Dombi 2016 (PMID 28029918, ref 20). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20.",
   "independence_flags": [
     "secondary citation via review PMID 35788692 of Dombi 2016 (PMID 28029918, ref 20)"
+  ],
+  "related_nodes": [
+    {
+      "label": "Drug",
+      "identifier": "CHEBI:90227",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0003304",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0018975",
+      "edge_type": "ABOUT"
+    }
   ]
 }

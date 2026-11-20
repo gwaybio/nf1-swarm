@@ -10,16 +10,39 @@
   "verified_by": null,
   "curated_by": null,
   "status": "pending",
-  "semantic_triple": null,
-  "bel_notation": null,
+  "semantic_triple": {
+    "subject": "mirdametinib",
+    "subject_id": "CHEBI:88249",
+    "predicate": "TREATS",
+    "object": "plexiform neurofibroma",
+    "object_id": "MONDO:0003304"
+  },
+  "bel_notation": "a(CHEBI:88249) -| path(MONDO:0003304)",
   "supporting_dois": [],
   "confidence_score": null,
   "claim_text": "In the NF106 phase 2 trial of mirdametinib in adolescents and adults with NF1 plexiform neurofibromas, tumor pain intensity decreased within the first 4 months of therapy and remained decreased through 12 months in participants whose tumors responded.",
   "claim_type": "clinical_outcome",
   "evidence_strength": 3,
   "evidence_type": "cohort_study",
-  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Weiss 2021 (PMID 33507822, ref 16). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading.",
+  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Weiss 2021 (PMID 33507822, ref 16). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20.",
   "independence_flags": [
     "secondary citation via review PMID 35788692 of Weiss 2021 (PMID 33507822, ref 16)"
+  ],
+  "related_nodes": [
+    {
+      "label": "Drug",
+      "identifier": "CHEBI:88249",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0003304",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0018975",
+      "edge_type": "ABOUT"
+    }
   ]
 }

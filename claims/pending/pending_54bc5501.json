@@ -10,16 +10,39 @@
   "verified_by": null,
   "curated_by": null,
   "status": "pending",
-  "semantic_triple": null,
-  "bel_notation": null,
+  "semantic_triple": {
+    "subject": "trametinib",
+    "subject_id": "CHEBI:75998",
+    "predicate": "TREATS",
+    "object": "plexiform neurofibroma",
+    "object_id": "MONDO:0003304"
+  },
+  "bel_notation": "a(CHEBI:75998) -| path(MONDO:0003304)",
   "supporting_dois": [],
   "confidence_score": null,
   "claim_text": "In a phase 1/2A study of trametinib in children with NF1-associated plexiform neurofibromas, 12 of 26 (46%) had a partial response.",
   "claim_type": "drug_response",
   "evidence_strength": 2,
   "evidence_type": "cohort_study",
-  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing McCowage 2018 (ref 27; J Clin Oncol abstract, no PMID). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. Conference abstract only; rubric lists cohort_study under strength 3-4, so 2 is used because the primary source is an abstract.",
+  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing McCowage 2018 (ref 27; J Clin Oncol abstract, no PMID). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. Conference abstract only; rubric lists cohort_study under strength 3-4, so 2 is used because the primary source is an abstract. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20.",
   "independence_flags": [
     "secondary citation via review PMID 35788692 of McCowage 2018 (ref 27; J Clin Oncol abstract, no PMID)"
+  ],
+  "related_nodes": [
+    {
+      "label": "Drug",
+      "identifier": "CHEBI:75998",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0003304",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0018975",
+      "edge_type": "ABOUT"
+    }
   ]
 }

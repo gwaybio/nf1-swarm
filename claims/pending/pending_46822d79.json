@@ -10,16 +10,44 @@
   "verified_by": null,
   "curated_by": null,
   "status": "pending",
-  "semantic_triple": null,
-  "bel_notation": null,
+  "semantic_triple": {
+    "subject": "NFX-179",
+    "subject_id": "CHEBI:234076",
+    "predicate": "TREATS",
+    "object": "neurofibroma",
+    "object_id": "MONDO:0016755"
+  },
+  "bel_notation": "a(CHEBI:234076) -| path(MONDO:0016755)",
   "supporting_dois": [],
   "confidence_score": null,
   "claim_text": "A topical MEK inhibitor, NFX-179 gel, was reported in an early phase 1 study to be well tolerated in NF1 patients with cutaneous neurofibromas.",
   "claim_type": "drug_response",
   "evidence_strength": 2,
   "evidence_type": "cohort_study",
-  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Sarin 2021 (ref 58; conference presentation, no PMID). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. Conference presentation only.",
+  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Sarin 2021 (ref 58; conference presentation, no PMID). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. Conference presentation only. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20.",
   "independence_flags": [
     "secondary citation via review PMID 35788692 of Sarin 2021 (ref 58; conference presentation, no PMID)"
+  ],
+  "related_nodes": [
+    {
+      "label": "Drug",
+      "identifier": "CHEBI:234076",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0016755",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0018975",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Gene",
+      "identifier": "NCBIGene:5604",
+      "edge_type": "ABOUT"
+    }
   ]
 }

@@ -10,7 +10,13 @@
   "verified_by": null,
   "curated_by": null,
   "status": "pending",
-  "semantic_triple": null,
+  "semantic_triple": {
+    "subject": "MEK inhibitor (class)",
+    "subject_id": "NCBIGene:5604",
+    "predicate": "TARGETS",
+    "object": "MPNST",
+    "object_id": "MONDO:0017827"
+  },
   "bel_notation": null,
   "supporting_dois": [],
   "confidence_score": null,
@@ -18,8 +24,25 @@
   "claim_type": "drug_response",
   "evidence_strength": 3,
   "evidence_type": "preclinical_in_vivo",
-  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing refs 37, 48-52 (incl. Jessen 2013 PMID 23221341; Lock 2016; Malone 2014). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. Review summarises multiple preclinical studies; individual models not verified by Dirk.",
+  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing refs 37, 48-52 (incl. Jessen 2013 PMID 23221341; Lock 2016; Malone 2014). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. Review summarises multiple preclinical studies; individual models not verified by Dirk. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20.",
   "independence_flags": [
     "secondary citation via review PMID 35788692 of refs 37, 48-52 (incl. Jessen 2013 PMID 23221341; Lock 2016; Malone 2014)"
+  ],
+  "related_nodes": [
+    {
+      "label": "Gene",
+      "identifier": "NCBIGene:5604",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0017827",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0018975",
+      "edge_type": "ABOUT"
+    }
   ]
 }

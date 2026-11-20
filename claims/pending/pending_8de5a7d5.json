@@ -10,16 +10,39 @@
   "verified_by": null,
   "curated_by": null,
   "status": "pending",
-  "semantic_triple": null,
-  "bel_notation": null,
+  "semantic_triple": {
+    "subject": "selumetinib",
+    "subject_id": "CHEBI:90227",
+    "predicate": "TREATS",
+    "object": "low grade glioma",
+    "object_id": "MONDO:0021637"
+  },
+  "bel_notation": "a(CHEBI:90227) -| path(MONDO:0021637)",
   "supporting_dois": [],
   "confidence_score": null,
   "claim_text": "In a phase 2 selumetinib trial stratum of 25 children with recurrent, refractory or progressive NF1-associated low-grade glioma, 10 (40%) achieved a sustained partial response (>=50% reduction in tumor cross-product) and 15 (60%) had stable disease.",
   "claim_type": "drug_response",
   "evidence_strength": 3,
   "evidence_type": "cohort_study",
-  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Fangusaro 2019 (PMID 31151904, ref 23). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading.",
+  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Fangusaro 2019 (PMID 31151904, ref 23). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20.",
   "independence_flags": [
     "secondary citation via review PMID 35788692 of Fangusaro 2019 (PMID 31151904, ref 23)"
+  ],
+  "related_nodes": [
+    {
+      "label": "Drug",
+      "identifier": "CHEBI:90227",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0021637",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0018975",
+      "edge_type": "ABOUT"
+    }
   ]
 }

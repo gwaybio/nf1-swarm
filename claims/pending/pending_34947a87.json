@@ -10,16 +10,39 @@
   "verified_by": null,
   "curated_by": null,
   "status": "pending",
-  "semantic_triple": null,
-  "bel_notation": null,
+  "semantic_triple": {
+    "subject": "mirdametinib",
+    "subject_id": "CHEBI:88249",
+    "predicate": "TREATS",
+    "object": "plexiform neurofibroma",
+    "object_id": "MONDO:0003304"
+  },
+  "bel_notation": "a(CHEBI:88249) -| path(MONDO:0021637)",
   "supporting_dois": [],
   "confidence_score": null,
   "claim_text": "Mirdametinib treatment led to decreased tumor volume and proliferation, or prevented tumor formation, in two mouse models of NF1-associated low-grade glioma.",
   "claim_type": "drug_response",
   "evidence_strength": 3,
   "evidence_type": "preclinical_in_vivo",
-  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing refs 66, 67 (Kaul 2015; Jecrois 2021). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. Individual models not verified by Dirk.",
+  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing refs 66, 67 (Kaul 2015; Jecrois 2021). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. Individual models not verified by Dirk. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20.",
   "independence_flags": [
     "secondary citation via review PMID 35788692 of refs 66, 67 (Kaul 2015; Jecrois 2021)"
+  ],
+  "related_nodes": [
+    {
+      "label": "Drug",
+      "identifier": "CHEBI:88249",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0003304",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0018975",
+      "edge_type": "ABOUT"
+    }
   ]
 }
