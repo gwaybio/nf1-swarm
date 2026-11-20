@@ -4,7 +4,6 @@
   "description": "A structured scientific claim extracted from primary literature about NF1 biology or clinical outcomes",
   "type": "object",
   "required": [
-    "claim_id",
     "claim_text",
     "claim_type",
     "evidence_strength",
@@ -16,8 +15,19 @@
   "additionalProperties": false,
   "properties": {
     "claim_id": {
-      "type": "string",
-      "pattern": "^C[0-9]{4}$"
+      "type": ["string", "null"],
+      "pattern": "^[CR][0-9]{4}$",
+      "description": "Permanent C#### ID for accepted claims, R#### for rejected claims. Null while pending."
+    },
+    "pending_id": {
+      "type": ["string", "null"],
+      "pattern": "^[0-9a-f]{8}$",
+      "description": "8-char hex ID assigned at extraction by Dirk. Cleared on acceptance/rejection."
+    },
+    "resurrected_from": {
+      "type": ["string", "null"],
+      "pattern": "^R[0-9]{4}$",
+      "description": "R#### ID of the rejected claim this was resurrected from. Null for original claims."
     },
     "claim_text": {
       "type": "string",

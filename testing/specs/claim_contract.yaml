@@ -97,3 +97,6 @@ global_rules:
   - if status is 'rejected' or 'refuted', rejection_class must be 'structural' or 'biological' (not null)
   - rejection_class structural = encoding problem, route back to Otto for re-grounding
   - rejection_class biological = biology wrong or unsupported, Kim writes to graph with status=refuted
+  - pending claims must have pending_id set (8-char hex); claim_id must be null
+  - accepted claims must have claim_id set (C#### pattern); pending_id should be null
+  - rejected claims must have claim_id set (R#### pattern); pending_id should be null

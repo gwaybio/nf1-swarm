@@ -1,10 +1,10 @@
 {
-  "claim_id": "C0022",
+  "claim_id": null,
   "claim_text": "The 2021 consensus restricted the NF1 family-history criterion to a parent meeting NF1 criteria; affected siblings or offspring alone no longer qualify, because affected siblings alone should prompt consideration of CMMRD and a single criterion plus an affected child suggests mosaic NF1.",
   "claim_type": "phenotype_association",
   "evidence_strength": 2,
   "evidence_type": "expert_opinion",
-  "notes": "Full text (PMC8354850). Modified Delphi expert consensus (74/76 experts); rubric forbids expert_opinion at strength >=4, so capped at 2. Recommendation, not an empirical finding. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-18. Diagnostic criterion refinement. Subject and object are same disease (family history context). CMMRD=MONDO:0031219 mentioned as differential. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-19. NF1 gene=NCBIGene:4763; NF1 disease=MONDO:0018975; CMMRD=MONDO:0031219; autosomal dominant inheritance=HP:0000006. Family history criterion refinement \u2014 parent only. Gene->Disease ASSOCIATED_WITH per edge_constraints.",
+  "notes": "Full text (PMC8354850). Modified Delphi expert consensus (74/76 experts); rubric forbids expert_opinion at strength >=4, so capped at 2. Recommendation, not an empirical finding. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-18. Diagnostic criterion refinement. Subject and object are same disease (family history context). CMMRD=MONDO:0031219 mentioned as differential. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-19. NF1 gene=NCBIGene:4763; NF1 disease=MONDO:0018975; CMMRD=MONDO:0031219; autosomal dominant inheritance=HP:0000006. Family history criterion refinement \u2014 parent only. Gene->Disease ASSOCIATED_WITH per edge_constraints. | migrated from legacy pending id C0022",
   "source_pmid": "34012067",
   "source_doi": "10.1038/s41436-021-01170-5",
   "source_title": "Revised diagnostic criteria for neurofibromatosis type 1 and Legius syndrome: an international consensus recommendation",
@@ -42,5 +42,6 @@
       "edge_type": "ABOUT"
     }
   ],
-  "curation_date": "2026-11-18"
+  "curation_date": "2026-11-18",
+  "pending_id": "cb77579e"
 }

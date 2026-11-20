@@ -28,16 +28,30 @@ This file is auto-loaded by Hermes agents when working in this directory.
 | Milo | `milo` | Memory & context manager — episodic store, dreaming, DACS registry, retrieval chatbot |
 
 ## Claim ID assignment
-**Never manually assign claim IDs.** Use the atomic counter:
+
+Claim IDs are assigned in two stages — never manually:
+
+**Stage 1 — Extraction (Dirk):** generate a temporary 8-char hex `pending_id`:
 ```python
-from knowledge_graph.queries.reserve_claim_id import next_claim_id
-# inside a Neo4j session:
-cid = next_claim_id(session)   # returns e.g. "C0042"
+from scripts.reserve_claim_id import generate_pending_id
+claim["pending_id"] = generate_pending_id()   # e.g. "a3f8c21b"
+# save to claims/pending/pending_a3f8c21b.json
 ```
+
+**Stage 2 — Acceptance/Rejection (Rey):** permanent IDs are assigned atomically:
+```python
+from scripts.reserve_claim_id import accept_claim, reject_claim
+# inside a Neo4j session:
+cid = accept_claim("a3f8c21b", session)    # returns "C0042", moves to accepted/
+rid = reject_claim("a3f8c21b", session, "structural", "reason")  # returns "R0001", moves to rejected/
+```
+
+`C####` IDs only advance on acceptance — never on extraction or rejection.
+`R####` IDs are a separate counter for rejected claims.
 
 ## Task flow
 1. Graude opens GitHub issue `[DIRK] Read: <title> — <DOI>`
-2. Dirk reads paper → deposits `claims/pending/C<id>.json`
+2. Dirk reads paper → deposits `claims/pending/pending_<hex>.json` (using `generate_pending_id()` from `scripts.reserve_claim_id`)
 3. Dirk runs `uv run python testing/harness/claim_validator.py` before committing
 4. Dirk commits: `claim(dirk): <short title>`
 5. Rey reviews pending/ → accepts (moves to accepted/) or rejects (adds reason)
