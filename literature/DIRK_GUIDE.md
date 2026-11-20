@@ -72,6 +72,32 @@ When full text is unavailable (`paper.full_text_source == "unavailable"`):
 
 When in doubt, go lower. Rey will upgrade if warranted.
 
+## Biological context fields (organism, cell_type, tissue)
+
+Three optional fields capture the biological setting of the claim. Dirk fills them as **free text** at extraction; Otto grounds the CURIE fields (`cell_type_id`, `tissue_id`) at Stage 2.
+
+| Field | Who fills | Format |
+|-------|-----------|--------|
+| `organism` | Dirk | enum: `human`, `mouse`, `rat`, `zebrafish`, `drosophila`, `yeast`, `in_vitro`, `other`, or `null` |
+| `cell_type` | Dirk | free text: `"Schwann cell"`, `"astrocyte"`, `"mast cell"` |
+| `cell_type_id` | Otto | CL CURIE: `"CL:0002573"` |
+| `tissue` | Dirk | free text: `"peripheral nerve"`, `"optic nerve"`, `"skin"` |
+| `tissue_id` | Otto | UBERON CURIE: `"UBERON:0001021"` |
+
+Fill what you can from the abstract/methods. Leave `cell_type_id` and `tissue_id` as `null` — Otto fills those.
+
+## source_date — ISO publication date
+
+Populate `source_date` (YYYY-MM-DD) from the PubMed efetch response alongside `source_year`:
+
+```python
+paper = fetcher.fetch(pmid="32187458")
+claim["source_year"] = paper.year        # 2020
+claim["source_date"] = paper.pubdate     # "2020-03-11" (or None if not in PubMed)
+```
+
+`source_date` enables point-in-time graph queries ("knowledge graph as of 1995"). If PubMed returns only a year with no month/day, `pubdate` is `None` and `source_year` is sufficient.
+
 ## GitHub commenting rules
 
 - **No `@handle` syntax anywhere** — not in issue comments, PR bodies, PR titles,

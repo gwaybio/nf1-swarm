@@ -19,6 +19,7 @@ Usage:
 """
 import time
 from dataclasses import dataclass, field
+from datetime import date, datetime
 from typing import Optional
 from urllib.parse import quote
 
@@ -40,6 +41,7 @@ class Paper:
     authors: list[str] = field(default_factory=list)
     journal: str = ""
     year: Optional[int] = None
+    pubdate: Optional[str] = None  # ISO date YYYY-MM-DD from PubMed efetch
     full_text: Optional[str] = None
     full_text_source: Optional[str] = None  # "pmc", "biorxiv", "arxiv", "unavailable"
 
@@ -204,6 +206,26 @@ def _parse_pubmed_xml(xml: str, pmid: str) -> Paper:
 
         year_text = article.findtext(".//PubDate/Year") or ""
         year = int(year_text) if year_text.isdigit() else None
+
+        # Build ISO pubdate from Year/Month/Day when available
+        month_text = article.findtext(".//PubDate/Month") or ""
+        day_text   = article.findtext(".//PubDate/Day")   or ""
+        pubdate: Optional[str] = None
+        if year_text.isdigit() and month_text:
+            try:
+                # Month may be numeric ("8") or abbreviated name ("Aug")
+                month_fmt = "%m" if month_text.isdigit() else "%b"
+                if day_text.isdigit():
+                    parsed = datetime.strptime(
+                        f"{year_text}-{month_text}-{day_text}", f"%Y-{month_fmt}-%d"
+                    )
+                else:
+                    parsed = datetime.strptime(
+                        f"{year_text}-{month_text}", f"%Y-{month_fmt}"
+                    )
+                pubdate = parsed.date().isoformat()
+            except (ValueError, TypeError):
+                pubdate = None
         journal = article.findtext(".//Journal/Title") or ""
 
         pmcid = None
@@ -225,6 +247,7 @@ def _parse_pubmed_xml(xml: str, pmid: str) -> Paper:
             authors=authors,
             journal=journal,
             year=year,
+            pubdate=pubdate,
         )
     except Exception:
         return Paper(pmid=pmid)

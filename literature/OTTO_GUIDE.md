@@ -51,6 +51,30 @@ edges = get_nf1_edges()
   the allowed `from`/`to` node labels for each predicate.
 - `subject`/`object` are human-readable names; `subject_id`/`object_id` are CURIEs.
 
+## Grounding cell_type_id and tissue_id
+
+When a claim has `cell_type` or `tissue` text filled by Dirk, ground them to CURIEs:
+
+```python
+from literature.rtx_kg2 import ground_entity
+
+# Cell type → Cell Ontology (CL)
+if claim.get("cell_type"):
+    nodes = ground_entity(claim["cell_type"], categories=["biolink:Cell"])
+    # Pick the best match; CL:0002573 = Schwann cell
+    claim["cell_type_id"] = nodes[0]["id"] if nodes else None
+
+# Tissue → UBERON anatomy
+if claim.get("tissue"):
+    nodes = ground_entity(claim["tissue"], categories=["biolink:GrossAnatomicalStructure"])
+    # UBERON:0001021 = sciatic nerve
+    claim["tissue_id"] = nodes[0]["id"] if nodes else None
+```
+
+If RTX-KG2 returns no match, leave the ID field `null` and add a note in `notes`:
+`"cell_type_id: no CL match found for 'X' via RTX-KG2 (accessed YYYY-MM-DD)"`.
+Do NOT invent CURIEs — a null ID is better than a wrong one.
+
 ## Filling `related_nodes` — use ABOUT, not biological edges
 
 `related_nodes` lists the graph entities this claim is *about*. Use edge_type `ABOUT`

@@ -82,6 +82,14 @@
       "minimum": 1980,
       "maximum": 2030
     },
+    "source_date": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "ISO publication date of source paper (YYYY-MM-DD). More precise than source_year. Enables point-in-time graph queries. Populated by Dirk from PubMed efetch pubdate."
+    },
     "extracted_by": {
       "type": "string",
       "enum": [
