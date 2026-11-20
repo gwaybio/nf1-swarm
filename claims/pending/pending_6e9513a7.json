@@ -1,0 +1,25 @@
+{
+  "pending_id": "6e9513a7",
+  "claim_id": null,
+  "source_pmid": "35788692",
+  "source_doi": "10.1093/neuonc/noac165",
+  "source_title": "MEK inhibitors for neurofibromatosis type 1 manifestations: Clinical evidence and consensus",
+  "source_year": 2022,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-20",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "claim_text": "Among 88 previously untreated children with NF1-associated optic pathway glioma receiving carboplatin-based chemotherapy, visual acuity improved in 32%, was stable in 40%, and worsened in 28%.",
+  "claim_type": "clinical_outcome",
+  "evidence_strength": 3,
+  "evidence_type": "cohort_study",
+  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Fisher 2012 (PMID 22474213, ref 69). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. Multicenter retrospective analysis.",
+  "independence_flags": [
+    "secondary citation via review PMID 35788692 of Fisher 2012 (PMID 22474213, ref 69)"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "pending_id": "c94efa1f",
+  "claim_id": null,
+  "source_pmid": "35788692",
+  "source_doi": "10.1093/neuonc/noac165",
+  "source_title": "MEK inhibitors for neurofibromatosis type 1 manifestations: Clinical evidence and consensus",
+  "source_year": 2022,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-20",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "claim_text": "Interim results of a phase 2 trial of binimetinib (NCT03231306) in NF1 plexiform neurofibromas report partial response rates of about 70% in children and 65% in adults.",
+  "claim_type": "drug_response",
+  "evidence_strength": 2,
+  "evidence_type": "cohort_study",
+  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Mueller 2020 (ref 38) and Reddy 2021 (ref 6), conference presentations, no PMID. Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. Interim, unpublished conference data.",
+  "independence_flags": [
+    "secondary citation via review PMID 35788692 of Mueller 2020 (ref 38) and Reddy 2021 (ref 6), conference presentations, no PMID"
+  ]
+}

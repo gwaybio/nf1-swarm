@@ -1,0 +1,25 @@
+{
+  "pending_id": "1f4a8d2e",
+  "claim_id": null,
+  "source_pmid": "35788692",
+  "source_doi": "10.1093/neuonc/noac165",
+  "source_title": "MEK inhibitors for neurofibromatosis type 1 manifestations: Clinical evidence and consensus",
+  "source_year": 2022,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-20",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "claim_text": "In children with NF1-associated low-grade glioma treated with selumetinib in a phase 2 trial, two-year progression-free survival was 96%.",
+  "claim_type": "clinical_outcome",
+  "evidence_strength": 3,
+  "evidence_type": "cohort_study",
+  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Fangusaro 2019 (PMID 31151904, ref 23). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading.",
+  "independence_flags": [
+    "secondary citation via review PMID 35788692 of Fangusaro 2019 (PMID 31151904, ref 23)"
+  ]
+}
