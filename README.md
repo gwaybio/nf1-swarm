@@ -59,7 +59,7 @@ uv sync
 # 2. Install git hooks (enforces co-author trailer on bot commits)
 uv run pre-commit install
 
-# 3. Start Neo4j (bolt://localhost:7687, credentials: neo4j/nf1swarm)
+# 3. Start Neo4j (bolt://localhost:7687, credentials: neo4j/<see secrets>)
 sudo systemctl start neo4j
 
 # 4. Bootstrap the knowledge graph

@@ -10,6 +10,7 @@ Usage:
 """
 import argparse
 import json
+import os
 import sys
 import yaml
 from pathlib import Path
@@ -22,7 +23,7 @@ APPROVED_DIR = REPO_ROOT / "testing" / "approved"
 def get_driver():
     try:
         from neo4j import GraphDatabase
-        return GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "nf1swarm"))
+        return GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", os.environ.get("NEO4J_PASSWORD", "nf1swarm")))
     except Exception as e:
         print(f"WARNING: Neo4j unavailable: {e}")
         return None

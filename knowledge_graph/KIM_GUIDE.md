@@ -16,7 +16,7 @@ import yaml
 from neo4j import GraphDatabase
 
 claim = json.loads(Path("claims/accepted/C0042.json").read_text())
-driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", "nf1swarm"))
+driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", os.environ["NEO4J_PASSWORD"]))
 
 with driver.session() as session:
     # 1. Create the Claim node itself

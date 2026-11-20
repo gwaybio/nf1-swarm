@@ -8,6 +8,7 @@ Usage:
     python knowledge_graph/seeds/bootstrap.py [--uri bolt://localhost:7687] [--password nf1swarm]
 """
 import argparse
+import os
 import sys
 from pathlib import Path
 
@@ -56,7 +57,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--uri", default="bolt://localhost:7687")
     parser.add_argument("--user", default="neo4j")
-    parser.add_argument("--password", default="nf1swarm")
+    parser.add_argument("--password", default=os.environ.get("NEO4J_PASSWORD", "nf1swarm"))
     args = parser.parse_args()
 
     driver = get_driver(args.uri, args.user, args.password)

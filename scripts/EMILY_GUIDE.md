@@ -85,7 +85,7 @@ uv run python testing/harness/approval_checker.py
 
 ```bash
 sudo systemctl start neo4j      # community 5.26, APOC + GDS already installed
-# bolt://localhost:7687, neo4j/nf1swarm
+# bolt://localhost:7687, neo4j/<password from secrets>
 uv run python knowledge_graph/seeds/bootstrap.py
 ```
 
@@ -95,7 +95,7 @@ never fix a missing-APOC error:
 ```bash
 uv run python -c "
 from neo4j import GraphDatabase
-d = GraphDatabase.driver('bolt://localhost:7687', auth=('neo4j','nf1swarm'))
+d = GraphDatabase.driver('bolt://localhost:7687', auth=('neo4j', os.environ['NEO4J_PASSWORD']))
 print(d.session().run('RETURN apoc.version() AS v').single()['v'])
 "
 ```
