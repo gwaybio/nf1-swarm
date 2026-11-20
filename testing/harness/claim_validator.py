@@ -27,8 +27,9 @@ SCHEMA_PATH = REPO_ROOT / "claims" / "schema.json"
 CONTRACT_PATH = REPO_ROOT / "testing" / "specs" / "claim_contract.yaml"
 RUBRIC_PATH = REPO_ROOT / "testing" / "specs" / "evidence_rubric.yaml"
 EDGE_CONSTRAINTS_PATH = REPO_ROOT / "testing" / "specs" / "edge_constraints.yaml"
-PENDING_DIR = REPO_ROOT / "claims" / "pending"
+PENDING_DIR  = REPO_ROOT / "claims" / "pending"
 ACCEPTED_DIR = REPO_ROOT / "claims" / "accepted"
+REJECTED_DIR = REPO_ROOT / "claims" / "rejected"
 
 # CURIE format: PREFIX:identifier — no pipes, no whitespace.
 # Valid:   NCBIGene:4763  UniProtKB:P21359  MONDO:0009981  HP:0000957
@@ -88,6 +89,15 @@ def validate_claim_contract(claim, contract):
     elif status == "accepted":
         if not claim_id:
             errors.append("Contract: accepted claim must have claim_id (C####) set")
+    elif status in ("rejected", "refuted"):
+        # Accept both R#### (new system) and C#### (legacy — pre-two-stage-ID claims).
+        # Legacy C#### rejected claims are left as-is per Gregory's direction; R####
+        # will be used for all rejections going forward.
+        if not claim_id or not re.match(r'^[CR][0-9]{4}$', str(claim_id)):
+            errors.append(
+                f"Contract: rejected/refuted claim must have claim_id set to "
+                f"R#### (new) or C#### (legacy), got {claim_id!r}"
+            )
 
     # Graude demands it: accepted claims must have curated_by and curation_date
     if claim.get("status") == "accepted":
@@ -180,7 +190,9 @@ def main():
     schema, contract, rubric, edge_constraints = load_specs()
 
     claim_files = sorted(
-        list(PENDING_DIR.glob("*.json")) + list(ACCEPTED_DIR.glob("*.json"))
+        list(PENDING_DIR.glob("*.json"))
+        + list(ACCEPTED_DIR.glob("*.json"))
+        + list(REJECTED_DIR.glob("*.json"))
     )
     claim_files = [f for f in claim_files if f.name != ".gitkeep"]
 

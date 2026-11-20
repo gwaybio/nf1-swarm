@@ -22,7 +22,8 @@ Usage (Dirk — extraction):
 Usage (Rey — acceptance):
     from scripts.reserve_claim_id import accept_claim
     with driver.session() as s:
-        cid = accept_claim("a3f8c21b", s)   # returns "C0042"
+        cid = accept_claim("a3f8c21b", s,
+                           curated_by="rey", curation_date="2026-11-21")
 
 Usage (Rey — rejection):
     from scripts.reserve_claim_id import reject_claim
@@ -33,6 +34,7 @@ Usage (Rey — rejection):
 from __future__ import annotations
 
 import json
+import os
 import secrets
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -82,13 +84,22 @@ def _next_neo4j_counter(session: Session, counter_name: str, prefix: str) -> str
 
 # ── Claim lifecycle ───────────────────────────────────────────────────────────
 
-def accept_claim(pending_id: str, session: Session) -> str:
+def accept_claim(
+    pending_id: str,
+    session: Session,
+    curated_by: str,
+    curation_date: str,
+) -> str:
     """
     Accept a pending claim.
 
     Assigns the next C#### ID (via Neo4j 'claim_id' counter), sets
-    status='accepted', moves the file to claims/accepted/C####.json,
-    and deletes the pending file.
+    status='accepted', curated_by, and curation_date, then atomically
+    moves the file to claims/accepted/C####.json.
+
+    Uses an OS-level rename (atomic on POSIX) of the pending file to a
+    lock-name first, so a competing call for the same pending_id fails
+    before any terminal record is written.
 
     Returns the assigned C#### ID.
     """
@@ -96,15 +107,29 @@ def accept_claim(pending_id: str, session: Session) -> str:
     if not src.exists():
         raise FileNotFoundError(f"Pending claim not found: {src}")
 
-    claim = json.loads(src.read_text())
-    cid = _next_neo4j_counter(session, "claim_id", "C")
+    # Atomically claim exclusive ownership by renaming the pending file.
+    # If two callers race, the second rename raises FileNotFoundError.
+    lock = src.with_suffix(".lock")
+    os.rename(src, lock)
 
-    claim["claim_id"]  = cid
-    claim["status"]    = "accepted"
+    try:
+        claim = json.loads(lock.read_text())
+        cid = _next_neo4j_counter(session, "claim_id", "C")
 
-    dest = ACCEPTED_DIR / f"{cid}.json"
-    dest.write_text(json.dumps(claim, indent=2) + "\n")
-    src.unlink()
+        claim["claim_id"]      = cid
+        claim["status"]        = "accepted"
+        claim["pending_id"]    = None
+        claim["curated_by"]    = curated_by
+        claim["curation_date"] = curation_date
+
+        dest = ACCEPTED_DIR / f"{cid}.json"
+        dest.write_text(json.dumps(claim, indent=2) + "\n")
+        lock.unlink()
+    except Exception:
+        # Restore pending file so the claim is not lost on failure
+        os.rename(lock, src)
+        raise
+
     return cid
 
 
@@ -118,8 +143,9 @@ def reject_claim(
     Reject a pending claim.
 
     Assigns the next R#### ID (via Neo4j 'rejection_id' counter), sets
-    status='rejected', moves the file to claims/rejected/R####.json,
-    and deletes the pending file.
+    status='rejected', moves the file to claims/rejected/R####.json.
+
+    Uses the same atomic-rename lock as accept_claim.
 
     Returns the assigned R#### ID.
     """
@@ -132,18 +158,27 @@ def reject_claim(
     if not src.exists():
         raise FileNotFoundError(f"Pending claim not found: {src}")
 
-    claim = json.loads(src.read_text())
-    rid = _next_neo4j_counter(session, "rejection_id", "R")
+    lock = src.with_suffix(".lock")
+    os.rename(src, lock)
 
-    claim["claim_id"]        = rid
-    claim["status"]          = "rejected"
-    claim["rejection_class"] = rejection_class
-    if rejection_reason:
-        claim["rejection_reason"] = rejection_reason
+    try:
+        claim = json.loads(lock.read_text())
+        rid = _next_neo4j_counter(session, "rejection_id", "R")
 
-    dest = REJECTED_DIR / f"{rid}.json"
-    dest.write_text(json.dumps(claim, indent=2) + "\n")
-    src.unlink()
+        claim["claim_id"]        = rid
+        claim["status"]          = "rejected"
+        claim["pending_id"]      = None
+        claim["rejection_class"] = rejection_class
+        if rejection_reason:
+            claim["rejection_reason"] = rejection_reason
+
+        dest = REJECTED_DIR / f"{rid}.json"
+        dest.write_text(json.dumps(claim, indent=2) + "\n")
+        lock.unlink()
+    except Exception:
+        os.rename(lock, src)
+        raise
+
     return rid
 
 
@@ -161,6 +196,7 @@ def resurrect_claim(rejected_id: str) -> str:
     claim = json.loads(src.read_text())
     new_pending_id = generate_pending_id()
 
+    claim["pending_id"]       = new_pending_id   # Fix: must set before writing
     claim["resurrected_from"] = rejected_id
     claim["claim_id"]         = None
     claim["status"]           = "pending"
