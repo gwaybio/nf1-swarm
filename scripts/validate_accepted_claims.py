@@ -27,7 +27,7 @@ ACCEPTED_DIR = REPO_ROOT / "claims" / "accepted"
 
 
 def main():
-    schema, contract, rubric = load_specs()
+    schema, contract, rubric, edge_constraints = load_specs()
     accepted = list(ACCEPTED_DIR.glob("*.json"))
     if not accepted:
         print("No accepted claims to validate.")
@@ -36,7 +36,7 @@ def main():
     passed = failed = 0
     failing_files = []
     for path in sorted(accepted):
-        ok, errors = validate_file(path, schema, contract, rubric)
+        ok, errors = validate_file(path, schema, contract, rubric, edge_constraints)
         if ok:
             print(f"  PASS  {path.name}")
             passed += 1
