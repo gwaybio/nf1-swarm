@@ -40,16 +40,16 @@ def count_json(directory: Path) -> int:
     return sum(1 for _ in directory.glob("*.json"))
 
 
-def build_provenance(claims: list[dict]) -> list[tuple[str, str, str, str]]:
-    """Return rows of (source_pmid, source_doi, claim_id, status) sorted by PMID/DOI then claim_id."""
+def build_provenance(claims: list[dict]) -> list[tuple[str, str, str]]:
+    """Return rows for ACCEPTED claims only: (source_pmid, source_doi, claim_id)."""
     rows = [
         (
             c.get("source_pmid") or "",
             c.get("source_doi") or "",
             c.get("claim_id", ""),
-            c.get("status", ""),
         )
         for c in claims
+        if c.get("status") == "accepted"
     ]
     return sorted(rows, key=lambda r: (r[0] or r[1], r[2]))
 
@@ -65,7 +65,7 @@ def unique_papers(provenance: list[tuple]) -> int:
 def write_provenance(rows: list[tuple]) -> None:
     with open(PROVENANCE_CSV, "w", newline="", encoding="utf-8") as fh:
         writer = csv.writer(fh, lineterminator="\n")
-        writer.writerow(["source_pmid", "source_doi", "claim_id", "status"])
+        writer.writerow(["source_pmid", "source_doi", "claim_id"])
         writer.writerows(rows)
 
 
