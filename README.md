@@ -2,6 +2,12 @@
 
 An agentic AI swarm compiling the known history of NF1 (Neurofibromatosis type 1) biology and clinical outcomes into a structured, traversable knowledge graph.
 
+<!-- STATS_START -->
+| 🧬 Accepted claims | ⏳ Pending | 📄 Papers processed | 🕐 Updated |
+|:-----------------:|:----------:|:-------------------:|:----------:|
+| 28 | 7 | 0 | 2026-11-20 UTC |
+<!-- STATS_END -->
+
 ## What this is
 
 NF1 is a rare genetic disease (OMIM #162200) caused by loss-of-function mutations in the *NF1* gene encoding neurofibromin, a RAS-GTPase activating protein. It is one of the most common single-gene disorders affecting the nervous system (1:3000 births), with broad phenotypic expression spanning skin, nervous system, eyes, bones, vasculature, and cognition.

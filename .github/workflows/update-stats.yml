@@ -1,0 +1,38 @@
+name: Update README stats
+
+on:
+  schedule:
+    - cron: '0 3 * * *'   # 03:00 UTC daily (after Milo's dream at 02:00)
+  workflow_dispatch:
+
+jobs:
+  update-stats:
+    name: Recompute and commit stats block
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: astral-sh/setup-uv@v7
+        with:
+          enable-cache: true
+
+      - name: Install dependencies
+        run: uv sync
+
+      - name: Update stats block in README.md
+        run: uv run python scripts/update_stats.py
+
+      - name: Commit if changed
+        run: |
+          git config user.name "Emily (nf1-swarm)"
+          git config user.email "emily@nf1-swarm.bot"
+          git add README.md
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git commit -m "chore(stats): update swarm progress $(date -u +%Y-%m-%d)
+
+          Co-authored-by: Gregory Way <gregory.way@gmail.com>"
+          git push origin main
