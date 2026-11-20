@@ -49,7 +49,13 @@ claim_types:
       - systematic_review
       - biochemical_proof
       - preclinical_in_vivo
-    required_related_node_labels: [Mutation, Phenotype]
+    required_related_node_labels: [Phenotype]
+    notes: >
+      Gene nodes are sufficient for gene-level epidemiological claims
+      (e.g. 'pathogenic NF1 variants occur in X% of patients').
+      Mutation nodes (requiring hgvs_cdna) are reserved for specific
+      variant-level claims. When ClinVar-derived claims arrive, revisit
+      adding a GeneticVariantClass node type. See issue #35.
 
   drug_response:
     description: "Drug efficacy, mechanism, or resistance"
