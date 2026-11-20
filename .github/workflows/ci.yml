@@ -126,6 +126,7 @@ jobs:
           d = GraphDatabase.driver('bolt://localhost:7687', auth=('neo4j','nf1swarm'))
           with d.session() as s:
               s.run(\"MERGE (c:Counter {name: 'claim_id'}) ON CREATE SET c.value = 0\")
+              s.run(\"MERGE (c:Counter {name: 'rejection_id'}) ON CREATE SET c.value = 0\")
           d.close()
           "
 
