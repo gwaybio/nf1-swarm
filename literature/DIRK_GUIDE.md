@@ -3,6 +3,8 @@
 > **Python environment:** Always use `uv run python` (or activate `.venv` first).
 > Never use bare `python3`, never `pip install`, never create a private venv.
 > If an import fails, the interpreter is wrong — not the package. Fix: `cd ~/repos/nf1-swarm && uv run python <script>`.
+>
+> **Literature extras:** `literature/text_cleaner.py` requires `marker-pdf`. Install once with `uv sync --extra literature`. Model weights are licensed under datalab.to MODEL_LICENSE (NOT Apache 2.0) — do not redistribute.
 
 ## Fetching papers
 

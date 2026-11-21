@@ -22,6 +22,12 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = ["pytest>=7.0", "pytest-cov"]
+literature = [
+    # marker-pdf brings PyTorch + transformers (~4GB). Install only on machines
+    # doing PDF extraction — not needed for CI graph/validation jobs.
+    # Install: uv sync --extra literature
+    "marker-pdf>=2.2.0",
+]
 
 [dependency-groups]
 dev = [
