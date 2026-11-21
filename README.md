@@ -5,7 +5,7 @@ An agentic AI swarm compiling the known history of NF1 (Neurofibromatosis type 1
 <!-- STATS_START -->
 | 🧬 Accepted claims | ⏳ Pending claims | 📄 Papers processed | 🕐 Updated |
 |:-----------------:|:-----------------:|:-------------------:|:----------:|
-| 28 | 7 | 4 | 2026-11-20 UTC |
+| 28 | 142 | 4 | 2026-11-21 UTC |
 <!-- STATS_END -->
 
 ## What this is
