@@ -11,9 +11,9 @@
   "curated_by": null,
   "status": "pending",
   "semantic_triple": {
-    "subject": "MEK inhibitor (class)",
+    "subject": "MAP2K1 (MEK1, target of MEK inhibitors)",
     "subject_id": "NCBIGene:5604",
-    "predicate": "TARGETS",
+    "predicate": "ASSOCIATED_WITH",
     "object": "neurofibromatosis type 1",
     "object_id": "MONDO:0018975"
   },
@@ -24,7 +24,7 @@
   "claim_type": "clinical_outcome",
   "evidence_strength": 2,
   "evidence_type": "cohort_study",
-  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Walsh 2021 (PMID 34377779, ref 98). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. Authors describe it as proof of concept; small, uncontrolled. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20.",
+  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Walsh 2021 (PMID 34377779, ref 98). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. Authors describe it as proof of concept; small, uncontrolled. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20. | Verified/corrected by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-21. Reframed: TARGETS->ASSOCIATED_WITH. MEK inhibitor class (no specific drug named) cognition trial in NF1. Gene->Disease ASSOCIATED_WITH per edge_constraints.",
   "independence_flags": [
     "secondary citation via review PMID 35788692 of Walsh 2021 (PMID 34377779, ref 98)"
   ],

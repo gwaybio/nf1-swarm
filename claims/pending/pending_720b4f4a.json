@@ -24,7 +24,7 @@
   "claim_type": "clinical_outcome",
   "evidence_strength": 3,
   "evidence_type": "cohort_study",
-  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Gross 2020 (PMID 32187457, ref 22). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. Corroborated in the SPRINT full text I read earlier (2 patients discontinued for MPNST); no incidence comparison to untreated patients. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20.",
+  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Gross 2020 (PMID 32187457, ref 22). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. Corroborated in the SPRINT full text I read earlier (2 patients discontinued for MPNST); no incidence comparison to untreated patients. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20. | Stage 2 verification by Otto (2026-11-21): all CURIEs verified against SRI Node Normalizer \u2014 all canonical. RTX-KG2 edge checks performed for drug-disease pairs.",
   "independence_flags": [
     "secondary citation via review PMID 35788692 of Gross 2020 (PMID 32187457, ref 22)"
   ],

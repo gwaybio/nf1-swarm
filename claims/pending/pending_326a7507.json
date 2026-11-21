@@ -11,10 +11,10 @@
   "curated_by": null,
   "status": "pending",
   "semantic_triple": {
-    "subject": "MEK inhibitor (class)",
+    "subject": "MAP2K1 (MEK1, target of MEK inhibitors)",
     "subject_id": "NCBIGene:5604",
-    "predicate": "TARGETS",
-    "object": "MPNST",
+    "predicate": "ASSOCIATED_WITH",
+    "object": "malignant peripheral nerve sheath tumor",
     "object_id": "MONDO:0017827"
   },
   "bel_notation": null,
@@ -24,7 +24,7 @@
   "claim_type": "drug_response",
   "evidence_strength": 3,
   "evidence_type": "preclinical_in_vivo",
-  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing refs 50-53 (Lock 2016, Malone 2014, De Raedt 2014, Peacock 2018). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. Individual models not verified by Dirk. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20.",
+  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing refs 50-53 (Lock 2016, Malone 2014, De Raedt 2014, Peacock 2018). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. Individual models not verified by Dirk. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20. | Verified/corrected by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-21. Reframed: TARGETS->ASSOCIATED_WITH. MEK inhibitor combination therapy in MPNST models. MAP2K1 as gene target ASSOCIATED_WITH disease. Combo targets: mTOR (NCBIGene:2475), MNK, BRD4, MET.",
   "independence_flags": [
     "secondary citation via review PMID 35788692 of refs 50-53 (Lock 2016, Malone 2014, De Raedt 2014, Peacock 2018)"
   ],

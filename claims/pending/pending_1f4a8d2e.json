@@ -24,7 +24,7 @@
   "claim_type": "clinical_outcome",
   "evidence_strength": 3,
   "evidence_type": "cohort_study",
-  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Fangusaro 2019 (PMID 31151904, ref 23). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20.",
+  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Fangusaro 2019 (PMID 31151904, ref 23). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20. | Stage 2 verification by Otto (2026-11-21): all CURIEs verified against SRI Node Normalizer \u2014 all canonical. RTX-KG2 edge checks performed for drug-disease pairs.",
   "independence_flags": [
     "secondary citation via review PMID 35788692 of Fangusaro 2019 (PMID 31151904, ref 23)"
   ],

@@ -11,9 +11,9 @@
   "curated_by": null,
   "status": "pending",
   "semantic_triple": {
-    "subject": "MEK inhibitor (class)",
+    "subject": "MAP2K1 (MEK1, target of MEK inhibitors)",
     "subject_id": "NCBIGene:5604",
-    "predicate": "TARGETS",
+    "predicate": "ASSOCIATED_WITH",
     "object": "myeloproliferative neoplasm",
     "object_id": "MONDO:0020076"
   },
@@ -24,7 +24,7 @@
   "claim_type": "drug_response",
   "evidence_strength": 3,
   "evidence_type": "preclinical_in_vivo",
-  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Lyubynska 2011 (PMID 21451123, ref 73). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. The review states the models were driven by Kras, Nras or Nf1; only the Kras model is supported by the cited title that I verified. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20.",
+  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Lyubynska 2011 (PMID 21451123, ref 73). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. The review states the models were driven by Kras, Nras or Nf1; only the Kras model is supported by the cited title that I verified. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20. | Verified/corrected by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-21. Reframed: TARGETS->ASSOCIATED_WITH. MEK inhibitor (class, no specific drug named) in Kras-mutant JMML-like mouse model. Gene->Disease ASSOCIATED_WITH per edge_constraints.",
   "independence_flags": [
     "secondary citation via review PMID 35788692 of Lyubynska 2011 (PMID 21451123, ref 73)"
   ],
