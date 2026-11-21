@@ -2,8 +2,18 @@ version = 1
 revision = 5
 requires-python = ">=3.11"
 resolution-markers = [
-    "python_full_version >= '3.12'",
-    "python_full_version < '3.12'",
+    "python_full_version >= '3.14' and sys_platform == 'darwin'",
+    "python_full_version >= '3.14' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "python_full_version >= '3.14' and ((platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux'))",
+    "python_full_version >= '3.12' and python_full_version < '3.14' and sys_platform == 'darwin'",
+    "python_full_version >= '3.12' and python_full_version < '3.14' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "python_full_version >= '3.12' and python_full_version < '3.14' and ((platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux'))",
+    "python_full_version >= '3.11.5' and python_full_version < '3.12' and sys_platform == 'darwin'",
+    "python_full_version >= '3.11.5' and python_full_version < '3.12' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "python_full_version >= '3.11.5' and python_full_version < '3.12' and ((platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux'))",
+    "python_full_version < '3.11.5' and sys_platform == 'darwin'",
+    "python_full_version < '3.11.5' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "python_full_version < '3.11.5' and ((platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux'))",
 ]
 
 [[package]]
@@ -373,11 +383,11 @@ wheels = [
 
 [[package]]
 name = "filelock"
-version = "4.2.11"
+version = "3.32.7"
 source = { registry = "https://pypi.org/simple" }
-sdist = { url = "https://files.pythonhosted.org/packages/bf/9d/7ec738e68764703d07eb4da4b43aabf0ae6f969f34cb3792a88af400abc5/filelock-4.2.11.tar.gz", hash = "sha256:0cb84119fb8dce17898e1f69c974d5019daa59c4d7656be390a5fa59ccced912", size = 680235, upload-time = "2026-11-17T06:35:26.056Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/0f/59/e19834834cb01a32febfbb0f8a23a9088088f5d45991824ff2bc3b5e8acb/filelock-3.32.7.tar.gz", hash = "sha256:37b8a3d9811b0f9aef7e5ec5c71bb320de52df51e6ca9bcd6f5ad81187660da7", size = 225154, upload-time = "2026-09-16T00:24:20.907Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/ed/50/efc158a54b0046104b546f24b28ca1bf25b72969adb960032252a1687a96/filelock-4.2.11-py3-none-any.whl", hash = "sha256:020e229e4bb9d410fc799c07ddf45fa217cba970278f40b30751d94f309b69e2", size = 222003, upload-time = "2026-11-17T06:35:24.668Z" },
+    { url = "https://files.pythonhosted.org/packages/15/df/31098c5aeb4d966b553641472bd55fcf5fdfac953549894b8a765ba44e91/filelock-3.32.7-py3-none-any.whl", hash = "sha256:65ff0d0190ea42038b32bda4b77834fb05be2cad4c5b9b01aa4dfb3614536e52", size = 100157, upload-time = "2026-09-16T00:24:19.543Z" },
 ]
 
 [[package]]
@@ -399,12 +409,33 @@ wheels = [
 ]
 
 [[package]]
+name = "idutils"
+version = "1.7.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "isbnlib2" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/ff/59/e1be78f4fe3af0ae2e5e133d30cd63addae5f0878384722a200c08d4e3e2/idutils-1.7.2.tar.gz", hash = "sha256:563716b3b515594c0ebf608bd2b6b0b137e94ce5fa6b10897a655740aad55f6a", size = 17902, upload-time = "2026-11-13T16:17:59.165Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/09/55/e4368149e2f6656686bcad4f7e60c69bb7f51ab2280d3464fecb93e90392/idutils-1.7.2-py3-none-any.whl", hash = "sha256:f10ad7243b13c2d647eaf9c8e3895b65d0bf41f5927f3cef39453f7e0e7be7a9", size = 21842, upload-time = "2026-11-13T16:17:58.238Z" },
+]
+
+[[package]]
 name = "iniconfig"
 version = "2.3.1"
 source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/01/e1/2069291243c926a2ff1cd706c7f3eeb9b62144bf60f77c9fb9ff2fb26bd3/iniconfig-2.3.1.tar.gz", hash = "sha256:67f4b9c50da0dedf52af349e7749a80a9057a5031199791b906c3bb3ae878960", size = 21209, upload-time = "2026-10-06T22:48:38.076Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/56/43/4ca9e49d27a1fcf6bece6f6aec0ea46bb9112489b93d4b688fb415457bdb/iniconfig-2.3.1-py3-none-any.whl", hash = "sha256:9121e2c1fdb355232495be3194c8dfe87ccc2d5dee45947b78e68f499790d7a7", size = 7552, upload-time = "2026-10-06T22:48:36.959Z" },
+]
+
+[[package]]
+name = "isbnlib2"
+version = "3.11.26"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/b2/df/0dc579906e0f027cf2b750fc11a24b2c026b4e9c76f7afbc51c9c39b7427/isbnlib2-3.11.26.tar.gz", hash = "sha256:305e3b75a5ca249367c7d2b11d66776872719ff98e2baef4be4137bf84b6aed2", size = 58871, upload-time = "2026-11-13T17:33:27.927Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/3b/7c/d7ac9f39b472a0ea9a6d1f6ee2849fe1ba67e78e308f2b685810600b91ef/isbnlib2-3.11.26-py3-none-any.whl", hash = "sha256:539aa384745ad73bcbc6a40a0f58835d5567f4408c20a219d097d2449d9c234d", size = 68404, upload-time = "2026-11-13T17:33:26.614Z" },
 ]
 
 [[package]]
@@ -452,6 +483,7 @@ version = "0.1.0"
 source = { editable = "." }
 dependencies = [
     { name = "biopython" },
+    { name = "idutils" },
     { name = "jsonschema" },
     { name = "neo4j" },
     { name = "pyyaml" },
@@ -472,6 +504,7 @@ dev = [
 [package.metadata]
 requires-dist = [
     { name = "biopython", specifier = ">=1.88" },
+    { name = "idutils", specifier = ">=1.7.2" },
     { name = "jsonschema", specifier = ">=4.0.0" },
     { name = "neo4j", specifier = ">=5.0.0" },
     { name = "pytest", marker = "extra == 'dev'", specifier = ">=7.0" },
@@ -498,7 +531,12 @@ name = "numpy"
 version = "2.4.6"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version < '3.12'",
+    "python_full_version >= '3.11.5' and python_full_version < '3.12' and sys_platform == 'darwin'",
+    "python_full_version >= '3.11.5' and python_full_version < '3.12' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "python_full_version >= '3.11.5' and python_full_version < '3.12' and ((platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux'))",
+    "python_full_version < '3.11.5' and sys_platform == 'darwin'",
+    "python_full_version < '3.11.5' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "python_full_version < '3.11.5' and ((platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux'))",
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/d0/ad/fed0499ce6a338d2a03ebae59cd15093910c8875328855781952abf6c2fe/numpy-2.4.6.tar.gz", hash = "sha256:f3a3570c4a2a16746ac2c31a7c7c7b0c186b95ce902e33db6f28094ed7387dda", size = 20735807, upload-time = "2026-05-18T23:37:14.07Z" }
 wheels = [
@@ -580,7 +618,12 @@ name = "numpy"
 version = "2.5.5"
 source = { registry = "https://pypi.org/simple" }
 resolution-markers = [
-    "python_full_version >= '3.12'",
+    "python_full_version >= '3.14' and sys_platform == 'darwin'",
+    "python_full_version >= '3.14' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "python_full_version >= '3.14' and ((platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux'))",
+    "python_full_version >= '3.12' and python_full_version < '3.14' and sys_platform == 'darwin'",
+    "python_full_version >= '3.12' and python_full_version < '3.14' and platform_machine == 'aarch64' and sys_platform == 'linux'",
+    "python_full_version >= '3.12' and python_full_version < '3.14' and ((platform_machine != 'aarch64' and sys_platform == 'linux') or (sys_platform != 'darwin' and sys_platform != 'linux'))",
 ]
 sdist = { url = "https://files.pythonhosted.org/packages/4e/3a/8770c288c47f0b5c2a786d3c20e79f66fd245f2d42cd232d7cd5e00e83e5/numpy-2.5.5.tar.gz", hash = "sha256:5cddc243c75114ba845f01b1f87aca1572dbf7b6c2d88636ed3e1d2bccd7f1bf", size = 20873892, upload-time = "2026-11-15T21:32:28.607Z" }
 wheels = [
