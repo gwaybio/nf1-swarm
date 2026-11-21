@@ -24,6 +24,8 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
+import idutils
+
 REPO_ROOT = Path(__file__).parent.parent
 DB_PATH   = REPO_ROOT / "data" / "swarm.db"
 QUEUE_MD  = REPO_ROOT / "literature" / "queue.md"
@@ -84,9 +86,10 @@ def _queue_md_entries() -> list[dict]:
         status = {"DONE": "done", "PENDING": "queued",
                   "IN_PROGRESS": "in_progress", "SKIPPED": "skipped"
                   }.get(status_raw, "queued")
-        pmid    = m_pmid.group(1)
-        doi_m   = re.search(r'DOI:(10\.[^\s]+?)(?:\)\s|\)—|\)$|\s)', line)
-        doi     = doi_m.group(1) if doi_m else None
+        pmid    = idutils.normalize_pmid(m_pmid.group(1))
+        # Extract DOI: strip the DOI: prefix, strip wrapper paren, normalize
+        doi_m   = re.search(r'DOI:(\S+)', line)
+        doi     = idutils.normalize_doi(doi_m.group(1).rstrip(")")) if doi_m else None
         issue_m = re.search(r'issue #(\d+)', line)
         issue   = int(issue_m.group(1)) if issue_m else None
         papers.append({"pmid": pmid, "doi": doi, "status": status,
@@ -115,11 +118,12 @@ def _github_issues() -> list[dict]:
             num   = issue["number"]
             title = issue["title"]
             pmid_m = re.search(r'PMID:(\d+)', title)
-            doi_m  = re.search(r'DOI:([^\s\)\-]+)', title)
+            doi_m  = re.search(r'DOI:(\S+)', title)
             if not pmid_m and not doi_m:
                 continue
-            pmid   = pmid_m.group(1) if pmid_m else None
-            doi    = doi_m.group(1) if doi_m else None
+            pmid = idutils.normalize_pmid(pmid_m.group(1)) if pmid_m else None
+            doi_raw = doi_m.group(1).rstrip(")") if doi_m else None
+            doi  = idutils.normalize_doi(doi_raw) if doi_raw else None
             status = "done" if issue["state"] == "CLOSED" else "in_progress"
             papers.append({"pmid": pmid, "doi": doi, "title": title,
                            "status": status, "issue_number": num,
