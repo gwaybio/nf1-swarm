@@ -1,0 +1,25 @@
+{
+  "pending_id": "34477e01",
+  "claim_id": null,
+  "source_pmid": "28230061",
+  "source_doi": "10.1038/nrdp.2017.4",
+  "source_title": "Neurofibromatosis type 1",
+  "source_year": 2017,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-20",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "claim_text": "Loss of Nf1 in brain neurons of mice reduces dopamine signalling, and the resulting learning and attention deficits are corrected by medications that increase brain dopamine, such as methylphenidate.",
+  "claim_type": "drug_response",
+  "evidence_strength": 3,
+  "evidence_type": "preclinical_in_vivo",
+  "notes": "Full text from locally supplied PDF (Nat Rev Dis Primers 2017; not in PMC). Statement made by the Gutmann 2017 Primer citing ref 43 Diggs\u2011Andrews 2013 (PMID not resolved); ref 44 Brown 2010 PMID 20826448. Secondary citation: not independent of the cited primary work; primary paper should be read for strength grading.Ref 43 PMID not resolved by Dirk.",
+  "independence_flags": [
+    "secondary citation via review PMID 28230061 of ref 43, ref 44"
+  ]
+}

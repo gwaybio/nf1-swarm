@@ -1,0 +1,25 @@
+{
+  "pending_id": "a7e9cb7f",
+  "claim_id": null,
+  "source_pmid": "28230061",
+  "source_doi": "10.1038/nrdp.2017.4",
+  "source_title": "Neurofibromatosis type 1",
+  "source_year": 2017,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-20",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "claim_text": "In mouse models of MPNST, biallelic Nf1 inactivation is not sufficient for tumor formation and requires cooperating genetic changes such as loss of Trp53, Pten, or Suz12 (PRC2).",
+  "claim_type": "pathway_interaction",
+  "evidence_strength": 3,
+  "evidence_type": "preclinical_in_vivo",
+  "notes": "Full text from locally supplied PDF (Nat Rev Dis Primers 2017; not in PMC). Statement made by the Gutmann 2017 Primer citing ref 61 Gregorian 2009 PMID 19846776; ref 62 Keng 2012 PMID 22700876; ref 63 Cichowski 1999 PMID 10591652; ref 68 Lee 2014 PMID 25240281; ref 69 De Raedt 2014 PMID 25119042. Secondary citation: not independent of the cited primary work; primary paper should be read for strength grading.The review also notes that complete Trp53 or Pten loss may not be required (refs 64, 65).",
+  "independence_flags": [
+    "secondary citation via review PMID 28230061 of ref 61, ref 62, ref 63, ref 68, ref 69"
+  ]
+}

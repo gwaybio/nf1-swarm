@@ -1,0 +1,25 @@
+{
+  "pending_id": "4ba891d6",
+  "claim_id": null,
+  "source_pmid": "28230061",
+  "source_doi": "10.1038/nrdp.2017.4",
+  "source_title": "Neurofibromatosis type 1",
+  "source_year": 2017,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-20",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "claim_text": "Optic pathway gliomas can develop in young children with NF1 shortly after normal neuroimaging, so screening MRI in asymptomatic children is of little value.",
+  "claim_type": "clinical_outcome",
+  "evidence_strength": 2,
+  "evidence_type": "case_report",
+  "notes": "Full text from locally supplied PDF (Nat Rev Dis Primers 2017; not in PMC). Statement made by the Gutmann 2017 Primer citing ref 111 Listernick 1994 PMID 8021787; ref 112 King 2003 PMID 12955759; ref 113 Listernick 1992 PMID 1403395. Secondary citation: not independent of the cited primary work; primary paper should be read for strength grading.Review notes a longitudinal study (ref 111) failed to find tumors whose early detection altered clinical course; the National NF Foundation Optic Pathway Task Force recommended against routine screening neuroimaging (ref 108).",
+  "independence_flags": [
+    "secondary citation via review PMID 28230061 of ref 111, ref 112, ref 113"
+  ]
+}

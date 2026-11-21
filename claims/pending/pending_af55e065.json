@@ -1,0 +1,25 @@
+{
+  "pending_id": "af55e065",
+  "claim_id": null,
+  "source_pmid": "28230061",
+  "source_doi": "10.1038/nrdp.2017.4",
+  "source_title": "Neurofibromatosis type 1",
+  "source_year": 2017,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-20",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "claim_text": "Life expectancy of individuals with NF1 is reduced by approximately 8 to 21 years compared with the general population.",
+  "claim_type": "clinical_outcome",
+  "evidence_strength": 3,
+  "evidence_type": "cohort_study",
+  "notes": "Full text from locally supplied PDF (Nat Rev Dis Primers 2017; not in PMC). Statement made by the Gutmann 2017 Primer citing ref 2 Uusitalo 2015 PMID 25354145; ref 12 Evans 2011 PMID 21694737; ref 13 Rasmussen 2001 PMID 11283797; ref 14 Masocco 2011 PMID 21439034; ref 15 Zoller 1995 PMID 7604643. Secondary citation: not independent of the cited primary work; primary paper should be read for strength grading.",
+  "independence_flags": [
+    "secondary citation via review PMID 28230061 of ref 2, ref 12, ref 13, ref 14, ref 15"
+  ]
+}

@@ -1,0 +1,25 @@
+{
+  "pending_id": "cc8f9268",
+  "claim_id": null,
+  "source_pmid": "28230061",
+  "source_doi": "10.1038/nrdp.2017.4",
+  "source_title": "Neurofibromatosis type 1",
+  "source_year": 2017,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-20",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "claim_text": "Individuals with 1.4 Mb deletions encompassing the entire NF1 gene typically show facial dysmorphism, reduced intellectual abilities, and an increased incidence of cancer.",
+  "claim_type": "genetic_association",
+  "evidence_strength": 3,
+  "evidence_type": "cohort_study",
+  "notes": "Full text from locally supplied PDF (Nat Rev Dis Primers 2017; not in PMC). Statement made by the Gutmann 2017 Primer citing ref 18 Pasmant 2010 (PMID not resolved); ref 105 De Raedt 2003 PMID 12660952. Secondary citation: not independent of the cited primary work; primary paper should be read for strength grading.",
+  "independence_flags": [
+    "secondary citation via review PMID 28230061 of ref 18, ref 105"
+  ]
+}
