@@ -1,8 +1,15 @@
 #!/usr/bin/env python3
 """
-Rebuild data/swarm.db from the canonical sources in this repo.
+Rebuild data/swarm.db — papers-only bibliography index.
 
-Run after any `git pull` that changes claims/ or literature/ files.
+Sources (in order of precedence):
+  1. Open/closed GitHub issues with label 'paper' (live status from tracker)
+  2. literature/queue.md (local queue entries)
+
+Neo4j is the claim store. This DB covers only paper-level status so agents
+can answer "has this paper been read?" without scanning GitHub issues.
+
+Run after any `git pull` that changes literature/ files, or on `git push`.
 Called automatically by lookup.py when the DB is missing or stale.
 
 Usage:
@@ -19,15 +26,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).parent.parent
 DB_PATH   = REPO_ROOT / "data" / "swarm.db"
-
-CLAIMS_DIRS = [
-    REPO_ROOT / "claims" / "accepted",
-    REPO_ROOT / "claims" / "pending",
-    REPO_ROOT / "claims" / "rejected",
-]
-QUEUE_MD    = REPO_ROOT / "literature" / "queue.md"
-CONTRACT    = REPO_ROOT / "testing" / "specs" / "claim_contract.yaml"
-RUBRIC      = REPO_ROOT / "testing" / "specs" / "evidence_rubric.yaml"
+QUEUE_MD  = REPO_ROOT / "literature" / "queue.md"
 
 
 # ── Schema ────────────────────────────────────────────────────────────────────
@@ -39,52 +38,22 @@ CREATE TABLE IF NOT EXISTS meta (
 );
 
 CREATE TABLE IF NOT EXISTS papers (
-    pmid            TEXT PRIMARY KEY,
-    doi             TEXT,
-    title           TEXT,
-    year            INTEGER,
-    journal         TEXT,
-    status          TEXT DEFAULT 'queued',
-    issue_number    INTEGER,
-    source_type     TEXT DEFAULT 'primary',
-    grounding_hints TEXT,  -- JSON blob for Otto's CURIEs
-    claim_ids       TEXT,  -- JSON array of resulting claim IDs
-    updated_at      TEXT
+    pmid           TEXT PRIMARY KEY,
+    doi            TEXT,
+    title          TEXT,
+    year           INTEGER,
+    journal        TEXT,
+    status         TEXT DEFAULT 'queued'
+                   CHECK(status IN ('queued','in_progress','done','skipped')),
+    issue_number   INTEGER,
+    source_type    TEXT DEFAULT 'primary'
+                   CHECK(source_type IN ('primary','review','review_extraction')),
+    processed_date TEXT
 );
 
-CREATE TABLE IF NOT EXISTS claims (
-    pending_id  TEXT,
-    claim_id    TEXT,
-    claim_type  TEXT,
-    subject_id  TEXT,
-    predicate   TEXT,
-    object_id   TEXT,
-    source_pmid TEXT,
-    status      TEXT
-);
-
-CREATE UNIQUE INDEX IF NOT EXISTS idx_claims_pk
-    ON claims(COALESCE(pending_id, claim_id));
-CREATE INDEX IF NOT EXISTS idx_claims_triple
-    ON claims(subject_id, predicate, object_id);
-CREATE INDEX IF NOT EXISTS idx_claims_pmid
-    ON claims(source_pmid);
-
-CREATE TABLE IF NOT EXISTS cited_references (
-    source_pmid TEXT,
-    cited_pmid  TEXT,
-    review_count INTEGER DEFAULT 1,
-    status       TEXT DEFAULT 'queued',
-    PRIMARY KEY (source_pmid, cited_pmid)
-);
-
-CREATE TABLE IF NOT EXISTS contract_rules (
-    claim_type    TEXT,
-    evidence_type TEXT,
-    min_strength  INTEGER,
-    max_strength  INTEGER DEFAULT 5,
-    PRIMARY KEY (claim_type, evidence_type)
-);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_papers_doi
+    ON papers(doi) WHERE doi IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_papers_status ON papers(status);
 """
 
 
@@ -100,55 +69,62 @@ def _git_head() -> str:
         return "unknown"
 
 
-def _load_claim_files() -> list[dict]:
-    claims = []
-    for d in CLAIMS_DIRS:
-        for f in d.glob("*.json"):
-            if f.stat().st_size < 50:
-                continue
-            try:
-                claims.append(json.loads(f.read_text()))
-            except json.JSONDecodeError:
-                pass
-    return claims
-
-
-def _queue_md_papers() -> list[dict]:
-    """Parse literature/queue.md for paper entries."""
+def _queue_md_entries() -> list[dict]:
+    """Parse literature/queue.md → list of paper dicts."""
     if not QUEUE_MD.exists():
         return []
     papers = []
     for line in QUEUE_MD.read_text().splitlines():
-        m = re.search(r'\[(\w+)\].*PMID:(\d+)', line)
-        if not m:
+        # Lines: - `[DONE]` Title — PMID:2116237 (DOI:...) — issue #14
+        m_status = re.search(r'\[(\w+)\]', line)
+        m_pmid   = re.search(r'PMID:(\d+)', line)
+        if not m_status or not m_pmid:
             continue
-        status_raw, pmid = m.group(1).lower(), m.group(2)
-        status = {"done": "done", "pending": "queued", "in_progress": "in_progress",
-                  "skipped": "skipped"}.get(status_raw, "queued")
-        doi_m = re.search(r'DOI:(\S+)\)', line)
-        doi = doi_m.group(1).rstrip(")") if doi_m else None
+        status_raw = m_status.group(1).upper()
+        status = {"DONE": "done", "PENDING": "queued",
+                  "IN_PROGRESS": "in_progress", "SKIPPED": "skipped"
+                  }.get(status_raw, "queued")
+        pmid    = m_pmid.group(1)
+        doi_m   = re.search(r'DOI:(10\.[^\s]+?)(?:\)\s|\)—|\)$|\s)', line)
+        doi     = doi_m.group(1) if doi_m else None
         issue_m = re.search(r'issue #(\d+)', line)
-        issue_num = int(issue_m.group(1)) if issue_m else None
+        issue   = int(issue_m.group(1)) if issue_m else None
         papers.append({"pmid": pmid, "doi": doi, "status": status,
-                       "issue_number": issue_num, "source_type": "primary"})
+                       "issue_number": issue, "source_type": "primary"})
     return papers
 
 
-def _load_contract_rules() -> list[tuple]:
-    """Extract (claim_type, evidence_type, min_strength) from contract YAML."""
-    try:
-        import yaml
-    except ImportError:
-        return []
-    if not CONTRACT.exists():
-        return []
-    spec = yaml.safe_load(CONTRACT.read_text())
-    rows = []
-    for ctype, rules in spec.get("claim_types", {}).items():
-        min_s = rules.get("min_evidence_strength", 1)
-        for etype in rules.get("allowed_evidence_types", []):
-            rows.append((ctype, etype, min_s, 5))
-    return rows
+def _github_issues() -> list[dict]:
+    """Fetch paper issues from GitHub via gh CLI (open + closed)."""
+    papers = []
+    for state in ("open", "closed"):
+        try:
+            raw = subprocess.check_output(
+                ["gh", "issue", "list",
+                 "--repo", "gwaybio/nf1-swarm",
+                 "--label", "paper",
+                 "--state", state,
+                 "--limit", "200",
+                 "--json", "number,title,state"],
+                text=True, timeout=20
+            )
+        except (subprocess.CalledProcessError, FileNotFoundError,
+                subprocess.TimeoutExpired):
+            continue
+        for issue in json.loads(raw):
+            num   = issue["number"]
+            title = issue["title"]
+            pmid_m = re.search(r'PMID:(\d+)', title)
+            doi_m  = re.search(r'DOI:([^\s\)\-]+)', title)
+            if not pmid_m and not doi_m:
+                continue
+            pmid   = pmid_m.group(1) if pmid_m else None
+            doi    = doi_m.group(1) if doi_m else None
+            status = "done" if issue["state"] == "CLOSED" else "in_progress"
+            papers.append({"pmid": pmid, "doi": doi, "title": title,
+                           "status": status, "issue_number": num,
+                           "source_type": "primary"})
+    return papers
 
 
 # ── Build ─────────────────────────────────────────────────────────────────────
@@ -160,70 +136,53 @@ def build(db_path: Path = DB_PATH) -> None:
     con = sqlite3.connect(db_path)
     con.executescript(SCHEMA)
 
-    # --- meta ---
+    now = datetime.now(timezone.utc).isoformat()
     con.execute("INSERT OR REPLACE INTO meta VALUES (?,?)", ("commit", _git_head()))
-    con.execute("INSERT OR REPLACE INTO meta VALUES (?,?)",
-                ("rebuilt_at", datetime.now(timezone.utc).isoformat()))
+    con.execute("INSERT OR REPLACE INTO meta VALUES (?,?)", ("rebuilt_at", now))
 
-    # --- papers from queue.md ---
-    for p in _queue_md_papers():
+    # queue.md first (lower precedence — no upsert, just IGNORE)
+    for p in _queue_md_entries():
+        if not p.get("pmid"):
+            continue
         con.execute("""
             INSERT OR IGNORE INTO papers
-                (pmid, doi, status, issue_number, source_type, updated_at)
+                (pmid, doi, status, issue_number, source_type, processed_date)
             VALUES (?,?,?,?,?,?)
         """, (p["pmid"], p.get("doi"), p["status"],
-              p.get("issue_number"), p["source_type"],
-              datetime.now(timezone.utc).isoformat()))
+              p.get("issue_number"), p["source_type"], now))
 
-    # --- claims + backfill papers from claim files ---
-    all_claims = _load_claim_files()
-    paper_claim_ids: dict[str, list[str]] = {}
-
-    for c in all_claims:
-        pid  = c.get("pending_id")
-        cid  = c.get("claim_id")
-        pmid = c.get("source_pmid") or ""
-        triple = c.get("semantic_triple") or {}
-
-        con.execute("""
-            INSERT OR IGNORE INTO claims
-                (pending_id, claim_id, claim_type, subject_id, predicate,
-                 object_id, source_pmid, status)
-            VALUES (?,?,?,?,?,?,?,?)
-        """, (pid, cid, c.get("claim_type"),
-              triple.get("subject_id"), triple.get("predicate"),
-              triple.get("object_id"), pmid, c.get("status", "pending")))
-
-        # ensure paper row exists (may not be in queue.md yet)
-        if pmid:
+    # GitHub issues (higher precedence — upsert status and issue_number)
+    for p in _github_issues():
+        if not p.get("pmid") and not p.get("doi"):
+            continue
+        if p.get("pmid"):
             con.execute("""
-                INSERT OR IGNORE INTO papers (pmid, status, updated_at)
-                VALUES (?,?,?)
-            """, (pmid, "done", datetime.now(timezone.utc).isoformat()))
-
-            if cid and c.get("status") == "accepted":
-                paper_claim_ids.setdefault(pmid, []).append(cid)
-
-    # --- backfill claim_ids JSON on papers ---
-    for pmid, ids in paper_claim_ids.items():
-        con.execute("UPDATE papers SET claim_ids=? WHERE pmid=?",
-                    (json.dumps(sorted(ids)), pmid))
-
-    # --- contract rules ---
-    for row in _load_contract_rules():
-        con.execute("""
-            INSERT OR REPLACE INTO contract_rules
-                (claim_type, evidence_type, min_strength, max_strength)
-            VALUES (?,?,?,?)
-        """, row)
+                INSERT INTO papers
+                    (pmid, doi, title, status, issue_number, source_type, processed_date)
+                VALUES (?,?,?,?,?,?,?)
+                ON CONFLICT(pmid) DO UPDATE SET
+                    doi          = COALESCE(excluded.doi, doi),
+                    title        = COALESCE(excluded.title, title),
+                    status       = excluded.status,
+                    issue_number = excluded.issue_number
+            """, (p["pmid"], p.get("doi"), p.get("title"),
+                  p["status"], p["issue_number"], p["source_type"], now))
+        elif p.get("doi"):
+            con.execute("""
+                INSERT INTO papers
+                    (doi, title, status, issue_number, source_type, processed_date)
+                VALUES (?,?,?,?,?,?)
+                ON CONFLICT(doi) DO UPDATE SET
+                    title        = COALESCE(excluded.title, title),
+                    status       = excluded.status,
+                    issue_number = excluded.issue_number
+            """, (p["doi"], p.get("title"),
+                  p["status"], p["issue_number"], p["source_type"], now))
 
     con.commit()
+    paper_count = con.execute("SELECT COUNT(*) FROM papers").fetchone()[0]
     con.close()
-
-    claim_count = len(all_claims)
-    paper_count = len(_queue_md_papers())
-    print(f"Rebuilt {db_path} — {paper_count} papers, {claim_count} claims, "
-          f"commit {_git_head()}")
+    print(f"Rebuilt {db_path} — {paper_count} papers, commit {_git_head()}")
 
 
 if __name__ == "__main__":
