@@ -35,3 +35,6 @@ backups/
 .hermes/profiles/*/skins/
 .hermes/profiles/*/provider_models_cache*
 .hermes/profiles/*/context_length_cache*
+
+# Paywalled PDFs — local only, never commit
+literature/paywalled_pdfs/
