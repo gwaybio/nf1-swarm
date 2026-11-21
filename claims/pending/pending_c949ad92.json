@@ -1,0 +1,25 @@
+{
+  "pending_id": "c949ad92",
+  "claim_id": null,
+  "source_pmid": "30006586",
+  "source_doi": "10.1038/gim.2018.28",
+  "source_title": "Care of adults with neurofibromatosis type 1: a clinical practice resource of the American College of Medical Genetics and Genomics (ACMG)",
+  "source_year": 2018,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-20",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "claim_text": "In the Finnish registry cohort, women with NF1 had a significant excess of breast cancer (standardized incidence ratio 3.04) that was greatest under 40 years of age (standardized incidence ratio 11.1), with the youngest cases diagnosed around age 30.",
+  "claim_type": "clinical_outcome",
+  "evidence_strength": 3,
+  "evidence_type": "cohort_study",
+  "notes": "Full text from locally supplied PDF (Genet Med 2018;20:671-682; not in PMC). Statement made by the ACMG adult NF1 practice resource citing ref 14 Uusitalo 2016 PMID 26926675. Secondary citation: not independent of the cited primary work; primary paper should be read for strength grading. Finnish registry analysis (ref 14, n=1,404 clinically diagnosed NF1, 19,076 person-years). Gutmann 2017 cites the same study (ref 144) for related breast-cancer risk figures; not independent.",
+  "independence_flags": [
+    "secondary citation via guideline PMID 30006586 of ref 14"
+  ]
+}

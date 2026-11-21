@@ -1,0 +1,25 @@
+{
+  "pending_id": "c767d229",
+  "claim_id": null,
+  "source_pmid": "30006586",
+  "source_doi": "10.1038/gim.2018.28",
+  "source_title": "Care of adults with neurofibromatosis type 1: a clinical practice resource of the American College of Medical Genetics and Genomics (ACMG)",
+  "source_year": 2018,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-20",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "claim_text": "The p.Arg1809Cys substitution in neurofibromin is associated with a distinctive NF1 phenotype without neurofibromas.",
+  "claim_type": "genetic_association",
+  "evidence_strength": 3,
+  "evidence_type": "cohort_study",
+  "notes": "Full text from locally supplied PDF (Genet Med 2018;20:671-682; not in PMC). Statement made by the ACMG adult NF1 practice resource citing ref 10 Pinna 2015 PMID 25370043. Secondary citation: not independent of the cited primary work; primary paper should be read for strength grading.Overlaps the codon 1809 claim from the Gutmann 2017 Primer (different primary paper: Rojnueangnit 2015); possible supporting evidence for the same claim.",
+  "independence_flags": [
+    "secondary citation via guideline PMID 30006586 of ref 10"
+  ]
+}

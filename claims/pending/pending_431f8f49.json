@@ -1,0 +1,25 @@
+{
+  "pending_id": "431f8f49",
+  "claim_id": null,
+  "source_pmid": "30006586",
+  "source_doi": "10.1038/gim.2018.28",
+  "source_title": "Care of adults with neurofibromatosis type 1: a clinical practice resource of the American College of Medical Genetics and Genomics (ACMG)",
+  "source_year": 2018,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-20",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "claim_text": "In a retrospective review of reported cases of NF1 vasculopathy, renal artery stenosis was most common (41%), followed by cerebrovascular vasculopathy (19%) and abnormalities of the abdominal aorta (12%).",
+  "claim_type": "phenotype_association",
+  "evidence_strength": 3,
+  "evidence_type": "cohort_study",
+  "notes": "Full text from locally supplied PDF (Genet Med 2018;20:671-682; not in PMC). Statement made by the ACMG adult NF1 practice resource citing ref 59 Oderich 2007 PMID 17681709. Secondary citation: not independent of the cited primary work; primary paper should be read for strength grading.",
+  "independence_flags": [
+    "secondary citation via guideline PMID 30006586 of ref 59"
+  ]
+}

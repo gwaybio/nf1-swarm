@@ -1,0 +1,25 @@
+{
+  "pending_id": "c3fbd38f",
+  "claim_id": null,
+  "source_pmid": "30006586",
+  "source_doi": "10.1038/gim.2018.28",
+  "source_title": "Care of adults with neurofibromatosis type 1: a clinical practice resource of the American College of Medical Genetics and Genomics (ACMG)",
+  "source_year": 2018,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-20",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "claim_text": "In advanced or metastatic MPNST, the response rate to doxorubicin plus ifosfamide is about 21% in a multi-institutional retrospective study.",
+  "claim_type": "drug_response",
+  "evidence_strength": 3,
+  "evidence_type": "cohort_study",
+  "notes": "Full text from locally supplied PDF (Genet Med 2018;20:671-682; not in PMC). Statement made by the ACMG adult NF1 practice resource citing ref 20 Kroep 2011 PMID 20656792. Secondary citation: not independent of the cited primary work; primary paper should be read for strength grading.The cited EORTC study compared MPNST with other soft-tissue sarcoma subtypes; not NF1-specific.",
+  "independence_flags": [
+    "secondary citation via guideline PMID 30006586 of ref 20"
+  ]
+}

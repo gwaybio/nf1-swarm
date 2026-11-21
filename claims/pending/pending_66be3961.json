@@ -1,0 +1,25 @@
+{
+  "pending_id": "66be3961",
+  "claim_id": null,
+  "source_pmid": "30006586",
+  "source_doi": "10.1038/gim.2018.28",
+  "source_title": "Care of adults with neurofibromatosis type 1: a clinical practice resource of the American College of Medical Genetics and Genomics (ACMG)",
+  "source_year": 2018,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-20",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "claim_text": "In English hospital and mortality statistics (1999-2011), the highest relative risk of breast cancer in women with NF1 was in women aged 30-39 years (relative risk 6.5), decreasing to general-population risk by about age 70.",
+  "claim_type": "clinical_outcome",
+  "evidence_strength": 3,
+  "evidence_type": "cohort_study",
+  "notes": "Full text from locally supplied PDF (Genet Med 2018;20:671-682; not in PMC). Statement made by the ACMG adult NF1 practice resource citing ref 30 Seminog 2015 PMID 25742481. Secondary citation: not independent of the cited primary work; primary paper should be read for strength grading.",
+  "independence_flags": [
+    "secondary citation via guideline PMID 30006586 of ref 30"
+  ]
+}

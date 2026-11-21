@@ -1,0 +1,25 @@
+{
+  "pending_id": "bcd99b56",
+  "claim_id": null,
+  "source_pmid": "30006586",
+  "source_doi": "10.1038/gim.2018.28",
+  "source_title": "Care of adults with neurofibromatosis type 1: a clinical practice resource of the American College of Medical Genetics and Genomics (ACMG)",
+  "source_year": 2018,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-20",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "claim_text": "Breast cancer death (proportionate mortality ratio) was 3.5-fold increased in women with NF1 compared with population controls in a study of 1,186 people with NF1 in northwest England.",
+  "claim_type": "clinical_outcome",
+  "evidence_strength": 3,
+  "evidence_type": "cohort_study",
+  "notes": "Full text from locally supplied PDF (Genet Med 2018;20:671-682; not in PMC). Statement made by the ACMG adult NF1 practice resource citing ref 4 Evans 2011 PMID 21694737. Secondary citation: not independent of the cited primary work; primary paper should be read for strength grading.",
+  "independence_flags": [
+    "secondary citation via guideline PMID 30006586 of ref 4"
+  ]
+}

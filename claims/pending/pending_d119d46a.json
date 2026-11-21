@@ -1,0 +1,25 @@
+{
+  "pending_id": "d119d46a",
+  "claim_id": null,
+  "source_pmid": "30006586",
+  "source_doi": "10.1038/gim.2018.28",
+  "source_title": "Care of adults with neurofibromatosis type 1: a clinical practice resource of the American College of Medical Genetics and Genomics (ACMG)",
+  "source_year": 2018,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-20",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "claim_text": "The overall incidence of vasculopathy in NF1 is estimated at 0.4-6.4%, and the incidence of cerebrovascular vasculopathy specifically at 2-5%.",
+  "claim_type": "phenotype_association",
+  "evidence_strength": 3,
+  "evidence_type": "cohort_study",
+  "notes": "Full text from locally supplied PDF (Genet Med 2018;20:671-682; not in PMC). Statement made by the ACMG adult NF1 practice resource citing ref 52 Friedman 2002 PMID 12180143; ref 60 Hamilton 2000 PMID 11140831; ref 61 Lin 2000 PMID 11078559; ref 62 Cairns 2008 PMID 18469031. Secondary citation: not independent of the cited primary work; primary paper should be read for strength grading.",
+  "independence_flags": [
+    "secondary citation via guideline PMID 30006586 of ref 52, ref 60, ref 61, ref 62"
+  ]
+}

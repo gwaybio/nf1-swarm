@@ -1,0 +1,25 @@
+{
+  "pending_id": "a7390f20",
+  "claim_id": null,
+  "source_pmid": "30006586",
+  "source_doi": "10.1038/gim.2018.28",
+  "source_title": "Care of adults with neurofibromatosis type 1: a clinical practice resource of the American College of Medical Genetics and Genomics (ACMG)",
+  "source_year": 2018,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-20",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "claim_text": "The ACMG recommends considering screening for depression in adults with NF1, and recommends that adults with NF1 be evaluated by and have care coordinated with a specialized NF1 clinic.",
+  "claim_type": "phenotype_association",
+  "evidence_strength": 2,
+  "evidence_type": "expert_opinion",
+  "notes": "Full text from locally supplied PDF (Genet Med 2018;20:671-682; not in PMC). ACMG practice resource recommendation derived by work-group consensus from the literature and the authors' expertise; the authors state evidence is limited. Capped at 2 (expert_opinion).",
+  "independence_flags": [
+    "expert consensus recommendation; not an empirical finding"
+  ]
+}

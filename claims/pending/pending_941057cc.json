@@ -1,0 +1,25 @@
+{
+  "pending_id": "941057cc",
+  "claim_id": null,
+  "source_pmid": "30006586",
+  "source_doi": "10.1038/gim.2018.28",
+  "source_title": "Care of adults with neurofibromatosis type 1: a clinical practice resource of the American College of Medical Genetics and Genomics (ACMG)",
+  "source_year": 2018,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-20",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "pending",
+  "semantic_triple": null,
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "claim_text": "A decreased bone mineral density and osteoporosis have a high prevalence in NF1 adults, occur at an earlier age, and progress over time (NF1-related osteopenia often progresses to osteoporosis within 12 years).",
+  "claim_type": "phenotype_association",
+  "evidence_strength": 3,
+  "evidence_type": "cohort_study",
+  "notes": "Full text from locally supplied PDF (Genet Med 2018;20:671-682; not in PMC). Statement made by the ACMG adult NF1 practice resource citing ref 63 Kuorilehto 2005 (PMID not resolved); ref 64 Lammert 2005 PMID 15988556; ref 65 Seitz 2010 PMID 19415373; ref 66 Heerva 2013 PMID 23108390. Secondary citation: not independent of the cited primary work; primary paper should be read for strength grading.",
+  "independence_flags": [
+    "secondary citation via guideline PMID 30006586 of ref 63, ref 64, ref 65, ref 66"
+  ]
+}
