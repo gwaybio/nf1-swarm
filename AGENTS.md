@@ -270,6 +270,8 @@ source .venv/bin/activate       # then use python normally
 
 If `import neo4j` or any other import fails, the problem is that you are using the wrong Python interpreter — not that the package is missing. Fix: use `uv run`. Never `pip install` or `python3 -m venv` inside this repo or in your profile directory. Never create a private venv in `~/.hermes/profiles/<agent>/cache/` or anywhere outside the project.
 
+**Literature extras (Dirk only):** PDF extraction via `literature/text_cleaner.py` requires `marker-pdf`. Install once with `uv sync --extra literature`. **Model weights licence:** marker downloads weights from datalab.to on first use. Those weights are under the datalab.to MODEL_LICENSE (AI Pubs Open Rail-M) — free for research/personal use and startups < $5M; commercial use requires a paid licence. Do NOT redistribute the downloaded weights. Code is Apache 2.0.
+
 # Then commit — the template adds the trailer automatically
 git commit -m "claim(dirk): short description"
 
