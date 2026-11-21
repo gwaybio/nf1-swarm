@@ -5,15 +5,14 @@ on:
     branches: [main]
   workflow_dispatch:
 
-concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   validate:
     name: Validate claims & schema
     runs-on: ubuntu-latest
     timeout-minutes: 5
+    concurrency:
+      group: ci-validate-${{ github.ref }}
+      cancel-in-progress: true
 
     steps:
       - uses: actions/checkout@v7
@@ -89,6 +88,9 @@ jobs:
     name: Graph assertions
     runs-on: ubuntu-latest
     timeout-minutes: 10
+    concurrency:
+      group: ci-graph-${{ github.ref }}
+      cancel-in-progress: true
     env:
       NEO4J_PASSWORD: ${{ secrets.NEO4J_PASSWORD }}
 
@@ -99,6 +101,24 @@ jobs:
         # .neo4j-version is the single source of truth for the server version.
         # services: image tags can't use env vars, so we start Neo4j manually.
         run: echo "NEO4J_VERSION=$(cat .neo4j-version)" >> "$GITHUB_ENV"
+
+      - name: Cache Neo4j Docker image
+        id: cache-neo4j
+        uses: actions/cache@v4
+        with:
+          path: /tmp/neo4j-image.tar
+          key: neo4j-${{ env.NEO4J_VERSION }}-community
+
+      - name: Load or pull Neo4j image
+        run: |
+          if [ -f /tmp/neo4j-image.tar ]; then
+            echo "Loading Neo4j image from cache..."
+            docker load -i /tmp/neo4j-image.tar
+          else
+            echo "Pulling Neo4j image..."
+            docker pull neo4j:${{ env.NEO4J_VERSION }}-community
+            docker save neo4j:${{ env.NEO4J_VERSION }}-community -o /tmp/neo4j-image.tar
+          fi
 
       - name: Start Neo4j
         run: |
