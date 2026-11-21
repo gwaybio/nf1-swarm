@@ -1,6 +1,6 @@
 {
-  "last_updated": "2026-11-20T10:04:04.952753+00:00",
-  "total_claims_pending": 7,
+  "last_updated": "2026-11-21T09:06:52.903707+00:00",
+  "total_claims_pending": 142,
   "total_claims_accepted": 28,
   "total_claims_rejected": 0,
   "acceptance_rate_history": [
@@ -27,6 +27,11 @@
     {
       "date": "2026-11-20T10:04:04.952753+00:00",
       "rate": 0.8,
+      "accepted": 28
+    },
+    {
+      "date": "2026-11-21T09:06:52.903707+00:00",
+      "rate": 0.16470588235294117,
       "accepted": 28
     }
   ],
