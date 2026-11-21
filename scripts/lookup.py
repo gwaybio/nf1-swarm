@@ -62,7 +62,9 @@ def _ensure_db() -> sqlite3.Connection:
 
 
 def _rebuild() -> None:
-    from scripts.rebuild_db import build
+    import sys as _sys
+    _sys.path.insert(0, str(REPO_ROOT))
+    from scripts.rebuild_db import build  # noqa: PLC0415
     build()
 
 
