@@ -38,3 +38,5 @@ backups/
 
 # Paywalled PDFs — local only, never commit
 literature/paywalled_pdfs/
+data/swarm.db
+data/*.db
