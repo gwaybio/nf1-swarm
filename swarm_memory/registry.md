@@ -1,9 +1,9 @@
 # Swarm Agent Registry
-Maintained by Milo. Last dream: 2026-11-21 09:06 UTC
+Maintained by Milo. Last dream: 2026-11-22 09:15 UTC
 Graph: 28 accepted claims, 142 pending.
 ---
 ## @graude
-Last commit: b07a971 chore: gitignore literature/paywalled_pdfs/ — local PDFs only
+Last commit: 13169e2 docs: add nf1-swarm architecture diagram
 Context health: idle (no commits yet)
 
 ## @dirk
@@ -11,7 +11,7 @@ Last commit: be92047 claim(dirk): Stewart 2018 ACMG adult NF1 care guideline
 Context health: idle (no commits yet)
 
 ## @otto
-Last commit: 0a78666 fix: expose NEO4J_PASSWORD env var to CI job steps
+Last commit: 0ecd048 ontology(otto): verify and correct de Blank 2022 claims (25 pending, issue #42)
 Context health: idle (no commits yet)
 
 ## @archie
@@ -31,10 +31,10 @@ Last commit: fd4ea0a curation(rey): accept C0031/C0032/C0035, reject C0033/C0034
 Context health: idle (no commits yet)
 
 ## @emily
-Last commit: eda34eb feat(#62): SQLite lookup layer — data/swarm.db + scripts/lookup.py
+Last commit: 1d6152c refactor(#62): use idutils for DOI/PMID normalization, drop hand-rolled regex
 Context health: idle (no commits yet)
 
 ## @milo
-Last commit: ea42226 memory(milo): add graude_briefing.md to Phase 5 — session-start anchor for Graude
+Last commit: 180a59a chore(milo): nightly dream consolidation 2026-11-21
 Context health: idle (no commits yet)
 

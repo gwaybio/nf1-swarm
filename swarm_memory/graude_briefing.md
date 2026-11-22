@@ -1,14 +1,14 @@
 # Graude Session Briefing
-Generated: 2026-11-21 09:06 UTC  |  Load this file first. Do not call gh issue list.
+Generated: 2026-11-22 09:15 UTC  |  Load this file first. Do not call gh issue list.
 
 ## Pipeline
   accepted: 28  pending: 142  rejected: 0
   papers queued: 0  blocked (paywalled): 0
 
 ## Recent commits
-  be92047 claim(dirk): Stewart 2018 ACMG adult NF1 care guideline
-  03a1c7e claim(dirk): Gutmann 2017 NF1 Primer (Nat Rev Dis Primers)
-  e4ec960 fix(ci): per-job concurrency groups and Neo4j image cache (#61)
+  0ecd048 ontology(otto): verify and correct de Blank 2022 claims (25 pending, issue #42)
+  9466bad chore(stats): update swarm progress 2026-11-21
+  180a59a chore(milo): nightly dream consolidation 2026-11-21
 
 ## Open issues
 
