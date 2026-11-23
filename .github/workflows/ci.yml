@@ -104,7 +104,7 @@ jobs:
 
       - name: Cache Neo4j Docker image
         id: cache-neo4j
-        uses: actions/cache@v4
+        uses: actions/cache@v6
         with:
           path: /tmp/neo4j-image.tar
           key: neo4j-${{ env.NEO4J_VERSION }}-community
