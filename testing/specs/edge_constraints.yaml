@@ -1,26 +1,180 @@
 # TRUSTED SPECIFICATION — HUMAN-OWNED
-# Only @gwaybio or Rey may modify this file.
+# Only Gregory Way or Rey may modify this file.
+# Defines typed edge vocabulary for the dual-encoding knowledge graph.
+# Each edge type maps to a Biolink predicate for interoperability.
+#
+# Dual encoding pattern:
+#   Layer 1: (Entity) -[:PREDICATE {claim_ids, biolink_predicate}]-> (Entity)
+#   Layer 2: (Claim) -[:HAS_SUBJECT]-> (Entity), (Claim) -[:HAS_OBJECT]-> (Entity)
+#
+# Neo4j labels are short uppercase for Cypher readability.
+# Each edge carries a biolink_predicate property for Translator/RTX-KG2 interop.
+#
+# result_polarity: optional property on any edge. Default "positive".
+# Set to "negative" for claims describing absence of effect
+# (e.g. "NF1 GRD does NOT stimulate oncogenic RAS").
 
-version: "1.0"
-authority: "Gregory Way (@gwaybio) + Rey"
+version: "2.0"
+authority: "Gregory Way + Rey"
 
+# --- Biological relationship edges (Layer 1 direct edges) ---
 edge_types:
-  CAUSES:       {from: [Mutation], to: [Disease, Phenotype]}
-  ENCODES:      {from: [Gene], to: [Protein]}
-  ACTIVATES:    {from: [Protein], to: [Protein, Pathway]}
-  INHIBITS:     {from: [Drug, Protein], to: [Protein, Pathway]}
-  TREATS:       {from: [Drug], to: [Disease, Phenotype], required_properties: []}
-  TARGETS:      {from: [Drug], to: [Gene, Protein]}
-  ASSOCIATED_WITH: {from: [Gene, Mutation], to: [Phenotype, Disease]}
-  PART_OF:      {from: [Gene, Protein], to: [Pathway]}
-  EXTRACTED_FROM: {from: [Claim], to: [Publication]}
-  SUPPORTS:     {from: [Claim], to: [Claim]}
-  CONTRADICTS:  {from: [Claim], to: [Claim]}
-  VALIDATED_IN: {from: [Claim], to: [CellLine, AnimalModel]}
-  FOUND_IN:     {from: [Gene, Dataset], to: [Dataset, Gene]}
-  HOMOLOGOUS_TO: {from: [Protein, Gene], to: [Protein, Gene]}
-  ABOUT:        {from: [Claim], to: [Gene, Protein, Pathway, Mutation, Phenotype, Disease, Drug, ClinicalTrial, CellLine, AnimalModel, Dataset]}
+
+  ENCODES:
+    from: [Gene]
+    to: [Protein]
+    biolink_predicate: "biolink:encodes"
+
+  ACTIVATES:
+    from: [Protein]
+    to: [Protein, Pathway]
+    biolink_predicate: "biolink:activates"
+
+  INHIBITS:
+    from: [Drug, Protein]
+    to: [Protein, Pathway]
+    biolink_predicate: "biolink:inhibits"
+
+  TREATS:
+    from: [Drug]
+    to: [Disease, Phenotype]
+    biolink_predicate: "biolink:treats"
+
+  IN_CLINICAL_TRIALS_FOR:
+    from: [Drug]
+    to: [Disease, Phenotype]
+    biolink_predicate: "biolink:in_clinical_trials_for"
+
+  BENEFICIAL_IN_MODELS_OF:
+    from: [Drug]
+    to: [Disease, Phenotype]
+    biolink_predicate: "biolink:beneficial_in_models_of"
+
+  TARGETS:
+    from: [Drug]
+    to: [Gene, Protein]
+    biolink_predicate: "biolink:targets"
+
+  CAUSES:
+    from: [Mutation]
+    to: [Disease, Phenotype]
+    biolink_predicate: "biolink:causes"
+
+  GENE_ASSOCIATED_WITH_CONDITION:
+    from: [Gene, Mutation]
+    to: [Phenotype, Disease]
+    biolink_predicate: "biolink:gene_associated_with_condition"
+
+  HAS_PHENOTYPE:
+    from: [Disease]
+    to: [Phenotype]
+    biolink_predicate: "biolink:has_phenotype"
+
+  PART_OF:
+    from: [Gene, Protein]
+    to: [Pathway]
+    biolink_predicate: "biolink:part_of"
+
+  HOMOLOGOUS_TO:
+    from: [Protein, Gene]
+    to: [Protein, Gene]
+    biolink_predicate: "biolink:homologous_to"
+
+  FOUND_IN:
+    from: [Gene, Dataset]
+    to: [Dataset, Gene]
+    biolink_predicate: "biolink:has_sequence_location"
+
+  # --- Claim reification edges (Layer 2) ---
+
+  HAS_SUBJECT:
+    from: [Claim]
+    to: [Gene, Protein, Pathway, Mutation, Phenotype, Disease, Drug,
+         ClinicalTrial, CellLine, AnimalModel, Dataset]
+    biolink_predicate: null
+
+  HAS_OBJECT:
+    from: [Claim]
+    to: [Gene, Protein, Pathway, Mutation, Phenotype, Disease, Drug,
+         ClinicalTrial, CellLine, AnimalModel, Dataset]
+    biolink_predicate: null
+
+  EXTRACTED_FROM:
+    from: [Claim]
+    to: [Publication]
+    biolink_predicate: null
+
+  SUPPORTS:
+    from: [Claim]
+    to: [Claim]
+    biolink_predicate: null
+
+  CONTRADICTS:
+    from: [Claim]
+    to: [Claim]
+    biolink_predicate: null
+
+  VALIDATED_IN:
+    from: [Claim]
+    to: [CellLine, AnimalModel]
+    biolink_predicate: null
+
+# --- Retired edges ---
+retired_edges:
+  ABOUT:
+    reason: "Replaced by typed HAS_SUBJECT/HAS_OBJECT + direct entity edges"
+    retired_in: "v2.0"
+    migration: "008_typed_edges_backfill"
+
+  ASSOCIATED_WITH:
+    reason: >
+      Split into GENE_ASSOCIATED_WITH_CONDITION (Gene/Mutation -> Phenotype/Disease)
+      and HAS_PHENOTYPE (Disease -> Phenotype) for Biolink compliance.
+    retired_in: "v2.0"
+    migration: "008_typed_edges_backfill"
+
+# --- Edge properties ---
+edge_properties:
+  result_polarity:
+    type: string
+    enum: [positive, negative]
+    default: positive
+    description: >
+      "positive" (default) or "negative". Negative results describe absence
+      of effect. The predicate stays the same but result_polarity=negative
+      inverts its meaning. Avoids predicate proliferation.
+
+  biolink_predicate:
+    type: string
+    description: >
+      Canonical Biolink Model predicate CURIE. Written on every Layer 1
+      direct edge for interop with Translator, RTX-KG2, and Monarch.
+
+  claim_ids:
+    type: array
+    description: >
+      Array of C#### claim IDs supporting this edge. When multiple claims
+      share the same (subject, predicate, object) triple, one coalesced
+      direct edge carries all claim_ids. RTX-KG2 coalescing pattern.
+
+# --- Predicate mapping table ---
+predicate_mapping:
+  ENCODES: "biolink:encodes"
+  ACTIVATES: "biolink:activates"
+  INHIBITS: "biolink:inhibits"
+  TREATS: "biolink:treats"
+  IN_CLINICAL_TRIALS_FOR: "biolink:in_clinical_trials_for"
+  BENEFICIAL_IN_MODELS_OF: "biolink:beneficial_in_models_of"
+  TARGETS: "biolink:targets"
+  CAUSES: "biolink:causes"
+  GENE_ASSOCIATED_WITH_CONDITION: "biolink:gene_associated_with_condition"
+  HAS_PHENOTYPE: "biolink:has_phenotype"
+  PART_OF: "biolink:part_of"
+  HOMOLOGOUS_TO: "biolink:homologous_to"
+  FOUND_IN: "biolink:has_sequence_location"
 
 forbidden_patterns:
   - description: "Circular SUPPORTS edges not permitted"
     pattern: "(a:Claim)-[:SUPPORTS]->(b:Claim)-[:SUPPORTS]->(a)"
+  - description: "Self-referential edges not permitted"
+    pattern: "(a)-[r]->(a) WHERE type(r) <> 'PART_OF'"

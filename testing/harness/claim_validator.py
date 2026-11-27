@@ -132,13 +132,59 @@ def validate_rubric(claim, rubric):
     return errors
 
 
+def validate_predicate(claim, contract, edge_constraints):
+    """Validate semantic_triple.predicate against Biolink-aligned allowed predicates.
+
+    Checks:
+      1. predicate is in claim_contract.yaml allowed_predicates
+      2. predicate exists as a key in edge_constraints.yaml edge_types
+      3. If result_polarity is present on the triple, it must be 'positive' or 'negative'
+    """
+    errors = []
+    triple = claim.get("semantic_triple")
+    if not triple:
+        return errors  # pre-grounding claim — skip
+
+    predicate = triple.get("predicate")
+    if not predicate:
+        return errors
+
+    # 1. Check against contract allowed_predicates (Biolink-validated list)
+    allowed = contract.get("allowed_predicates", [])
+    if allowed and predicate not in allowed:
+        errors.append(
+            f"Contract: semantic_triple.predicate '{predicate}' not in "
+            f"allowed_predicates ({', '.join(sorted(allowed))})"
+        )
+
+    # 2. Check against edge_constraints.yaml edge_types
+    edge_types = set(edge_constraints.get("edge_types", {}).keys())
+    if predicate not in edge_types:
+        # Check retired_edges for helpful messaging
+        retired = edge_constraints.get("retired_edges", {})
+        if predicate in retired:
+            reason = retired[predicate].get("reason", "retired")
+            errors.append(
+                f"Grounding: predicate '{predicate}' is retired — {reason}"
+            )
+
+    # 3. Validate result_polarity if present
+    polarity = triple.get("result_polarity")
+    if polarity and polarity not in ("positive", "negative"):
+        errors.append(
+            f"Grounding: result_polarity must be 'positive' or 'negative', "
+            f"got '{polarity}'"
+        )
+
+    return errors
+
+
 def validate_post_grounding(claim, edge_constraints):
     """Checks that only run when semantic_triple is present (after Otto grounds the claim).
 
-    Three mechanical checks:
+    Two mechanical checks (predicate validation moved to validate_predicate):
       1. subject_id / object_id must be single valid CURIEs (no pipes, no whitespace).
-      2. predicate must exist in testing/specs/edge_constraints.yaml.
-      3. related_nodes must not be empty when semantic_triple is populated.
+      2. related_nodes must not be empty when semantic_triple is populated.
     """
     errors = []
     triple = claim.get("semantic_triple")
@@ -154,16 +200,7 @@ def validate_post_grounding(claim, edge_constraints):
                 f"(must match PREFIX:identifier — no pipes, no spaces)"
             )
 
-    # 2. Predicate must exist in edge_constraints.yaml
-    predicate = triple.get("predicate")
-    allowed_predicates = set(edge_constraints.get("edge_types", {}).keys())
-    if predicate and predicate not in allowed_predicates:
-        errors.append(
-            f"Grounding: predicate \"{predicate}\" not in edge_constraints.yaml "
-            f"(allowed: {', '.join(sorted(allowed_predicates))})"
-        )
-
-    # 3. related_nodes must not be empty when semantic_triple is set
+    # 2. related_nodes must not be empty when semantic_triple is set
     if not claim.get("related_nodes"):
         errors.append(
             "Grounding: semantic_triple is populated but related_nodes is empty — "
@@ -182,6 +219,7 @@ def validate_file(path, schema, contract, rubric, edge_constraints):
     if not errors:
         errors += validate_claim_contract(claim, contract)
         errors += validate_rubric(claim, rubric)
+        errors += validate_predicate(claim, contract, edge_constraints)
         errors += validate_post_grounding(claim, edge_constraints)
     return len(errors) == 0, errors
 
