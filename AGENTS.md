@@ -255,6 +255,19 @@ git config user.name "Dirk (nf1-swarm)"    # use your own name
 git config user.email "dirk@nf1-swarm.bot"  # use your own email
 ```
 
+## Neo4j connection rules
+
+- URI: `bolt://localhost:7687`, user: `neo4j`, password: `nf1swarm`
+- **Never hardcode the password.** Always read from environment:
+  ```python
+  import os
+  password = os.environ.get("NEO4J_PASSWORD", "nf1swarm")
+  ```
+- **If auth fails: stop immediately and message Graude.** Do NOT retry in a loop.
+  Repeated failed attempts trigger a Neo4j lockout that affects all agents.
+- The `NEO4J_PASSWORD` env var should be set in your shell (`~/.bashrc` / `~/.zshrc`).
+  In CI it comes from the GitHub secret of the same name.
+
 ## Python environment — always use the shared project venv
 
 **Never use bare `python3` in this repo. Never create a private venv.**

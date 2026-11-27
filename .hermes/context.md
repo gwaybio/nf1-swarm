@@ -11,8 +11,17 @@ This file is auto-loaded by Hermes agents when working in this directory.
 - Neo4j Community 5.26 with APOC + GDS
 - URI: `bolt://localhost:7687`
 - Credentials: `neo4j` / `nf1swarm`
+- **Never hardcode the password in scripts.** Read it from the environment:
+  ```python
+  import os
+  password = os.environ.get("NEO4J_PASSWORD", "nf1swarm")
+  ```
+- **Local setup:** add `export NEO4J_PASSWORD=nf1swarm` to `~/.bashrc` or `~/.zshrc`
+  so the env var is always set. This keeps local and CI (GitHub secret) in sync.
+- **If auth fails:** do NOT retry in a loop — you will trigger a lockout.
+  Stop immediately and message Graude.
 - Bootstrap: `uv run python knowledge_graph/seeds/bootstrap.py`
-- Test: `uv run python testing/harness/approval_checker.py`
+- Test: `uv run python scientific-governance/claim-validation-harness/approval_checker.py`
 
 ## Team
 | Agent | Profile | Role |
