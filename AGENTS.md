@@ -19,6 +19,11 @@ This document is the operational contract for the nf1-swarm agent team. All agen
 - Does NOT write to the knowledge graph directly
 - Does NOT over-read — assigned papers only, plus opportunistic high-signal papers when explicitly allowed
 - Evidence strength must be assigned per `testing/specs/evidence_rubric.yaml`
+- **Erratum check required before extracting any numerical claim:** query PubMed `ErratumIn` field via
+  `efetch?db=pubmed&id=PMID&retmode=xml` and look for `ErratumIn` or `CommentsCorrections` entries.
+  If an erratum exists, fetch the corrected version and use corrected figures. Add the erratum PMID
+  to `supporting_dois`. (Rationale: PMC manuscripts are often not updated when NEJM/Lancet etc.
+  issue corrections — extracting from PMC alone can silently capture wrong numbers.)
 
 ### Archie (Fact-Checker / Analyst)
 - Called by Graude when a specific claim needs deep verification
