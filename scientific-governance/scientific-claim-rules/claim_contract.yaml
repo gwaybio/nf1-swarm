@@ -1,12 +1,12 @@
 # TRUSTED SPECIFICATION — HUMAN-OWNED
-# Only @gwaybio or Rey may modify this file.
+# Only Gregory Way or Rey may modify this file.
 # This is the formal contract that defines a valid claim.
 # Corresponds to AlphaProof Code's "trusted specification" role.
 # Any claim failing these rules is rejected regardless of who wrote it.
 
-version: "1.0"
-authority: "Gregory Way (@gwaybio) + Rey"
-last_reviewed: "2026-11-17"
+version: "2.0"
+authority: "Gregory Way + Rey"
+last_reviewed: "2026-11-27"
 
 claim_types:
   molecular_function:
@@ -94,9 +94,28 @@ global_rules:
   - at least one of source_pmid or source_doi must be present
   - extracted_by must be a registered agent or "human"
   - evidence_strength must be consistent with evidence_type (see evidence_rubric.yaml)
+  - semantic_triple.predicate must be in allowed_predicates list (Biolink-validated)
   - if status is 'rejected' or 'refuted', rejection_class must be 'structural' or 'biological' (not null)
   - rejection_class structural = encoding problem, route back to Otto for re-grounding
   - rejection_class biological = biology wrong or unsupported, Kim writes to graph with status=refuted
   - pending claims must have pending_id set (8-char hex); claim_id must be null
   - accepted claims must have claim_id set (C#### pattern); pending_id should be null
   - rejected claims must have claim_id set (R#### pattern); pending_id should be null
+
+# Allowed predicates for semantic_triple.predicate.
+# Must match a key in edge_constraints.yaml edge_types (biological edges only).
+# Validated at CI against Biolink Model Toolkit (bmt).
+allowed_predicates:
+  - ENCODES
+  - ACTIVATES
+  - INHIBITS
+  - TREATS
+  - IN_CLINICAL_TRIALS_FOR
+  - BENEFICIAL_IN_MODELS_OF
+  - TARGETS
+  - CAUSES
+  - GENE_ASSOCIATED_WITH_CONDITION
+  - HAS_PHENOTYPE
+  - PART_OF
+  - HOMOLOGOUS_TO
+  - FOUND_IN

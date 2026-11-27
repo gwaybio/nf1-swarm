@@ -54,10 +54,10 @@ jobs:
       - name: Full health check
         id: health
         run: |
-          uv run python testing/harness/approval_checker.py
+          uv run python scientific-governance/claim-validation-scripts/approval_checker.py
 
           set +e
-          uv run python testing/harness/claim_validator.py | tee /tmp/pending_validation.log
+          uv run python scientific-governance/claim-validation-scripts/claim_validator.py | tee /tmp/pending_validation.log
           pending_rc=${PIPESTATUS[0]}
           uv run python scripts/validate_accepted_claims.py | tee /tmp/accepted_validation.log
           accepted_rc=${PIPESTATUS[0]}

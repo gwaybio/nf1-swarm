@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Validate accepted claims against the same specs claim_validator.py uses.
 
-This is a *separate* script (NOT in testing/harness/, which is
+This is a *separate* script (NOT in scientific-governance/claim-validation-scripts/, which is
 CODEOWNERS-protected) because claim_validator.py hardcodes PENDING_DIR
 and is human-owned. Rather than modifying the protected harness, this
 script reuses its validation logic via import and points it at

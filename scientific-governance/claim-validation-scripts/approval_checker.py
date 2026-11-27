@@ -4,7 +4,7 @@
 Captures or checks the graph state against approval snapshots.
 
 Usage:
-    python approval_checker.py --capture > testing/approved/snapshot_YYYYMMDD.json
+    python approval_checker.py --capture > scientific-governance/approved-graph-snapshots/snapshot_YYYYMMDD.json
     python approval_checker.py --check
     python approval_checker.py          # just run assertions
 """
@@ -16,8 +16,8 @@ import yaml
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).parent.parent.parent
-ASSERTIONS_PATH = REPO_ROOT / "testing" / "acceptance" / "graph_assertions" / "seed_state.yaml"
-APPROVED_DIR = REPO_ROOT / "testing" / "approved"
+ASSERTIONS_PATH = REPO_ROOT / "scientific-governance" / "required-graph-assertions" / "graph_assertions" / "seed_state.yaml"
+APPROVED_DIR = REPO_ROOT / "scientific-governance" / "approved-graph-snapshots"
 
 
 def get_driver():

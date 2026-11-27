@@ -16,9 +16,9 @@
 # ─────────────────────────────────────────────────────────────────────────────
 
 # TCB: scientific contract — Gregory + Rey required
-testing/specs/                   @gwaybio
-testing/harness/                 @gwaybio
-testing/approved/                @gwaybio
+scientific-governance/scientific-claim-rules/                   @gwaybio
+scientific-governance/claim-validation-scripts/                 @gwaybio
+scientific-governance/approved-graph-snapshots/                @gwaybio
 
 # TCB: ownership rules — Gregory required
 .github/CODEOWNERS               @gwaybio

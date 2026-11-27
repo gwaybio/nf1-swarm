@@ -41,13 +41,13 @@ edges = get_nf1_edges()
 }
 ```
 
-- `predicate` must **exactly** match an edge type in `testing/specs/edge_constraints.yaml`.
+- `predicate` must **exactly** match an edge type in `scientific-governance/scientific-claim-rules/edge_constraints.yaml`.
   The validator enforces this — wrong predicates now cause `claim_validator.py` to FAIL.
   Current allowed predicates:
   `CAUSES`, `ENCODES`, `ACTIVATES`, `INHIBITS`, `TREATS`, `TARGETS`,
   `ASSOCIATED_WITH`, `PART_OF`, `EXTRACTED_FROM`, `SUPPORTS`, `CONTRADICTS`,
   `VALIDATED_IN`, `FOUND_IN`, `HOMOLOGOUS_TO`, `ABOUT`
-  Check `testing/specs/edge_constraints.yaml` for the authoritative list and
+  Check `scientific-governance/scientific-claim-rules/edge_constraints.yaml` for the authoritative list and
   the allowed `from`/`to` node labels for each predicate.
 - `subject`/`object` are human-readable names; `subject_id`/`object_id` are CURIEs.
 
@@ -98,7 +98,7 @@ ABOUT edges in the graph.
 ## Validator requirements (run before every commit)
 
 ```bash
-uv run python testing/harness/claim_validator.py
+uv run python scientific-governance/claim-validation-scripts/claim_validator.py
 ```
 
 The validator runs three post-grounding checks the moment `semantic_triple` is

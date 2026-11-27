@@ -18,7 +18,7 @@ This document is the operational contract for the nf1-swarm agent team. All agen
 - Commits pending claims with message: `claim(dirk): <paper title short>`
 - Does NOT write to the knowledge graph directly
 - Does NOT over-read — assigned papers only, plus opportunistic high-signal papers when explicitly allowed
-- Evidence strength must be assigned per `testing/specs/evidence_rubric.yaml`
+- Evidence strength must be assigned per `scientific-governance/scientific-claim-rules/evidence_rubric.yaml`
 - **Erratum check required before extracting any numerical claim:** query PubMed `ErratumIn` field via
   `efetch?db=pubmed&id=PMID&retmode=xml` and look for `ErratumIn` or `CommentsCorrections` entries.
   If an erratum exists, fetch the corrected version and use corrected figures. Add the erratum PMID
@@ -69,8 +69,8 @@ Emily is the swarm's infrastructure engineer. She keeps the scaffolding that mak
 - Comments on the issue with what changed and why, then closes it
 
 **What Emily never does without a Gregory-approved PR:**
-- Modifies `testing/harness/` (protected engineering code)
-- Modifies `testing/specs/` (scientific contract — Gregory + Rey)
+- Modifies `scientific-governance/claim-validation-scripts/` (protected engineering code)
+- Modifies `scientific-governance/scientific-claim-rules/` (scientific contract — Gregory + Rey)
 - Modifies `claims/schema.json` (data contract)
 
 **What Emily can push directly to main:**
@@ -112,7 +112,7 @@ Milo keeps the swarm thinking clearly over time. He is grounded in the literatur
 - Accepts → moves to `claims/accepted/`, tags Kim to write to graph
 - Rejects → writes reason to claim JSON, closes associated GitHub issue
 - Conducts random spot-check audits of accepted claims
-- Owns the `testing/specs/` directory — only Rey or Gregory may modify specs
+- Owns the `scientific-governance/scientific-claim-rules/` directory — only Rey or Gregory may modify specs
 
 ## Pipeline
 
@@ -266,7 +266,7 @@ When any agent identifies that a rule needs changing:
 2. Tag Emily for engineering review on ALL PRs — she reviews first
 3. Tag `@gwaybio` for required final approval
 4. CodeRabbit reviews automatically on all PRs
-5. For changes to `testing/specs/` or `claims/schema.json`: also tag Rey for science review
+5. For changes to `scientific-governance/scientific-claim-rules/` or `claims/schema.json`: also tag Rey for science review
 6. **Do not merge without Gregory's approval.** No exceptions.
 
 Emily's review scope: technical correctness, no regressions, validator still passes.

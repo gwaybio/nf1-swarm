@@ -68,10 +68,10 @@ HAS_OBJECT          Claim ──► Gene/Protein/Pathway/Mutation/Phenotype/Dise
 When agents write both production code and test code, the tests lose their protective value.
 The solution: move the contract into *data*, not code.
 
-- **`testing/specs/`** — TRUSTED. Human-written YAML specs. Only Rey or Gregory may modify.
-- **`testing/acceptance/`** — TEST DATA. Agents add rows to CSV/YAML tables.
-- **`testing/harness/`** — PROTECTED. Human-owned Python test runner. CODEOWNERS-enforced.
-- **`testing/approved/`** — APPROVAL SNAPSHOTS. Require explicit human approval to change.
+- **`scientific-governance/scientific-claim-rules/`** — TRUSTED. Human-written YAML specs. Only Rey or Gregory may modify.
+- **`scientific-governance/required-graph-assertions/`** — TEST DATA. Agents add rows to CSV/YAML tables.
+- **`scientific-governance/claim-validation-scripts/`** — PROTECTED. Human-owned Python test runner. CODEOWNERS-enforced.
+- **`scientific-governance/approved-graph-snapshots/`** — APPROVAL SNAPSHOTS. Require explicit human approval to change.
 
 ### 2. Specification-first verification (AlphaProof Code, DeepMind, 2026)
 
@@ -79,15 +79,15 @@ Humans write the *specification* (what correctness means). Agents write claims t
 Claims failing the validator are rejected regardless of who wrote them.
 
 Trusted computing base:
-- `testing/specs/claim_contract.yaml`
-- `testing/specs/evidence_rubric.yaml`
-- `testing/specs/edge_constraints.yaml`
-- `testing/specs/node_schemas.yaml`
+- `scientific-governance/scientific-claim-rules/claim_contract.yaml`
+- `scientific-governance/scientific-claim-rules/evidence_rubric.yaml`
+- `scientific-governance/scientific-claim-rules/edge_constraints.yaml`
+- `scientific-governance/scientific-claim-rules/node_schemas.yaml`
 
 ### Guard rails
 
-- `testing/harness/` and `testing/specs/` are CODEOWNERS-protected
-- CI runs `testing/harness/run_tests.sh` on every PR touching claims or testing
+- `scientific-governance/claim-validation-scripts/` and `scientific-governance/scientific-claim-rules/` are CODEOWNERS-protected
+- CI runs `scientific-governance/claim-validation-scripts/run_tests.sh` on every PR touching claims or testing
 - Agents write test DATA (new CSV rows, new YAML blocks) — never harness code
 
 ## Schema versioning

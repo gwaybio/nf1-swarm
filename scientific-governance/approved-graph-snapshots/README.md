@@ -13,8 +13,8 @@ Known-good knowledge graph states for approval testing.
 
 ```bash
 # Capture current graph state
-python testing/harness/approval_checker.py --capture > testing/approved/snapshot_$(date +%Y%m%d).json
+python scientific-governance/claim-validation-scripts/approval_checker.py --capture > scientific-governance/approved-graph-snapshots/snapshot_$(date +%Y%m%d).json
 
 # Check current graph against latest snapshot
-python testing/harness/approval_checker.py --check
+python scientific-governance/claim-validation-scripts/approval_checker.py --check
 ```

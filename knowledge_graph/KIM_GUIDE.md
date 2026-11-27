@@ -41,10 +41,10 @@ with driver.session() as session:
     # 3. Link to every entity in related_nodes, using the edge_type given.
     # NOTE: the unique-key lookup below is illustrative, not a shortcut —
     # look up the real unique-identifying property for each label in
-    # testing/specs/node_schemas.yaml's `unique_on` field (e.g.
+    # scientific-governance/scientific-claim-rules/node_schemas.yaml's `unique_on` field (e.g.
     # Gene.unique_on = [symbol], Disease.unique_on = [name]). Don't guess,
     # and don't invent a new property.
-    node_schemas = yaml.safe_load(open("testing/specs/node_schemas.yaml"))
+    node_schemas = yaml.safe_load(open("scientific-governance/scientific-claim-rules/node_schemas.yaml"))
     for rel in claim.get("related_nodes", []):
         label = rel["label"]
         unique_key = node_schemas["node_schemas"][label]["unique_on"][0]
@@ -127,12 +127,12 @@ not a pip package — already enabled locally and in CI).
 
 ## Common pitfalls
 
-1. **Schema integrity first.** Check `testing/specs/node_schemas.yaml` for
-   `required`/`unique_on` properties and `testing/specs/edge_constraints.yaml`
+1. **Schema integrity first.** Check `scientific-governance/scientific-claim-rules/node_schemas.yaml` for
+   `required`/`unique_on` properties and `scientific-governance/scientific-claim-rules/edge_constraints.yaml`
    for valid `from`/`to` label pairs before writing any node or edge — these
    files are the trusted contract, and a write that violates them (even if
    Neo4j itself allows it, since it's schema-less) breaks graph integrity
-   that `testing/harness/approval_checker.py` checks for.
+   that `scientific-governance/claim-validation-scripts/approval_checker.py` checks for.
 2. **No ad-hoc node types or edge types.** If a claim needs a label or
    relationship not in `DESIGN.md`'s 13 node types / 20 edge types, that's a
    schema change — open the issue and get Rey's approval before writing

@@ -18,8 +18,8 @@ run_step() {
     echo ""
 }
 
-run_step "Claim validator"       python3 testing/harness/claim_validator.py
-run_step "Graph assertions"      python3 testing/harness/approval_checker.py
+run_step "Claim validator"       python3 scientific-governance/claim-validation-scripts/claim_validator.py
+run_step "Graph assertions"      python3 scientific-governance/claim-validation-scripts/approval_checker.py
 
 echo "========================================"
 echo "Results: $PASS passed, $FAIL failed"
