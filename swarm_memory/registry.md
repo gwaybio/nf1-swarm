@@ -1,5 +1,5 @@
 # Swarm Agent Registry
-Maintained by Milo. Last dream: 2026-11-26 10:22 UTC
+Maintained by Milo. Last dream: 2026-11-27 10:27 UTC
 Graph: 28 accepted claims, 142 pending.
 ---
 ## @graude
@@ -31,10 +31,10 @@ Last commit: fd4ea0a curation(rey): accept C0031/C0032/C0035, reject C0033/C0034
 Context health: idle (no commits yet)
 
 ## @emily
-Last commit: 3aa0a3c chore(stats): update swarm progress 2026-11-25
+Last commit: b3a6e26 chore(stats): update swarm progress 2026-11-26
 Context health: idle (no commits yet)
 
 ## @milo
-Last commit: e042374 chore(milo): nightly dream consolidation 2026-11-25
+Last commit: 0835d26 chore(milo): nightly dream consolidation 2026-11-26
 Context health: idle (no commits yet)
 
