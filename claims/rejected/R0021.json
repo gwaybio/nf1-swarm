@@ -1,0 +1,45 @@
+{
+  "pending_id": null,
+  "claim_id": "R0021",
+  "source_pmid": "35788692",
+  "source_doi": "10.1093/neuonc/noac165",
+  "source_title": "MEK inhibitors for neurofibromatosis type 1 manifestations: Clinical evidence and consensus",
+  "source_year": 2022,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-20",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "rejected",
+  "semantic_triple": {
+    "subject": "MAP2K1 (MEK1, target of MEK inhibitors)",
+    "subject_id": "NCBIGene:5604",
+    "predicate": "ASSOCIATED_WITH",
+    "object": "neurofibromatosis type 1",
+    "object_id": "MONDO:0018975"
+  },
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "claim_text": "The first human trial of MEK inhibitor therapy on cognition in children and young adults with NF1 found improvement in executive function and working memory without significant neurotoxicity.",
+  "claim_type": "clinical_outcome",
+  "evidence_strength": 2,
+  "evidence_type": "cohort_study",
+  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Walsh 2021 (PMID 34377779, ref 98). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. Authors describe it as proof of concept; small, uncontrolled. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20. | Verified/corrected by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-21. Reframed: TARGETS->ASSOCIATED_WITH. MEK inhibitor class (no specific drug named) cognition trial in NF1. Gene->Disease ASSOCIATED_WITH per edge_constraints.",
+  "independence_flags": [
+    "secondary citation via review PMID 35788692 of Walsh 2021 (PMID 34377779, ref 98)"
+  ],
+  "related_nodes": [
+    {
+      "label": "Gene",
+      "identifier": "NCBIGene:5604",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0018975",
+      "edge_type": "ABOUT"
+    }
+  ],
+  "rejection_class": "structural",
+  "rejection_reason": "Extracted from review article (de Blank 2022, PMID:35788692), not primary literature. Review-sourced claims are secondary citations. Policy: claims namespace is primary-evidence-only. Otto grounding (CURIEs, predicates) preserved in notes as grounding_hints for reuse when the primary papers are read."
+}

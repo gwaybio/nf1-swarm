@@ -1,0 +1,55 @@
+{
+  "pending_id": null,
+  "claim_id": "R0018",
+  "source_pmid": "35788692",
+  "source_doi": "10.1093/neuonc/noac165",
+  "source_title": "MEK inhibitors for neurofibromatosis type 1 manifestations: Clinical evidence and consensus",
+  "source_year": 2022,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-20",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "rejected",
+  "semantic_triple": {
+    "subject": "NF1",
+    "subject_id": "NCBIGene:4763",
+    "predicate": "ASSOCIATED_WITH",
+    "object": "malignant peripheral nerve sheath tumor",
+    "object_id": "MONDO:0017827"
+  },
+  "bel_notation": null,
+  "supporting_dois": [],
+  "confidence_score": null,
+  "claim_text": "Malignant peripheral nerve sheath tumors occur in roughly 10% of individuals with NF1, often arise from preexisting plexiform or atypical neurofibromas, and are the leading cause of death for people with NF1.",
+  "claim_type": "clinical_outcome",
+  "evidence_strength": 3,
+  "evidence_type": "cohort_study",
+  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Evans 2002 (PMID 12011145, ref 46) and Duong 2011 (PMID 21542925, ref 47). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20. | Stage 2 verification by Otto (2026-11-21): all CURIEs verified against SRI Node Normalizer \u2014 all canonical. RTX-KG2 edge checks performed for drug-disease pairs.",
+  "independence_flags": [
+    "secondary citation via review PMID 35788692 of Evans 2002 (PMID 12011145, ref 46) and Duong 2011 (PMID 21542925, ref 47)"
+  ],
+  "related_nodes": [
+    {
+      "label": "Gene",
+      "identifier": "NCBIGene:4763",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0017827",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0003304",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0018975",
+      "edge_type": "ABOUT"
+    }
+  ],
+  "rejection_class": "structural",
+  "rejection_reason": "Extracted from review article (de Blank 2022, PMID:35788692), not primary literature. Review-sourced claims are secondary citations. Policy: claims namespace is primary-evidence-only. Otto grounding (CURIEs, predicates) preserved in notes as grounding_hints for reuse when the primary papers are read."
+}
