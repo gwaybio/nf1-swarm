@@ -4,7 +4,7 @@
   "claim_type": "drug_response",
   "evidence_strength": 3,
   "evidence_type": "cohort_study",
-  "notes": " Full text (PMC7305659). Single-arm phase 2 (n=50, stratum 1 only), unblinded central MRI volumetry; capped at 3 because there is no randomized control (RCT/strength 4 criteria not met). | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-18. RTX-KG2 already has CHEBI:90227 treats_or_applied_or_studied_to_treat MONDO:0003304 (2 sources, PMIDs: 32108293, 32187457, 32272491).",
+  "notes": " Full text (PMC7305659). Single-arm phase 2 (n=50, stratum 1 only), unblinded central MRI volumetry; capped at 3 because there is no randomized control (RCT/strength 4 criteria not met). | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-18. RTX-KG2 already has CHEBI:90227 treats_or_applied_or_studied_to_treat MONDO:0003304 (2 sources, PMIDs: 32108293, 32187457, 32272491). | Stan confidence assessment 2026-12-19: confidence_score left null (insufficient replication). N_effective=1 independent study. All 9 claims on this triple (C0009-C0018) are from PMID:32187457 (SPRINT phase 2). RTX-KG2 TRAPI returns 20 PMIDs but only ~6 carry independent clinical data (8 reviews, 4 PK/regulatory, 2 SPRINT duplicates removed). Dombi 2016 phase 1 (PMID:28029918) is partially independent (same PI Widemann, different cohort) but not yet in graph. PET-PEESE requires N>=10, RoBMA N>=3. Priority reading targets for independent replication: PMID:32108293 (Portugal), PMID:34905788 (Germany), PMID:35289492 (Canada), PMID:35301838 (India).",
   "source_pmid": "32187457",
   "source_doi": "10.1056/NEJMoa1912735",
   "source_title": "Selumetinib in Children with Inoperable Plexiform Neurofibromas",
@@ -24,7 +24,15 @@
   "bel_notation": "a(CHEBI:selumetinib) -| path(MONDO:\"plexiform neurofibroma\")",
   "supporting_dois": [],
   "confidence_score": null,
-  "independence_flags": [],
+  "independence_flags": [
+    "all_claims_same_pmid:32187457",
+    "single_trial:SPRINT_phase2_stratum1",
+    "n_effective_independent:1",
+    "rtx_kg2_independent_clinical:~6",
+    "rtx_kg2_total_pmids:20",
+    "scoring_status:insufficient_replication",
+    "assessed_by:stan:2026-12-19"
+  ],
   "related_nodes": [
     {
       "label": "Drug",
