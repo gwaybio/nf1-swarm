@@ -267,6 +267,14 @@
       ],
       "additionalProperties": false
     },
+    "source_quote": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "maxLength": 1000,
+      "description": "Verbatim sentence(s) from the source paper that support this claim. Populated by Dirk at extraction. Used by Rey for curation verification. Must be verbatim text, not a paraphrase. Max 1000 chars (one or two sentences)."
+    },
     "bel_notation": {
       "type": [
         "string",
