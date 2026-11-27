@@ -1,0 +1,50 @@
+{
+  "pending_id": null,
+  "claim_id": "R0004",
+  "source_pmid": "35788692",
+  "source_doi": "10.1093/neuonc/noac165",
+  "source_title": "MEK inhibitors for neurofibromatosis type 1 manifestations: Clinical evidence and consensus",
+  "source_year": 2022,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-20",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "rejected",
+  "semantic_triple": {
+    "subject": "selumetinib",
+    "subject_id": "CHEBI:90227",
+    "predicate": "TREATS",
+    "object": "low grade glioma",
+    "object_id": "MONDO:0021637"
+  },
+  "bel_notation": "a(CHEBI:90227) -| path(MONDO:0021637)",
+  "supporting_dois": [],
+  "confidence_score": null,
+  "claim_text": "In children with NF1-associated low-grade glioma treated with selumetinib in a phase 2 trial, two-year progression-free survival was 96%.",
+  "claim_type": "clinical_outcome",
+  "evidence_strength": 3,
+  "evidence_type": "cohort_study",
+  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Fangusaro 2019 (PMID 31151904, ref 23). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20. | Stage 2 verification by Otto (2026-11-21): all CURIEs verified against SRI Node Normalizer \u2014 all canonical. RTX-KG2 edge checks performed for drug-disease pairs.",
+  "independence_flags": [
+    "secondary citation via review PMID 35788692 of Fangusaro 2019 (PMID 31151904, ref 23)"
+  ],
+  "related_nodes": [
+    {
+      "label": "Drug",
+      "identifier": "CHEBI:90227",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0021637",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0018975",
+      "edge_type": "ABOUT"
+    }
+  ],
+  "rejection_class": "structural",
+  "rejection_reason": "Extracted from review article (de Blank 2022, PMID:35788692), not primary literature. Review-sourced claims are secondary citations. Policy: claims namespace is primary-evidence-only. Otto grounding (CURIEs, predicates) preserved in notes as grounding_hints for reuse when the primary papers are read."
+}

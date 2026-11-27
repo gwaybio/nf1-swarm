@@ -1,0 +1,50 @@
+{
+  "pending_id": null,
+  "claim_id": "R0001",
+  "source_pmid": "35788692",
+  "source_doi": "10.1093/neuonc/noac165",
+  "source_title": "MEK inhibitors for neurofibromatosis type 1 manifestations: Clinical evidence and consensus",
+  "source_year": 2022,
+  "extracted_by": "dirk",
+  "extraction_date": "2026-11-20",
+  "verified_by": null,
+  "curated_by": null,
+  "status": "rejected",
+  "semantic_triple": {
+    "subject": "mirdametinib",
+    "subject_id": "CHEBI:88249",
+    "predicate": "TREATS",
+    "object": "plexiform neurofibroma",
+    "object_id": "MONDO:0003304"
+  },
+  "bel_notation": "a(CHEBI:88249) -| path(MONDO:0003304)",
+  "supporting_dois": [],
+  "confidence_score": null,
+  "claim_text": "In the NF106 phase 2 trial of mirdametinib in adolescents and adults with NF1 plexiform neurofibromas, tumor pain intensity decreased within the first 4 months of therapy and remained decreased through 12 months in participants whose tumors responded.",
+  "claim_type": "clinical_outcome",
+  "evidence_strength": 3,
+  "evidence_type": "cohort_study",
+  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Weiss 2021 (PMID 33507822, ref 16). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20. | Stage 2 verification by Otto (2026-11-21): all CURIEs verified against SRI Node Normalizer \u2014 all canonical. RTX-KG2 edge checks performed for drug-disease pairs.",
+  "independence_flags": [
+    "secondary citation via review PMID 35788692 of Weiss 2021 (PMID 33507822, ref 16)"
+  ],
+  "related_nodes": [
+    {
+      "label": "Drug",
+      "identifier": "CHEBI:88249",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0003304",
+      "edge_type": "ABOUT"
+    },
+    {
+      "label": "Disease",
+      "identifier": "MONDO:0018975",
+      "edge_type": "ABOUT"
+    }
+  ],
+  "rejection_class": "structural",
+  "rejection_reason": "Extracted from review article (de Blank 2022, PMID:35788692), not primary literature. Review-sourced claims are secondary citations. Policy: claims namespace is primary-evidence-only. Otto grounding (CURIEs, predicates) preserved in notes as grounding_hints for reuse when the primary papers are read."
+}
