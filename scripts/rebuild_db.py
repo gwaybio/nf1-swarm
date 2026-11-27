@@ -21,6 +21,7 @@ import json
 import re
 import sqlite3
 import subprocess
+import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -100,6 +101,7 @@ def _queue_md_entries() -> list[dict]:
 def _github_issues() -> list[dict]:
     """Fetch paper issues from GitHub via gh CLI (open + closed)."""
     papers = []
+    LIMIT = 500  # per-state; warn if we hit this
     for state in ("open", "closed"):
         try:
             raw = subprocess.check_output(
@@ -107,23 +109,35 @@ def _github_issues() -> list[dict]:
                  "--repo", "gwaybio/nf1-swarm",
                  "--label", "paper",
                  "--state", state,
-                 "--limit", "200",
-                 "--json", "number,title,state"],
-                text=True, timeout=20
+                 "--limit", str(LIMIT),
+                 "--json", "number,title,body,state"],
+                text=True, timeout=30
             )
         except (subprocess.CalledProcessError, FileNotFoundError,
-                subprocess.TimeoutExpired):
-            continue
-        for issue in json.loads(raw):
+                subprocess.TimeoutExpired) as exc:
+            # Hard fail — a partial index is worse than an empty one
+            print(f"WARNING: gh issue list failed for state={state}: {exc}",
+                  file=sys.stderr)
+            raise RuntimeError(f"GitHub issues fetch failed: {exc}") from exc
+        issues = json.loads(raw)
+        if len(issues) >= LIMIT:
+            print(f"WARNING: gh issue list returned {LIMIT} issues for state={state} "
+                  f"— results may be truncated; raise LIMIT in rebuild_db.py",
+                  file=sys.stderr)
+        for issue in issues:
             num   = issue["number"]
             title = issue["title"]
-            pmid_m = re.search(r'PMID:(\d+)', title)
-            doi_m  = re.search(r'DOI:(\S+)', title)
+            body  = issue.get("body") or ""
+            # Try title first; fall back to scanning body for identifiers
+            pmid_m = re.search(r'PMID:(\d+)', title) or re.search(r'PMID:(\d+)', body)
+            doi_m  = re.search(r'DOI:(10\.\S+)', title) or re.search(r'DOI:(10\.\S+)', body)
             if not pmid_m and not doi_m:
                 continue
             pmid = idutils.normalize_pmid(pmid_m.group(1)) if pmid_m else None
-            doi_raw = doi_m.group(1).rstrip(")") if doi_m else None
-            doi  = idutils.normalize_doi(doi_raw) if doi_raw else None
+            doi_raw = doi_m.group(1).rstrip(");,") if doi_m else None
+            # Validate DOI before normalising — idutils.is_doi prevents "pending" etc.
+            doi = (idutils.normalize_doi(doi_raw)
+                   if doi_raw and idutils.is_doi(doi_raw) else None)
             status = "done" if issue["state"] == "CLOSED" else "in_progress"
             papers.append({"pmid": pmid, "doi": doi, "title": title,
                            "status": status, "issue_number": num,
@@ -134,59 +148,85 @@ def _github_issues() -> list[dict]:
 # ── Build ─────────────────────────────────────────────────────────────────────
 
 def build(db_path: Path = DB_PATH) -> None:
+    """
+    Rebuild the database atomically, serialised by a lock file.
+
+    Diagnostic output goes to stderr so automated callers (lookup.py)
+    don't see it on stdout.
+    """
     db_path.parent.mkdir(parents=True, exist_ok=True)
-    db_path.unlink(missing_ok=True)
+    lock = db_path.with_suffix(".rebuild.lock")
 
-    con = sqlite3.connect(db_path)
-    con.executescript(SCHEMA)
+    # Acquire an exclusive lock via atomic create (exist_ok=False is atomic on POSIX)
+    try:
+        lock.touch(exist_ok=False)
+    except FileExistsError:
+        import time; time.sleep(0.5)
+        return
 
-    now = datetime.now(timezone.utc).isoformat()
-    con.execute("INSERT OR REPLACE INTO meta VALUES (?,?)", ("commit", _git_head()))
-    con.execute("INSERT OR REPLACE INTO meta VALUES (?,?)", ("rebuilt_at", now))
+    try:
+        db_path.unlink(missing_ok=True)
+        con = sqlite3.connect(db_path)
+        con.executescript(SCHEMA)
 
-    # queue.md first (lower precedence — no upsert, just IGNORE)
-    for p in _queue_md_entries():
-        if not p.get("pmid"):
-            continue
-        con.execute("""
-            INSERT OR IGNORE INTO papers
-                (pmid, doi, status, issue_number, source_type, processed_date)
-            VALUES (?,?,?,?,?,?)
-        """, (p["pmid"], p.get("doi"), p["status"],
-              p.get("issue_number"), p["source_type"], now))
+        now = datetime.now(timezone.utc).isoformat()
+        con.execute("INSERT OR REPLACE INTO meta VALUES (?,?)", ("commit", _git_head()))
+        con.execute("INSERT OR REPLACE INTO meta VALUES (?,?)", ("rebuilt_at", now))
 
-    # GitHub issues (higher precedence — upsert status and issue_number)
-    for p in _github_issues():
-        if not p.get("pmid") and not p.get("doi"):
-            continue
-        if p.get("pmid"):
-            con.execute("""
-                INSERT INTO papers
-                    (pmid, doi, title, status, issue_number, source_type, processed_date)
-                VALUES (?,?,?,?,?,?,?)
-                ON CONFLICT(pmid) DO UPDATE SET
-                    doi          = COALESCE(excluded.doi, doi),
-                    title        = COALESCE(excluded.title, title),
-                    status       = excluded.status,
-                    issue_number = excluded.issue_number
-            """, (p["pmid"], p.get("doi"), p.get("title"),
-                  p["status"], p["issue_number"], p["source_type"], now))
-        elif p.get("doi"):
-            con.execute("""
-                INSERT INTO papers
-                    (doi, title, status, issue_number, source_type, processed_date)
-                VALUES (?,?,?,?,?,?)
-                ON CONFLICT(doi) DO UPDATE SET
-                    title        = COALESCE(excluded.title, title),
-                    status       = excluded.status,
-                    issue_number = excluded.issue_number
-            """, (p["doi"], p.get("title"),
-                  p["status"], p["issue_number"], p["source_type"], now))
+        # queue.md first (lower precedence — IGNORE on conflict)
+        for p in _queue_md_entries():
+            pmid, doi = p.get("pmid"), p.get("doi")
+            if pmid:
+                con.execute("""
+                    INSERT OR IGNORE INTO papers
+                        (pmid, doi, status, issue_number, source_type, processed_date)
+                    VALUES (?,?,?,?,?,?)
+                """, (pmid, doi, p["status"], p.get("issue_number"),
+                      p["source_type"], now))
+            elif doi:
+                con.execute("""
+                    INSERT OR IGNORE INTO papers
+                        (doi, status, issue_number, source_type, processed_date)
+                    VALUES (?,?,?,?,?)
+                """, (doi, p["status"], p.get("issue_number"),
+                      p["source_type"], now))
 
-    con.commit()
-    paper_count = con.execute("SELECT COUNT(*) FROM papers").fetchone()[0]
-    con.close()
-    print(f"Rebuilt {db_path} — {paper_count} papers, commit {_git_head()}")
+        # GitHub issues (higher precedence — upsert status and issue_number)
+        for p in _github_issues():
+            if not p.get("pmid") and not p.get("doi"):
+                continue
+            if p.get("pmid"):
+                con.execute("""
+                    INSERT INTO papers
+                        (pmid, doi, title, status, issue_number, source_type, processed_date)
+                    VALUES (?,?,?,?,?,?,?)
+                    ON CONFLICT(pmid) DO UPDATE SET
+                        doi          = COALESCE(excluded.doi, doi),
+                        title        = COALESCE(excluded.title, title),
+                        status       = excluded.status,
+                        issue_number = excluded.issue_number
+                """, (p["pmid"], p.get("doi"), p.get("title"),
+                      p["status"], p["issue_number"], p["source_type"], now))
+            else:
+                con.execute("""
+                    INSERT INTO papers
+                        (doi, title, status, issue_number, source_type, processed_date)
+                    VALUES (?,?,?,?,?,?)
+                    ON CONFLICT(doi) DO UPDATE SET
+                        title        = COALESCE(excluded.title, title),
+                        status       = excluded.status,
+                        issue_number = excluded.issue_number
+                """, (p["doi"], p.get("title"),
+                      p["status"], p["issue_number"], p["source_type"], now))
+
+        con.commit()
+        paper_count = con.execute("SELECT COUNT(*) FROM papers").fetchone()[0]
+        con.close()
+        # Diagnostics go to stderr — stdout stays clean JSON for callers
+        print(f"Rebuilt {db_path} — {paper_count} papers, commit {_git_head()}",
+              file=sys.stderr)
+    finally:
+        lock.unlink(missing_ok=True)
 
 
 if __name__ == "__main__":
