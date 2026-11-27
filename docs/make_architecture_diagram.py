@@ -7,6 +7,7 @@ from matplotlib.patches import FancyBboxPatch
 from matplotlib.textpath import TextPath
 from matplotlib.font_manager import FontProperties
 import numpy as np
+from pathlib import Path
 
 fig, ax = plt.subplots(figsize=(28, 20))
 ax.set_xlim(0, 28)
@@ -278,11 +279,12 @@ for (y_from, y_to) in [(12.8, 10.6+1.5),(10.6, 8.2+1.5),(8.2, 4.4+1.5),
                         (4.4, 2.4+1.5),(2.4, 1.0+1.5)]:
     arr(ax, 11.1, y_from, 11.1, y_to, C["accent"], lw=1.8)
 
-# accept / reject split
-arr(ax, 11.1, 10.6, 11.1, 8.2+1.5, C["green"], lw=1.5)
-arr(ax, 11.1, 10.6, 11.1, 6.5+1.5, C["red"], lw=1.5)
-txt(ax, 10.1, 9.5, "accept", C["green"], size=8)
-txt(ax, 12.1, 9.5, "reject", C["red"], size=8)
+# accept / reject split — rejected routes right to avoid crossing accepted→Neo4j path
+arr(ax, 11.1, 10.6, 11.1, 8.2+1.5, C["green"], lw=1.5)   # accepted: straight down
+arr(ax, 11.1, 10.6, 14.5, 10.6,    C["red"],   lw=1.5)   # rejected: right then down
+arr(ax, 14.5, 10.6, 14.5, 6.5+1.5, C["red"],   lw=1.5)
+txt(ax, 10.1, 9.5,  "accept", C["green"], size=8)
+txt(ax, 12.5, 11.1, "reject", C["red"],   size=8)
 
 # resurrection arc
 ax.annotate("", xy=(8.4, 12.8+0.75), xytext=(8.4, 6.5+0.75),
@@ -412,7 +414,15 @@ txt(ax, 15.5, 13.2, "lookup.py check", C["yellow"], size=7.5, alpha=0.7)
 arr(ax, 20.5, 11.0, 23.0, 16.5, C["green"], lw=1.8, alpha=0.6)
 
 plt.tight_layout(pad=0.3)
-outpath = "/home/gway/.hermes/profiles/graude/cache/scratch/nf1_swarm_diagram_v2.png"
+import argparse as _ap, sys as _sys
+_p = _ap.ArgumentParser(add_help=False)
+_p.add_argument("--output", default=None)
+_args, _ = _p.parse_known_args()
+if _args.output:
+    outpath = _args.output
+else:
+    outpath = str(Path(__file__).parent / "nf1_swarm_diagram.png")
+Path(outpath).parent.mkdir(parents=True, exist_ok=True)
 plt.savefig(outpath, dpi=150, bbox_inches="tight",
             facecolor=fig.get_facecolor())
 plt.close()

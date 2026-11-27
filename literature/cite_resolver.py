@@ -149,8 +149,11 @@ def _confidence(summary: dict, title_fragment: str) -> float:
     if not pub_title or not fragment:
         return 0.0
     words = [w for w in fragment.split() if len(w) > 3]
+    # Short but meaningful biomedical terms (e.g. "NF1", "RAS") must still be compared.
     if not words:
-        return 0.5
+        words = [w for w in fragment.split() if len(w) >= 2]
+    if not words:
+        return 0.0   # nothing to compare — do not spuriously pass
     hits = sum(1 for w in words if w in pub_title)
     return round(hits / len(words), 2)
 
@@ -167,7 +170,7 @@ def resolve_pmid(raw_ref: str, cache: Optional[dict] = None) -> dict:
     if cache is None:
         cache = {}
 
-    cache_key = raw_ref[:100]
+    cache_key = raw_ref  # use full text — truncation causes collisions
     if cache_key in cache:
         return {**json.loads(cache[cache_key]), "cached": True}
 

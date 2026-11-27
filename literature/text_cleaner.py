@@ -28,6 +28,7 @@ Output is clean Markdown with section headers preserved by marker.
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 import tempfile
 import urllib.request
@@ -37,12 +38,10 @@ from typing import Optional
 # PMC printable URL — returns HTML that marker's HTMLProvider can parse
 _PMC_URL = "https://www.ncbi.nlm.nih.gov/pmc/articles/{pmcid}/?report=printable&format=html"
 
-# References section heading pattern (used to split body from refs in output)
-_REF_HEADING = (
-    "## References",
-    "## Bibliography",
-    "## Works Cited",
-    "## REFERENCES",
+# Matches Markdown headings at any level (##, ###, # etc.) before reference section keywords
+_REF_HEADING = re.compile(
+    r"^#{1,4}\s+(References|Bibliography|Works Cited)\s*$",
+    re.IGNORECASE | re.MULTILINE,
 )
 
 
@@ -136,18 +135,14 @@ def _split_refs(markdown: str) -> dict[str, str]:
     """
     Split markdown into body and references section.
 
+    Matches heading at any Markdown level (# through ####).
     Returns {'body': str, 'references': str, 'full': str}.
     """
-    for heading in _REF_HEADING:
-        idx = markdown.find("\n" + heading)
-        if idx == -1:
-            idx = markdown.find(heading)
-            if idx == 0:
-                break
-        if idx != -1:
-            body = markdown[:idx].rstrip()
-            refs = markdown[idx:].strip()
-            return {"body": body, "references": refs, "full": markdown}
+    m = _REF_HEADING.search(markdown)
+    if m:
+        body = markdown[:m.start()].rstrip()
+        refs = markdown[m.start():].strip()
+        return {"body": body, "references": refs, "full": markdown}
     return {"body": markdown.strip(), "references": "", "full": markdown}
 
 
@@ -186,9 +181,10 @@ def main(argv: Optional[list[str]] = None) -> int:
     else:
         print(text)
 
-    if args.refs_output and result["references"]:
+    if args.refs_output:
         Path(args.refs_output).write_text(result["references"], encoding="utf-8")
-        print(f"Wrote references to {args.refs_output}", file=sys.stderr)
+        print(f"Wrote references ({len(result['references'])} chars) to {args.refs_output}",
+              file=sys.stderr)
 
     return 0
 
