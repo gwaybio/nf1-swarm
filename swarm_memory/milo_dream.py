@@ -248,6 +248,31 @@ def _age_days(iso_str: str) -> int:
         return 0
 
 
+def _count_assoc_with_warns() -> tuple[int, int]:
+    """Return (accepted_count, pending_count) of ASSOCIATED_WITH predicate claims.
+
+    These produce transitional validator WARNs until Otto's re-grounding sprint
+    replaces them with typed Biolink predicates (issue #88).
+    """
+    def _scan(directory: Path) -> int:
+        n = 0
+        for f in directory.glob("*.json"):
+            try:
+                d = json.loads(f.read_text(errors="replace"))
+                triple = d.get("semantic_triple") or {}
+                pred = (triple.get("predicate", "") if isinstance(triple, dict) else "")
+                pred = pred or d.get("predicate", "") or ""
+                if "ASSOCIATED_WITH" in str(pred).upper():
+                    n += 1
+            except Exception:
+                pass
+        return n
+
+    acc = _scan(CLAIMS_ACCEPTED) if CLAIMS_ACCEPTED.exists() else 0
+    pend = _scan(CLAIMS_PENDING) if CLAIMS_PENDING.exists() else 0
+    return acc, pend
+
+
 def _recommended_next_action(issues: list[dict], pending: int, accepted: int,
                               paper_issues: list[dict], blocked: int) -> str:
     """Derive a 1-2 sentence next action from current pipeline state."""
@@ -317,6 +342,10 @@ def _write_graude_briefing(issues: list[dict], pending: int, accepted: int,
 
     next_action = _recommended_next_action(issues, pending, accepted, paper_issues, blocked)
 
+    # ASSOCIATED_WITH WARN counts (transitional pending Otto re-grounding sprint #88)
+    warn_accepted, warn_pending = _count_assoc_with_warns()
+    warn_total = warn_accepted + warn_pending
+
     # Build the briefing — ruthlessly compact, every section earns its tokens
     lines = [
         "# Graude Session Briefing\n",
@@ -334,12 +363,22 @@ def _write_graude_briefing(issues: list[dict], pending: int, accepted: int,
 
     lines.append("## Open issues\n")
     agent_labels = {"dirk", "otto", "archie", "stan", "kim", "rey", "emily", "milo"}
+    # Routine paper-read issues grouped to one line to stay under token budget.
+    paper_read_nums = []
     for iss in sorted(issues, key=lambda x: x["number"]):
         labels = {lb["name"] for lb in iss.get("labels", [])}
+        is_paper_read = "paper" in labels and "dirk" in labels
+        if is_paper_read:
+            paper_read_nums.append(iss["number"])
+            continue
         assigned = next((lb for lb in agent_labels if lb in labels), "graude")
         age = _age_days(iss.get("createdAt", ""))
         title = iss["title"][:65]
         lines.append(f"  #{iss['number']:3d} [{assigned:5s}] {age:2d}d  {title}\n")
+    if paper_read_nums:
+        nums_str = ", ".join(f"#{n}" for n in paper_read_nums[:5])
+        more = f" … +{len(paper_read_nums)-5} more" if len(paper_read_nums) > 5 else ""
+        lines.append(f"  [dirk queue] {len(paper_read_nums)} papers unread: {nums_str}{more}\n")
     lines.append("\n")
 
     if blockers:
@@ -347,6 +386,18 @@ def _write_graude_briefing(issues: list[dict], pending: int, accepted: int,
         for b in blockers:
             lines.append(f"{b}\n")
         lines.append("\n")
+
+    # Validator WARNs — ASSOCIATED_WITH transitional status
+    lines.append("## Validator WARNs\n")
+    lines.append(f"  ASSOCIATED_WITH: {warn_total} claims "
+                 f"({warn_accepted} accepted, {warn_pending} pending) — transitional, see #88\n")
+    lines.append("  Emily escalates WARN->ERROR after Otto re-grounding sprint closes.\n")
+    lines.append("\n")
+
+    # Operational rules reminder
+    lines.append("## Operational rules\n")
+    lines.append("  GitHub comments must begin with [AgentName] as first token.\n")
+    lines.append("\n")
 
     lines.append("## Recommended next action\n")
     lines.append(f"  {next_action}\n")
