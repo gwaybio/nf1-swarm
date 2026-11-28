@@ -32,12 +32,22 @@ jobs:
         run: |
           git config user.name "Milo (nf1-swarm)"
           git config user.email "milo@nf1-swarm.bot"
+          # Milo writes only to swarm_memory/ — never touches feature branch files.
+          # Push to a dedicated milo/dream branch, then fast-forward merge to main.
+          # This prevents Milo from competing with Emily or other agents on main.
+          BRANCH="milo/dream-$(date -u +%Y-%m-%d)"
+          git checkout -b "$BRANCH"
           git add swarm_memory/
-          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git diff --cached --quiet && echo "No changes to commit" && git checkout main && exit 0
           git commit -m "chore(milo): nightly dream consolidation $(date -u +%Y-%m-%d)
 
           Co-authored-by: Gregory Way <gregory.way@gmail.com>"
+          git push origin "$BRANCH"
+          # Fast-forward main — safe because swarm_memory/ is Milo-only
+          git checkout main
+          git merge --ff-only "$BRANCH"
           git push origin main
+          git push origin --delete "$BRANCH"
 
       - name: Post dream summary
         if: always()

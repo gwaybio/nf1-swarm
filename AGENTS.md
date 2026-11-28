@@ -198,6 +198,17 @@ All claims must conform to `claims/schema.json`. Key fields:
 }
 ```
 
+## Branch discipline — mandatory
+
+**All agents must follow these rules to avoid competing on the same files:**
+
+1. **Never push directly to `main`** unless you are Graude writing docs/routing commits or Milo (via the dream workflow's fast-forward merge only).
+2. **Each agent works on its own named branch:** `feat/<agent>-<short-desc>` (Emily), `milo/dream-<date>` (Milo), `claim/<agent>-<pmid>` (Dirk/Otto/Rey/Kim).
+3. **Never checkout another agent's branch.** If you need to base work on a feature branch, ask Graude to coordinate.
+4. **Before starting any work:** `git checkout main && git pull origin main && git checkout -b <your-branch>`. Never start work from a stale or someone else's branch.
+5. **Milo only:** dream commits go via `milo/dream-<date>` branch, fast-forward merged to main by the CI workflow. Never push dream commits directly to main from a local session.
+6. **If you get a push conflict:** stop, message Graude, do not force-push.
+
 ## PR protocol (harness and spec changes)
 
 When any agent identifies that a rule needs changing:
