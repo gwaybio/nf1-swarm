@@ -4,7 +4,7 @@
   "claim_type": "phenotype_association",
   "evidence_strength": 2,
   "evidence_type": "expert_opinion",
-  "notes": "Full text (PMC8354850). Modified Delphi expert consensus (74/76 experts); rubric forbids expert_opinion at strength >=4, so capped at 2. Recommendation, not an empirical finding. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-18. Mosaic NF1 definition. Same gene-disease relationship as C0023.",
+  "notes": "Full text (PMC8354850). Modified Delphi expert consensus (74/76 experts); rubric forbids expert_opinion at strength >=4, so capped at 2. Recommendation, not an empirical finding. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-18. Mosaic NF1 definition. Same gene-disease relationship as C0023. | Re-grounded 2026-11-27 for issue #88: ASSOCIATED_WITH replaced with v2.0 Biolink predicate. ASSOCIATED_WITH -> GENE_ASSOCIATED_WITH_CONDITION (Gene -> Disease).",
   "source_pmid": "34012067",
   "source_doi": "10.1038/s41436-021-01170-5",
   "source_title": "Revised diagnostic criteria for neurofibromatosis type 1 and Legius syndrome: an international consensus recommendation",
@@ -17,7 +17,7 @@
   "semantic_triple": {
     "subject": "NF1",
     "subject_id": "NCBIGene:4763",
-    "predicate": "ASSOCIATED_WITH",
+    "predicate": "GENE_ASSOCIATED_WITH_CONDITION",
     "object": "neurofibromatosis type 1",
     "object_id": "MONDO:0018975"
   },

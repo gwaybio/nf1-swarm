@@ -13,7 +13,7 @@
   "semantic_triple": {
     "subject": "NF1",
     "subject_id": "NCBIGene:4763",
-    "predicate": "ASSOCIATED_WITH",
+    "predicate": "GENE_ASSOCIATED_WITH_CONDITION",
     "object": "malignant peripheral nerve sheath tumor",
     "object_id": "MONDO:0017827"
   },
@@ -24,7 +24,7 @@
   "claim_type": "clinical_outcome",
   "evidence_strength": 3,
   "evidence_type": "cohort_study",
-  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Evans 2002 (PMID 12011145, ref 46) and Duong 2011 (PMID 21542925, ref 47). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20. | Stage 2 verification by Otto (2026-11-21): all CURIEs verified against SRI Node Normalizer \u2014 all canonical. RTX-KG2 edge checks performed for drug-disease pairs.",
+  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Evans 2002 (PMID 12011145, ref 46) and Duong 2011 (PMID 21542925, ref 47). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20. | Stage 2 verification by Otto (2026-11-21): all CURIEs verified against SRI Node Normalizer \u2014 all canonical. RTX-KG2 edge checks performed for drug-disease pairs. | Re-grounded 2026-11-27 for issue #88: ASSOCIATED_WITH replaced with v2.0 Biolink predicate. ASSOCIATED_WITH -> GENE_ASSOCIATED_WITH_CONDITION (Gene -> Disease).",
   "independence_flags": [
     "secondary citation via review PMID 35788692 of Evans 2002 (PMID 12011145, ref 46) and Duong 2011 (PMID 21542925, ref 47)"
   ],

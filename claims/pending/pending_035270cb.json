@@ -4,7 +4,7 @@
   "claim_type": "phenotype_association",
   "evidence_strength": 3,
   "evidence_type": "cohort_study",
-  "notes": "Full text (PMC8354850). Data cited from a primary study (secondary citation in a consensus paper): refs 15, 16. Primary paper should be read directly and may support a higher strength. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-18. Prevalence comparison. NF1=MONDO:0018975 (1/2000-1/3000); Legius=MONDO:0012669 (1/46000-1/75000). | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-19. NF1=MONDO:0018975 (prevalence 1/2000-1/3000); Legius=MONDO:0012669 (prevalence 1/46000-1/75000); SPRED1=NCBIGene:161742. Gene->Disease ASSOCIATED_WITH per edge_constraints. Prevalence comparison claim. | migrated from legacy pending id C0030",
+  "notes": "Full text (PMC8354850). Data cited from a primary study (secondary citation in a consensus paper): refs 15, 16. Primary paper should be read directly and may support a higher strength. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-18. Prevalence comparison. NF1=MONDO:0018975 (1/2000-1/3000); Legius=MONDO:0012669 (1/46000-1/75000). | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-19. NF1=MONDO:0018975 (prevalence 1/2000-1/3000); Legius=MONDO:0012669 (prevalence 1/46000-1/75000); SPRED1=NCBIGene:161742. Gene->Disease ASSOCIATED_WITH per edge_constraints. Prevalence comparison claim. | migrated from legacy pending id C0030 | Re-grounded 2026-11-27 for issue #88: ASSOCIATED_WITH replaced with v2.0 Biolink predicate. ASSOCIATED_WITH -> GENE_ASSOCIATED_WITH_CONDITION (Gene -> Disease).",
   "source_pmid": "34012067",
   "source_doi": "10.1038/s41436-021-01170-5",
   "source_title": "Revised diagnostic criteria for neurofibromatosis type 1 and Legius syndrome: an international consensus recommendation",
@@ -17,7 +17,7 @@
   "semantic_triple": {
     "subject": "NF1",
     "subject_id": "NCBIGene:4763",
-    "predicate": "ASSOCIATED_WITH",
+    "predicate": "GENE_ASSOCIATED_WITH_CONDITION",
     "object": "neurofibromatosis type 1",
     "object_id": "MONDO:0018975"
   },

@@ -12,6 +12,8 @@ edge_types:
   TREATS:       {from: [Drug], to: [Disease, Phenotype], required_properties: []}
   TARGETS:      {from: [Drug], to: [Gene, Protein]}
   ASSOCIATED_WITH: {from: [Gene, Mutation], to: [Phenotype, Disease]}
+  GENE_ASSOCIATED_WITH_CONDITION: {from: [Gene, Mutation], to: [Phenotype, Disease], biolink_predicate: "biolink:gene_associated_with_condition"}
+  HAS_PHENOTYPE: {from: [Disease], to: [Phenotype], biolink_predicate: "biolink:has_phenotype"}
   PART_OF:      {from: [Gene, Protein], to: [Pathway]}
   EXTRACTED_FROM: {from: [Claim], to: [Publication]}
   SUPPORTS:     {from: [Claim], to: [Claim]}
