@@ -246,6 +246,7 @@ git worktree remove ~/repos/nf1-swarm-<agent>
 2. **One worktree per task.** When done, remove it.
 3. **Milo only:** dream worktree at `~/repos/nf1-swarm-milo`, branch `milo/dream-<date>`.
 4. **If you get a push conflict:** stop, message Graude, do not force-push.
+5. **Whoever merges a PR deletes its branch.** After a merge, delete the remote branch (`gh pr merge --delete-branch`, or `git push origin --delete <branch>`), remove the worktree that held it (`git worktree remove <path>`; git will not delete a branch a worktree still holds), then delete the local branch (`git branch -d <branch>`). If a human merged your PR, still clean up your own worktree and local branch. Verify the merge with a fresh `gh pr view N --json state,mergedAt` before saying it is done.
 
 ### Pre-commit hook gotcha in worktrees
 
