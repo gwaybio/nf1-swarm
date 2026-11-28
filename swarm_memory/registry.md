@@ -1,14 +1,14 @@
 # Swarm Agent Registry
-Maintained by Milo. Last dream: 2026-11-28 04:07 UTC
+Maintained by Milo. Last dream: 2026-11-28 09:43 UTC
 Graph: 28 accepted claims, 142 pending.
 ---
 ## @graude
-Last commit: 9ce9e79 docs(agents): require erratum check before extracting numerical claims
-Context health: OK (avg 9.3s)
+Last commit: 8336581 docs(process): CodeRabbit review protocol — reply inline, never self-resolve
+Context health: idle (no commits yet)
 
 ## @dirk
 Last commit: be92047 claim(dirk): Stewart 2018 ACMG adult NF1 care guideline
-Context health: OK (avg 4.6s)
+Context health: idle (no commits yet)
 
 ## @otto
 Last commit: 0ecd048 ontology(otto): verify and correct de Blank 2022 claims (25 pending, issue #42)
@@ -16,24 +16,25 @@ Context health: idle (no commits yet)
 
 ## @archie
 Last commit: (none yet)
-Context health: OK (avg 3.9s)
+Context health: idle (no commits yet)
 
 ## @stan
 Last commit: 7f3fa2d stat(stan): confidence assessment for C0009 (selumetinib TREATS plexiform neurofibroma)
-Context health: OK (avg 8.0s)
+Context health: idle (no commits yet)
 
 ## @kim
 Last commit: a484434 feat(graph): write C0002, C0003, C0020, C0023-C0025 to Neo4j, migrations 006-007
-Context health: OK (avg 10.2s)
+Context health: idle (no commits yet)
 
 ## @rey
-Last commit: 0af5006 fix(#70): implement remaining CodeRabbit items in rebuild_db.py
-Context health: OK (avg 5.9s)
+Last commit: ce1b528 fix(#70): implement remaining CodeRabbit items in rebuild_db.py
+Context health: idle (no commits yet)
 
 ## @emily
-Last commit: add90fb refactor(#62): use idutils for DOI/PMID normalization, drop hand-rolled regex
-Context health: OK (avg 5.2s)
+Last commit: 8a651f2 memory(milo): briefing — add attribution rule + ASSOCIATED_WITH WARN status
+Context health: idle (no commits yet)
 
 ## @milo
-Last commit: a619a56 WIP on main: ffa213f feat(#63,#64): marker-pdf text cleaner + citation resolver (#73)
-Context health: OK (avg 4.4s)
+Last commit: e499098 memory(milo): early dream consolidation 2026-11-28 — 142 pending, 25 rejected
+Context health: idle (no commits yet)
+
