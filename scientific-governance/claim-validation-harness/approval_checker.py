@@ -4,9 +4,16 @@
 Captures or checks the graph state against approval snapshots.
 
 Usage:
-    python approval_checker.py --capture > scientific-governance/approved-graph-snapshots/snapshot_YYYYMMDD.json
-    python approval_checker.py --check
-    python approval_checker.py          # just run assertions
+    uv run python approval_checker.py --capture --output \
+        scientific-governance/approved-graph-snapshots/snapshot_YYYYMMDD.json
+    uv run python approval_checker.py --capture   # print JSON to stdout (does not touch any file)
+    uv run python approval_checker.py --check
+    uv run python approval_checker.py             # just run assertions
+
+Prefer --output over shell redirection: `--capture > snapshot.json` truncates an existing
+snapshot before the checker runs, so a failed capture would destroy it. --output writes a
+temp file beside the target, validates it as JSON and only then atomically replaces the
+target; on any failure the existing snapshot is left untouched.
 """
 import argparse
 import json
@@ -44,11 +51,38 @@ def run_assertions(driver):
     return results
 
 
+def write_snapshot_atomically(results: dict, target: Path) -> None:
+    """Write results as JSON to target without ever leaving it truncated or invalid.
+
+    The temp file lives in the same directory as the target so os.replace is a
+    same-filesystem atomic rename (a cross-filesystem move would copy, and a failed
+    copy could lose the existing snapshot).
+    """
+    import tempfile
+    target.parent.mkdir(parents=True, exist_ok=True)
+    text = json.dumps(results, indent=2)
+    json.loads(text)  # validate before anything is replaced
+    fd, tmp = tempfile.mkstemp(dir=target.parent, prefix=f".{target.name}.", suffix=".tmp")
+    try:
+        with os.fdopen(fd, "w") as f:
+            f.write(text + "\n")
+            f.flush()
+            os.fsync(f.fileno())
+        os.replace(tmp, target)
+    except BaseException:
+        Path(tmp).unlink(missing_ok=True)
+        raise
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--capture", action="store_true")
     parser.add_argument("--check", action="store_true")
+    parser.add_argument("--output", type=Path, metavar="PATH",
+                        help="with --capture: atomically write the snapshot to PATH instead of stdout")
     args = parser.parse_args()
+    if args.output and not args.capture:
+        parser.error("--output requires --capture")
 
     driver = get_driver()
     if driver is None:
@@ -64,7 +98,11 @@ def main():
     driver.close()
 
     if args.capture:
-        print(json.dumps(results, indent=2))
+        if args.output:
+            write_snapshot_atomically(results, args.output)
+            print(f"Snapshot written to {args.output}", file=sys.stderr)
+        else:
+            print(json.dumps(results, indent=2))
         return 0
 
     if args.check:
