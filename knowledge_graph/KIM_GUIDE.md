@@ -38,21 +38,57 @@ with driver.session() as session:
         MERGE (c)-[:EXTRACTED_FROM]->(p)
     """, **claim)
 
-    # 3. Link to every entity in related_nodes, using the edge_type given.
-    # NOTE: the unique-key lookup below is illustrative, not a shortcut —
-    # look up the real unique-identifying property for each label in
-    # scientific-governance/scientific-claim-rules/node_schemas.yaml's `unique_on` field (e.g.
-    # Gene.unique_on = [symbol], Disease.unique_on = [name]). Don't guess,
-    # and don't invent a new property.
-    node_schemas = yaml.safe_load(open("scientific-governance/scientific-claim-rules/node_schemas.yaml"))
-    for rel in claim.get("related_nodes", []):
-        label = rel["label"]
-        unique_key = node_schemas["node_schemas"][label]["unique_on"][0]
-        session.run(f"""
-            MATCH (c:Claim {{claim_id: $claim_id}})
-            MERGE (n:{label} {{{unique_key}: $identifier}})
-            MERGE (c)-[:{rel.get('edge_type', 'ASSOCIATED_WITH')}]->(n)
-        """, claim_id=claim["claim_id"], identifier=rel["identifier"])
+    # 3. Dual encoding (edge_constraints.yaml v2.0). Write BOTH layers from the claim's
+    #    semantic_triple. related_nodes only tells you each entity's label; its edge_type
+    #    is NOT a graph edge to write (ABOUT is retired, ASSOCIATED_WITH is transitional).
+    spec = yaml.safe_load(open("scientific-governance/scientific-claim-rules/edge_constraints.yaml"))
+    node_schemas = yaml.safe_load(open("scientific-governance/scientific-claim-rules/node_schemas.yaml"))["node_schemas"]
+    triple = claim["semantic_triple"]            # subject/subject_id, predicate, object/object_id
+    predicate = triple["predicate"]
+    if predicate not in spec["predicate_mapping"]:  # Cypher cannot parameterise a relationship
+        raise ValueError(f"{predicate} is not a v2.0 predicate - send back to Otto")  # type, so allowlist it
+
+    def resolve_node(end):                       # end = "subject" or "object"
+        curie = triple[f"{end}_id"]
+        label = next(n["label"] for n in claim["related_nodes"] if n["identifier"] == curie)
+        # unique_on is NOT the CURIE: Gene -> symbol, Disease/Protein/Drug -> name,
+        # Phenotype -> hpo_id. Never invent a property.
+        key = node_schemas[label]["unique_on"][0]
+        value = curie if key in ("hpo_id", "nct_id") else triple[end]
+        # Reuse the existing node's stored value: names are curated ('Selumetinib'), the
+        # claim text is not ('selumetinib'), and a casing difference would create a duplicate.
+        row = session.run(
+            f"MATCH (n:{label}) WHERE toLower(n.{key}) = toLower($v) RETURN n.{key} AS v LIMIT 1",
+            v=value).single()
+        if row:
+            value = row["v"]
+        else:  # genuinely new entity: create it, but say so, and check the name with Otto
+            print(f"NEW {label} {value!r} created for {claim['claim_id']} - confirm the name with Otto")
+            session.run(f"MERGE (:{label} {{{key}: $v}})", v=value)
+        return label, key, value
+
+    s_label, s_key, s_val = resolve_node("subject")
+    o_label, o_key, o_val = resolve_node("object")
+    match = f"""
+        MATCH (c:Claim {{claim_id: $claim_id}}),
+              (s:{s_label} {{{s_key}: $s_val}}), (o:{o_label} {{{o_key}: $o_val}})
+    """
+    params = dict(claim_id=claim["claim_id"], s_val=s_val, o_val=o_val)
+
+    # Layer 2: the Claim points at its subject and object.
+    session.run(match + "MERGE (c)-[:HAS_SUBJECT]->(s) MERGE (c)-[:HAS_OBJECT]->(o)", **params)
+
+    # Layer 1: one coalesced direct edge per (subject, predicate, object) that carries every
+    # supporting claim_id. Skip this layer for a negative-result claim until issue #93
+    # (result_polarity) is decided, or it would merge into a positive edge.
+    session.run(match + f"""
+        MERGE (s)-[r:{predicate}]->(o)
+        SET r.biolink_predicate = $biolink,
+            r.claim_ids = CASE WHEN c.claim_id IN coalesce(r.claim_ids, [])
+                               THEN r.claim_ids
+                               ELSE coalesce(r.claim_ids, []) + c.claim_id END
+        SET r.n_claims = size(r.claim_ids)
+    """, biolink=spec["predicate_mapping"][predicate], **params)
 
 driver.close()
 ```
@@ -184,9 +220,10 @@ session.run("""
 """, refuted_id="C0004", accepted_id="C0001")
 ```
 
-**Do NOT create ABOUT edges** for refuted claims — those connect a claim to the
-entities it describes, and a refuted claim's entity links are scientifically
-unreliable. EXTRACTED_FROM (source) and CONTRADICTS (conflict) are sufficient.
+**Do NOT write HAS_SUBJECT / HAS_OBJECT or a direct entity edge** for refuted
+claims — they connect a claim to the entities it describes, and a refuted claim's
+entity links are scientifically unreliable. EXTRACTED_FROM (source) and
+CONTRADICTS (conflict) are sufficient. (ABOUT, which these replace, is retired.)
 
 **Migration file naming:** use the same `NNN_description.cypher` pattern as
 accepted claims. Mark it clearly:

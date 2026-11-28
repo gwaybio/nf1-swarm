@@ -66,21 +66,10 @@ uv run bash scientific-governance/claim-validation-harness/run_tests.sh
 itself calls bare `python3`, which won't have `neo4j`/`jsonschema`/`pyyaml`
 installed unless you're inside the uv-managed venv.
 
-**Known harness bug (do not fix without a PR — it's CODEOWNERS-protected):**
-`run_tests.sh` uses `set -e` combined with `((PASS++))`. When `PASS` is still
-`0`, the bash arithmetic expression `((0++))` evaluates to `0` ("false"),
-which trips `set -e` and kills the script right after the *first* passing
-step — even though that step genuinely passed. You'll see it stop after
-"Claim validator ... PASSED" with no further output and exit code 1. This is
-cosmetic for local runs; **CI is not affected** because `ci.yml` calls
-`claim_validator.py` and `approval_checker.py` directly (`&&`-chained), never
-through `run_tests.sh`. If you need a real local pass/fail signal, run the
-two scripts individually:
-
-```bash
-uv run python scientific-governance/claim-validation-harness/claim_validator.py
-uv run python scientific-governance/claim-validation-harness/approval_checker.py
-```
+`run_tests.sh` runs both steps (claim validator, then graph assertions), counts
+each as passed or failed independently, and exits non-zero if either failed. The
+graph-assertions step skips with a pass when Neo4j is not running. CI calls the two
+scripts directly rather than through `run_tests.sh`.
 
 ## Local Neo4j for testing
 
