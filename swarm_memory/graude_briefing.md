@@ -1,14 +1,14 @@
 # Graude Session Briefing
-Generated: 2026-11-28 18:06 UTC  |  Load this file first. Do not call gh issue list.
+Generated: 2026-11-28 18:11 UTC  |  Load this file first. Do not call gh issue list.
 
 ## Pipeline
   accepted: 28  pending: 142  rejected: 25
   papers queued: 18  blocked (paywalled): 0
 
 ## Recent commits
-  cd33ec3 fix(milo): also guard blocker-label path against ready issues
-  eb7e385 fix(milo): skip ready-labeled issues in PAYWALLED blocker detection
-  c42b34c docs(design): retire ABOUT edges in DESIGN.md — dual-encoding v2.0
+  82e04b7 fix(milo): skip ready-labeled issues in PAYWALLED blocker detection
+  fdd3480 memory(milo): dream 20261128 — attribution rule + ASSOCIATED_WITH WARNs in briefing (#89)
+  442690b docs(process): whoever merges a PR deletes its branch
 
 ## Open issues
   #  4 [emily] 11d  [EMILY] Neo4j log rotation

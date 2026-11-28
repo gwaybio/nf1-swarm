@@ -1,5 +1,5 @@
 # Swarm Agent Registry
-Maintained by Milo. Last dream: 2026-11-28 18:06 UTC
+Maintained by Milo. Last dream: 2026-11-28 18:11 UTC
 Graph: 28 accepted claims, 142 pending.
 ---
 ## @graude
@@ -35,5 +35,5 @@ Last commit: eed7c05 refactor(#77): rename testing/ → scientific-governance/ w
 Context health: OK (avg 7.4s)
 
 ## @milo
-Last commit: 9d2423a chore(milo): nightly dream consolidation 2026-11-28
+Last commit: 82e04b7 fix(milo): skip ready-labeled issues in PAYWALLED blocker detection
 Context health: OK (avg 5.9s)
