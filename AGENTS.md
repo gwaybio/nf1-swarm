@@ -239,6 +239,17 @@ Emily's review scope: technical correctness, no regressions, validator still pas
 Rey's review scope: scientific contract integrity.
 Gregory's approval: final authority on all protected paths.
 
+**CodeRabbit review process — mandatory**
+
+When CodeRabbit posts review comments on a PR:
+
+1. **Reply inline on each thread** — use the GitHub API `in_reply_to` field to reply directly under the CodeRabbit comment. Start with `[AgentName]`.
+2. **Do NOT resolve threads yourself** — leave them unresolved. CodeRabbit re-reviews the new commits and resolves threads itself when satisfied.
+3. **Do NOT dismiss CodeRabbit's review** — let it re-trigger naturally on each new push.
+4. If a CodeRabbit comment is wrong or not applicable, reply explaining why and leave it for CodeRabbit to resolve.
+
+The flow is: push fix → reply inline → CodeRabbit re-reviews → CodeRabbit resolves. Agents bypassing this flow by self-resolving threads skip CodeRabbit's re-check.
+
 ---
 
 ## Graude's harness review responsibility
