@@ -42,7 +42,7 @@ CREATE TABLE IF NOT EXISTS meta (
 
 CREATE TABLE IF NOT EXISTS papers (
     pmid           TEXT PRIMARY KEY,
-    doi            TEXT,
+    doi            TEXT UNIQUE,  -- NULL ok; SQLite allows multiple NULLs in UNIQUE cols
     title          TEXT,
     year           INTEGER,
     journal        TEXT,
@@ -54,8 +54,6 @@ CREATE TABLE IF NOT EXISTS papers (
     processed_date TEXT
 );
 
-CREATE UNIQUE INDEX IF NOT EXISTS idx_papers_doi
-    ON papers(doi) WHERE doi IS NOT NULL;
 CREATE INDEX IF NOT EXISTS idx_papers_status ON papers(status);
 """
 
@@ -80,17 +78,20 @@ def _queue_md_entries() -> list[dict]:
     for line in QUEUE_MD.read_text().splitlines():
         # Lines: - `[DONE]` Title — PMID:2116237 (DOI:...) — issue #14
         m_status = re.search(r'\[(\w+)\]', line)
-        m_pmid   = re.search(r'PMID:(\d+)', line)
-        if not m_status or not m_pmid:
+        if not m_status:
             continue
         status_raw = m_status.group(1).upper()
         status = {"DONE": "done", "PENDING": "queued",
                   "IN_PROGRESS": "in_progress", "SKIPPED": "skipped"
                   }.get(status_raw, "queued")
-        pmid    = idutils.normalize_pmid(m_pmid.group(1))
-        # Extract DOI: strip the DOI: prefix, strip wrapper paren, normalize
-        doi_m   = re.search(r'DOI:(\S+)', line)
-        doi     = idutils.normalize_doi(doi_m.group(1).rstrip(")")) if doi_m else None
+        m_pmid  = re.search(r'PMID:(\d+)', line)
+        doi_m   = re.search(r'DOI:(10\.\S+)', line)
+        if not m_pmid and not doi_m:  # require at least one identifier
+            continue
+        pmid    = idutils.normalize_pmid(m_pmid.group(1)) if m_pmid else None
+        doi_raw = doi_m.group(1).rstrip(");,") if doi_m else None
+        doi     = (idutils.normalize_doi(doi_raw)
+                   if doi_raw and idutils.is_doi(doi_raw) else None)
         issue_m = re.search(r'issue #(\d+)', line)
         issue   = int(issue_m.group(1)) if issue_m else None
         papers.append({"pmid": pmid, "doi": doi, "status": status,
@@ -157,10 +158,34 @@ def build(db_path: Path = DB_PATH) -> None:
     db_path.parent.mkdir(parents=True, exist_ok=True)
     lock = db_path.with_suffix(".rebuild.lock")
 
-    # Acquire an exclusive lock via atomic create (exist_ok=False is atomic on POSIX)
+    import os
+
+    def _lock_is_stale(p: Path) -> bool:
+        try:
+            pid = int(p.read_text().strip())
+            os.kill(pid, 0)
+            return False
+        except (ValueError, FileNotFoundError, ProcessLookupError):
+            return True
+        except PermissionError:
+            return False
+
+    acquired = False
     try:
-        lock.touch(exist_ok=False)
+        with open(lock, 'x') as _f:   # O_CREAT|O_EXCL — atomic on POSIX
+            _f.write(str(os.getpid()))
+        acquired = True
     except FileExistsError:
+        if _lock_is_stale(lock):
+            lock.unlink(missing_ok=True)
+            try:
+                with open(lock, 'x') as _f:
+                    _f.write(str(os.getpid()))
+                acquired = True
+            except FileExistsError:
+                pass
+
+    if not acquired:
         import time; time.sleep(0.5)
         return
 
