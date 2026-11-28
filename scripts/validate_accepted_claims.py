@@ -53,6 +53,8 @@ def main():
         ok, errors = validate_file(path, schema, contract, rubric, edge_constraints)
         if ok:
             print(f"  PASS  {path.name}")
+            for w in errors:  # on success these are WARN: messages only (e.g. retired predicate)
+                print(f"        {w}")
             passed += 1
         else:
             print(f"  FAIL  {path.name}")
