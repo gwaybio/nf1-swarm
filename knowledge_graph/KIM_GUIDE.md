@@ -18,6 +18,16 @@ from neo4j import GraphDatabase
 claim = json.loads(Path("claims/accepted/C0042.json").read_text())
 driver = GraphDatabase.driver("bolt://localhost:7687", auth=("neo4j", os.environ["NEO4J_PASSWORD"]))
 
+# 0. Validate BEFORE any graph write, so a rejected claim leaves nothing half-written.
+spec = yaml.safe_load(open("scientific-governance/scientific-claim-rules/edge_constraints.yaml"))
+predicate = claim["semantic_triple"]["predicate"]
+if predicate in spec["predicate_mapping"]:
+    biolink = spec["predicate_mapping"][predicate]
+elif spec.get("retired_edges", {}).get(predicate, {}).get("transitional"):
+    biolink = None          # e.g. ASSOCIATED_WITH: still valid (validator WARNs), has no Biolink mapping
+else:                       # Cypher cannot parameterise a relationship type, so allowlist it
+    raise ValueError(f"{predicate} is not a v2.0 predicate - send back to Otto")
+
 with driver.session() as session:
     # 1. Create the Claim node itself
     session.run("""
@@ -41,12 +51,8 @@ with driver.session() as session:
     # 3. Dual encoding (edge_constraints.yaml v2.0). Write BOTH layers from the claim's
     #    semantic_triple. related_nodes only tells you each entity's label; its edge_type
     #    is NOT a graph edge to write (ABOUT is retired, ASSOCIATED_WITH is transitional).
-    spec = yaml.safe_load(open("scientific-governance/scientific-claim-rules/edge_constraints.yaml"))
     node_schemas = yaml.safe_load(open("scientific-governance/scientific-claim-rules/node_schemas.yaml"))["node_schemas"]
     triple = claim["semantic_triple"]            # subject/subject_id, predicate, object/object_id
-    predicate = triple["predicate"]
-    if predicate not in spec["predicate_mapping"]:  # Cypher cannot parameterise a relationship
-        raise ValueError(f"{predicate} is not a v2.0 predicate - send back to Otto")  # type, so allowlist it
 
     def resolve_node(end):                       # end = "subject" or "object"
         curie = triple[f"{end}_id"]
@@ -79,16 +85,20 @@ with driver.session() as session:
     session.run(match + "MERGE (c)-[:HAS_SUBJECT]->(s) MERGE (c)-[:HAS_OBJECT]->(o)", **params)
 
     # Layer 1: one coalesced direct edge per (subject, predicate, object) that carries every
-    # supporting claim_id. Skip this layer for a negative-result claim until issue #93
-    # (result_polarity) is decided, or it would merge into a positive edge.
-    session.run(match + f"""
-        MERGE (s)-[r:{predicate}]->(o)
-        SET r.biolink_predicate = $biolink,
-            r.claim_ids = CASE WHEN c.claim_id IN coalesce(r.claim_ids, [])
-                               THEN r.claim_ids
-                               ELSE coalesce(r.claim_ids, []) + c.claim_id END
-        SET r.n_claims = size(r.claim_ids)
-    """, biolink=spec["predicate_mapping"][predicate], **params)
+    # supporting claim_id. A negative-result claim must NOT be added to that edge: it would
+    # present the negative result as support for the positive relationship. Keep its Layer 2
+    # links only, until issue #93 decides how negative edges are represented.
+    if claim.get("result_polarity", "positive") == "negative":
+        print(f"{claim['claim_id']}: negative result - Layer 2 only, no direct edge (see #93)")
+    else:
+        session.run(match + f"""
+            MERGE (s)-[r:{predicate}]->(o)
+            SET r.biolink_predicate = $biolink,
+                r.claim_ids = CASE WHEN c.claim_id IN coalesce(r.claim_ids, [])
+                                   THEN r.claim_ids
+                                   ELSE coalesce(r.claim_ids, []) + c.claim_id END
+            SET r.n_claims = size(r.claim_ids)
+        """, biolink=biolink, **params)
 
 driver.close()
 ```

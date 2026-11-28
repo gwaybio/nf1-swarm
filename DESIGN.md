@@ -87,7 +87,7 @@ Trusted computing base:
 ### Guard rails
 
 - `scientific-governance/claim-validation-harness/` and `scientific-governance/scientific-claim-rules/` are CODEOWNERS-protected
-- CI runs `scientific-governance/claim-validation-harness/run_tests.sh` on every PR touching claims or testing
+- CI (`ci.yml`) runs `claim_validator.py` and `approval_checker.py` on every push to `main` and on manual dispatch; `daily-health.yml` re-runs them daily. There is currently **no pull-request-time validation gate** (the only PR-triggered workflow is the Discord notification), so run `scientific-governance/claim-validation-harness/run_tests.sh` locally before opening a PR
 - Agents write test DATA (new CSV rows, new YAML blocks) — never harness code
 
 ## Schema versioning
