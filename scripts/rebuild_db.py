@@ -30,6 +30,7 @@ import idutils
 REPO_ROOT = Path(__file__).parent.parent
 DB_PATH   = REPO_ROOT / "data" / "swarm.db"
 QUEUE_MD  = REPO_ROOT / "literature" / "queue.md"
+LOCK_WAIT_SECONDS = 60   # max time a caller waits for a concurrent rebuild
 
 
 # ── Schema ────────────────────────────────────────────────────────────────────
@@ -197,8 +198,22 @@ def build(db_path: Path = DB_PATH) -> None:
                 pass
 
     if not acquired:
-        import time; time.sleep(0.5)
-        return
+        # Another process holds a live lock. Wait for it to finish so the
+        # caller never reads a missing/partial DB; give up with an error
+        # rather than silently proceeding.
+        import time
+        deadline = time.monotonic() + LOCK_WAIT_SECONDS
+        while lock.exists() and time.monotonic() < deadline:
+            if _lock_is_stale(lock):
+                break
+            time.sleep(0.25)
+        if lock.exists() and not _lock_is_stale(lock):
+            raise TimeoutError(
+                f"Timed out after {LOCK_WAIT_SECONDS}s waiting for another "
+                f"rebuild (lock: {lock})")
+        # Lock released (or went stale): the other builder published the DB.
+        # If it is still missing/stale, build it ourselves.
+        return build(db_path) if not db_path.exists() else None
 
     tmp_path = db_path.with_suffix(".tmp")  # declared before try so finally can reference it
     try:
