@@ -29,9 +29,11 @@ Your workflow:
 
 ## What requires a PR (never push directly)
 
-- `scientific-governance/claim-validation-scripts/` — human-owned, CODEOWNERS-protected
-- `scientific-governance/scientific-claim-rules/` — scientific contract, Gregory + Rey must approve
-- `claims/schema.json` — data contract, Gregory + Rey must approve
+- `scientific-governance/claim-validation-harness/` — human-owned, CODEOWNERS-protected (TCB)
+- `scientific-governance/scientific-claim-rules/` — scientific contract, Gregory + Rey must approve (TCB)
+- `scientific-governance/approved-graph-snapshots/` — approval snapshots, Gregory must approve (TCB)
+- `claims/schema.json` — data contract, Gregory + Rey must approve (TCB)
+- `.github/CODEOWNERS` — Gregory must approve (TCB)
 
 Everything else: push directly to main.
 

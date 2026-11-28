@@ -38,5 +38,5 @@ Anything outside the TCB is untrusted and checked mechanically.
 ## Running tests
 
 ```bash
-bash scientific-governance/claim-validation-scripts/run_tests.sh
+uv run bash scientific-governance/claim-validation-scripts/run_tests.sh
 ```

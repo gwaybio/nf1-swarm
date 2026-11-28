@@ -112,10 +112,10 @@ nf1-swarm/
 │   └── restore_graph.sh         # Neo4j restore from dump
 │
 ├── scientific-governance/
-│   ├── specs/                   # TRUSTED: human-written scientific contract (TCB — Gregory only)
-│   ├── harness/                 # PROTECTED: human-owned test runner (TCB — Gregory only)
-│   ├── acceptance/              # Agent-writable test data tables
-│   └── approved/                # Approval snapshots of known-good graph state
+│   ├── scientific-claim-rules/  # TRUSTED: human-written scientific contract (TCB — Gregory only)
+│   ├── claim-validation-harness/ # PROTECTED: human-owned test runner (TCB — Gregory only)
+│   ├── required-graph-assertions/ # Agent-writable test data tables
+│   └── approved-graph-snapshots/  # Approval snapshots of known-good graph state
 │
 └── .hermes/
     ├── context.md               # Auto-loaded repo context for all agents

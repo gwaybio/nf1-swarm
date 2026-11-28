@@ -21,7 +21,21 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(REPO_ROOT))
 
-from testing.harness.claim_validator import load_specs, validate_file  # noqa: E402
+import importlib.util
+import sys
+from pathlib import Path
+
+# scientific-governance/claim-validation-scripts/ is a hyphenated directory and
+# cannot be imported as a dotted Python package. Load the validator by file path.
+_validator_path = Path(__file__).parent.parent / \
+    "scientific-governance" / "claim-validation-scripts" / "claim_validator.py"
+_spec = importlib.util.spec_from_file_location("claim_validator", _validator_path)
+assert _spec is not None and _spec.loader is not None, \
+    f"Could not load claim_validator from {_validator_path}"
+_mod = importlib.util.module_from_spec(_spec)
+_spec.loader.exec_module(_mod)  # type: ignore[union-attr]
+load_specs = _mod.load_specs
+validate_file = _mod.validate_file
 
 ACCEPTED_DIR = REPO_ROOT / "claims" / "accepted"
 

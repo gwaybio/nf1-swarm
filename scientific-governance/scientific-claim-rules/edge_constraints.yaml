@@ -135,6 +135,10 @@ edge_types:
     biolink_predicate: null  # structural
 
 # --- Retired edges ---
+# These predicates are retired in v2.0 but kept here as transitional
+# entries so existing claims do not fail validation before Otto re-grounds them.
+# Claims using retired predicates will show a WARN (not FAIL) in the validator.
+# Remove each entry once all claims using it have been re-grounded.
 retired_edges:
   ABOUT:
     reason: "Replaced by typed HAS_SUBJECT/HAS_OBJECT + direct entity edges"
@@ -148,6 +152,7 @@ retired_edges:
       Migration rewrites existing ASSOCIATED_WITH edges to the appropriate typed predicate.
     retired_in: "v2.0"
     migration: "008_typed_edges_backfill"
+    transitional: true  # validator issues WARN not FAIL until re-grounding is complete
 
 # --- Edge properties ---
 edge_properties:

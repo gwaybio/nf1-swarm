@@ -141,6 +141,7 @@ def validate_post_grounding(claim, edge_constraints):
       3. related_nodes must not be empty when semantic_triple is populated.
     """
     errors = []
+    warnings: list[str] = []
     triple = claim.get("semantic_triple")
     if not triple:
         return errors  # pre-grounding claim — skip all post-grounding checks
@@ -157,11 +158,21 @@ def validate_post_grounding(claim, edge_constraints):
     # 2. Predicate must exist in edge_constraints.yaml
     predicate = triple.get("predicate")
     allowed_predicates = set(edge_constraints.get("edge_types", {}).keys())
+    retired_edges = edge_constraints.get("retired_edges", {})
+    transitional_predicates = {
+        k for k, v in retired_edges.items() if v.get("transitional")
+    }
     if predicate and predicate not in allowed_predicates:
-        errors.append(
-            f"Grounding: predicate \"{predicate}\" not in edge_constraints.yaml "
-            f"(allowed: {', '.join(sorted(allowed_predicates))})"
-        )
+        if predicate in transitional_predicates:
+            warnings.append(
+                f"Grounding: predicate \"{predicate}\" is retired in v2.0 — "
+                f"re-ground to a current predicate (see edge_constraints.yaml retired_edges)"
+            )
+        else:
+            errors.append(
+                f"Grounding: predicate \"{predicate}\" not in edge_constraints.yaml "
+                f"(allowed: {', '.join(sorted(allowed_predicates))})"
+            )
 
     # 3. related_nodes must not be empty when semantic_triple is set
     if not claim.get("related_nodes"):
@@ -170,7 +181,8 @@ def validate_post_grounding(claim, edge_constraints):
             "list at least the subject and object nodes"
         )
 
-    return errors
+    # Prefix warnings with WARN: so callers can distinguish them from errors
+    return errors + [f"WARN: {w}" for w in warnings]
 
 
 def validate_file(path, schema, contract, rubric, edge_constraints):
@@ -178,12 +190,13 @@ def validate_file(path, schema, contract, rubric, edge_constraints):
         claim = json.loads(path.read_text())
     except json.JSONDecodeError as e:
         return False, [f"JSON parse error: {e}"]
-    errors = validate_json_schema(claim, schema)
-    if not errors:
-        errors += validate_claim_contract(claim, contract)
-        errors += validate_rubric(claim, rubric)
-        errors += validate_post_grounding(claim, edge_constraints)
-    return len(errors) == 0, errors
+    messages = validate_json_schema(claim, schema)
+    if not messages:
+        messages += validate_claim_contract(claim, contract)
+        messages += validate_rubric(claim, rubric)
+        messages += validate_post_grounding(claim, edge_constraints)
+    errors = [m for m in messages if not m.startswith("WARN:")]
+    return len(errors) == 0, messages
 
 
 def main():
