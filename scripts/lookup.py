@@ -24,6 +24,8 @@ import subprocess
 import sys
 from pathlib import Path
 
+import idutils
+
 REPO_ROOT = Path(__file__).parent.parent
 DB_PATH   = REPO_ROOT / "data" / "swarm.db"
 
@@ -52,7 +54,7 @@ def _rebuild() -> None:
     import sys as _sys
     _sys.path.insert(0, str(REPO_ROOT))
     from scripts.rebuild_db import build  # noqa: PLC0415
-    build()
+    build(DB_PATH)   # guarantees a fresh DB or raises
 
 
 def _ensure_db() -> sqlite3.Connection:
@@ -85,6 +87,7 @@ def _row_to_dict(row: sqlite3.Row) -> dict:
 
 
 def lookup_pmid(pmid: str) -> dict:
+    pmid = idutils.normalize_pmid(pmid) or pmid   # same normalisation as stored values
     con = _ensure_db()
     row = con.execute("SELECT * FROM papers WHERE pmid=?", (pmid,)).fetchone()
     con.close()
@@ -92,6 +95,7 @@ def lookup_pmid(pmid: str) -> dict:
 
 
 def lookup_doi(doi: str) -> dict:
+    doi = idutils.normalize_doi(doi) or doi       # same normalisation as stored values
     con = _ensure_db()
     row = con.execute("SELECT * FROM papers WHERE doi=?", (doi,)).fetchone()
     con.close()
@@ -138,12 +142,16 @@ def main() -> int:
         _rebuild()
         return 0
 
-    if args.pmid:
-        result = lookup_pmid(args.pmid)
-    elif args.doi:
-        result = lookup_doi(args.doi)
-    else:
-        result = lookup_status(args.status)
+    try:
+        if args.pmid:
+            result = lookup_pmid(args.pmid)
+        elif args.doi:
+            result = lookup_doi(args.doi)
+        else:
+            result = lookup_status(args.status)
+    except (RuntimeError, TimeoutError) as exc:
+        # Rebuild could not produce a fresh DB: report it, never answer from a stale one.
+        result = {"error": f"database rebuild failed: {exc}"}
 
     print(json.dumps(result, indent=2))
     return 1 if "error" in result else 0

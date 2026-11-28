@@ -18,6 +18,7 @@ Usage:
 from __future__ import annotations
 
 import json
+import os
 import re
 import sqlite3
 import subprocess
@@ -43,7 +44,9 @@ CREATE TABLE IF NOT EXISTS meta (
 
 CREATE TABLE IF NOT EXISTS papers (
     pmid           TEXT PRIMARY KEY,
-    doi            TEXT UNIQUE,  -- NULL ok; SQLite allows multiple NULLs in UNIQUE cols
+    -- DOIs are case-insensitive; NOCASE makes lookups and UNIQUE case-insensitive
+    -- while keeping the original case for display. NULL allowed (multiple NULLs ok).
+    doi            TEXT UNIQUE COLLATE NOCASE,
     title          TEXT,
     year           INTEGER,
     journal        TEXT,
@@ -90,16 +93,7 @@ def _queue_md_entries() -> list[dict]:
         if not m_pmid and not doi_m:  # require at least one identifier
             continue
         pmid    = idutils.normalize_pmid(m_pmid.group(1)) if m_pmid else None
-        doi_raw = doi_m.group(1) if doi_m else None
-        # Strip trailing wrapping punctuation but preserve balanced parens
-        # e.g. "10.1038/s41436)," → "10.1038/s41436" (unbalanced ) stripped)
-        # but "10.1016/cell(2020)" → kept intact (balanced)
-        if doi_raw:
-            doi_raw = doi_raw.rstrip(",;")
-            while doi_raw.endswith(")") and doi_raw.count("(") < doi_raw.count(")"):
-                doi_raw = doi_raw[:-1]
-        doi     = (idutils.normalize_doi(doi_raw)
-                   if doi_raw and idutils.is_doi(doi_raw) else None)
+        doi     = _clean_doi(doi_m.group(1)) if doi_m else None
         issue_m = re.search(r'issue #(\d+)', line)
         issue   = int(issue_m.group(1)) if issue_m else None
         papers.append({"pmid": pmid, "doi": doi, "status": status,
@@ -107,115 +101,103 @@ def _queue_md_entries() -> list[dict]:
     return papers
 
 
+def _clean_doi(raw: str | None) -> str | None:
+    """Strip wrapping punctuation, keep balanced parentheses, validate, normalise."""
+    if not raw:
+        return None
+    raw = raw.rstrip(",;")
+    while raw.endswith(")") and raw.count("(") < raw.count(")"):
+        raw = raw[:-1]
+    return idutils.normalize_doi(raw) if idutils.is_doi(raw) else None
+
+
+# Issue-form bodies render as "### PMID\n\n32187458\n\n### DOI\n\n10.x/y"
+# (blank optional fields render as "_No response_").
+_FORM_PMID = re.compile(r"^###[ \t]*PMID[ \t]*\n+[ \t]*(\d+)[ \t]*$", re.M)
+_FORM_DOI  = re.compile(r"^###[ \t]*DOI[ \t]*\n+[ \t]*(10\.\S+)[ \t]*$", re.M)
+
+
+def _fetch_paper_issues() -> list[dict]:
+    """All issues labelled 'paper' (open + closed), fully paginated, PRs excluded.
+
+    Uses the REST API with --paginate so there is no result cap to truncate at.
+    Any failure raises: a partial import must never be published as complete.
+    """
+    try:
+        raw = subprocess.check_output(
+            ["gh", "api", "--paginate",
+             "repos/gwaybio/nf1-swarm/issues?labels=paper&state=all&per_page=100",
+             "--jq",
+             ".[] | select(.pull_request | not) | {number, title, body, state}"],
+            text=True, timeout=120,
+        )
+    except (subprocess.CalledProcessError, FileNotFoundError,
+            subprocess.TimeoutExpired) as exc:
+        raise RuntimeError(f"GitHub issues fetch failed: {exc}") from exc
+    return [json.loads(line) for line in raw.splitlines() if line.strip()]
+
+
 def _github_issues() -> list[dict]:
-    """Fetch paper issues from GitHub via gh CLI (open + closed)."""
+    """Paper issues -> rows. Identifiers come from the title (inline
+    'PMID:123 DOI:10.x') or from the issue-form body ('### PMID' / '### DOI')."""
     papers = []
-    LIMIT = 500  # per-state; warn if we hit this
-    for state in ("open", "closed"):
-        try:
-            raw = subprocess.check_output(
-                ["gh", "issue", "list",
-                 "--repo", "gwaybio/nf1-swarm",
-                 "--label", "paper",
-                 "--state", state,
-                 "--limit", str(LIMIT),
-                 "--json", "number,title,body,state"],
-                text=True, timeout=30
-            )
-        except (subprocess.CalledProcessError, FileNotFoundError,
-                subprocess.TimeoutExpired) as exc:
-            # Hard fail — a partial index is worse than an empty one
-            print(f"WARNING: gh issue list failed for state={state}: {exc}",
-                  file=sys.stderr)
-            raise RuntimeError(f"GitHub issues fetch failed: {exc}") from exc
-        issues = json.loads(raw)
-        if len(issues) >= LIMIT:
-            print(f"WARNING: gh issue list returned {LIMIT} issues for state={state} "
-                  f"— results may be truncated; raise LIMIT in rebuild_db.py",
-                  file=sys.stderr)
-        for issue in issues:
-            num   = issue["number"]
-            title = issue["title"]
-            body  = issue.get("body") or ""
-            # Try title first; fall back to scanning body for identifiers
-            pmid_m = re.search(r'PMID:(\d+)', title) or re.search(r'PMID:(\d+)', body)
-            doi_m  = re.search(r'DOI:(10\.\S+)', title) or re.search(r'DOI:(10\.\S+)', body)
-            if not pmid_m and not doi_m:
-                continue
-            pmid = idutils.normalize_pmid(pmid_m.group(1)) if pmid_m else None
-            doi_raw = doi_m.group(1).rstrip(",;") if doi_m else None
-            # Strip unbalanced trailing ) (wrapper paren) but keep balanced ones
-            if doi_raw:
-                while doi_raw.endswith(")") and doi_raw.count("(") < doi_raw.count(")"):
-                    doi_raw = doi_raw[:-1]
-            # Validate DOI before normalising — idutils.is_doi prevents "pending" etc.
-            doi = (idutils.normalize_doi(doi_raw)
-                   if doi_raw and idutils.is_doi(doi_raw) else None)
-            status = "done" if issue["state"] == "CLOSED" else "in_progress"
-            papers.append({"pmid": pmid, "doi": doi, "title": title,
-                           "status": status, "issue_number": num,
-                           "source_type": "primary"})
+    for issue in _fetch_paper_issues():
+        title = issue["title"]
+        body = issue.get("body") or ""
+        pmid_m = (re.search(r"PMID:(\d+)", title) or _FORM_PMID.search(body)
+                  or re.search(r"PMID:(\d+)", body))
+        doi_m = (re.search(r"DOI:(10\.\S+)", title) or _FORM_DOI.search(body)
+                 or re.search(r"DOI:(10\.\S+)", body))
+        if not pmid_m and not doi_m:
+            continue
+        pmid = idutils.normalize_pmid(pmid_m.group(1)) if pmid_m else None
+        doi = _clean_doi(doi_m.group(1)) if doi_m else None
+        status = "done" if issue["state"].lower() == "closed" else "in_progress"
+        papers.append({"pmid": pmid, "doi": doi, "title": title,
+                       "status": status, "issue_number": issue["number"],
+                       "source_type": "primary"})
     return papers
 
 
 # ── Build ─────────────────────────────────────────────────────────────────────
 
 def build(db_path: Path = DB_PATH) -> None:
-    """
-    Rebuild the database atomically, serialised by a lock file.
+    """Ensure db_path is a complete, fresh database, or raise.
 
-    Diagnostic output goes to stderr so automated callers (lookup.py)
-    don't see it on stdout.
+    Serialised with fcntl.flock on a persistent lock file. The kernel drops the
+    lock when the owning process exits for any reason, so there is no stale-lock
+    detection to get wrong, and the lock is held across the freshness check,
+    the build, the atomic publish and temp-file cleanup. A caller that waited
+    acquires the lock itself, re-checks freshness, and rebuilds if the previous
+    builder failed; it never returns having merely seen an old DB.
+    Diagnostics go to stderr so lookup.py keeps clean JSON on stdout.
     """
+    import fcntl
+    import time
+
     db_path.parent.mkdir(parents=True, exist_ok=True)
-    lock = db_path.with_suffix(".rebuild.lock")
-
-    import os
-
-    def _lock_is_stale(p: Path) -> bool:
-        try:
-            pid = int(p.read_text().strip())
-            os.kill(pid, 0)
-            return False
-        except (ValueError, FileNotFoundError, ProcessLookupError):
-            return True
-        except PermissionError:
-            return False
-
-    acquired = False
+    lock = db_path.with_suffix(".rebuild.lock")   # persistent; never unlinked
+    fd = os.open(lock, os.O_CREAT | os.O_RDWR, 0o644)
     try:
-        with open(lock, 'x') as _f:   # O_CREAT|O_EXCL — atomic on POSIX
-            _f.write(str(os.getpid()))
-        acquired = True
-    except FileExistsError:
-        if _lock_is_stale(lock):
-            lock.unlink(missing_ok=True)
-            try:
-                with open(lock, 'x') as _f:
-                    _f.write(str(os.getpid()))
-                acquired = True
-            except FileExistsError:
-                pass
-
-    if not acquired:
-        # Another process holds a live lock. Wait for it to finish so the
-        # caller never reads a missing/partial DB; give up with an error
-        # rather than silently proceeding.
-        import time
         deadline = time.monotonic() + LOCK_WAIT_SECONDS
-        while lock.exists() and time.monotonic() < deadline:
-            if _lock_is_stale(lock):
+        while True:
+            try:
+                fcntl.flock(fd, fcntl.LOCK_EX | fcntl.LOCK_NB)
                 break
-            time.sleep(0.25)
-        if lock.exists() and not _lock_is_stale(lock):
-            raise TimeoutError(
-                f"Timed out after {LOCK_WAIT_SECONDS}s waiting for another "
-                f"rebuild (lock: {lock})")
-        # Lock released (or went stale): the other builder published the DB.
-        # If it is still missing/stale, build it ourselves.
-        return build(db_path) if not db_path.exists() else None
+            except BlockingIOError:
+                if time.monotonic() >= deadline:
+                    raise TimeoutError(
+                        f"Timed out after {LOCK_WAIT_SECONDS}s waiting for "
+                        f"another rebuild (lock: {lock})") from None
+                time.sleep(0.1)
+        _build_locked(db_path)
+    finally:
+        os.close(fd)   # releases the flock
 
-    tmp_path = db_path.with_suffix(".tmp")  # declared before try so finally can reference it
+
+def _build_locked(db_path: Path) -> None:
+    """Freshness re-check + build + atomic publish. Caller holds the lock."""
+    tmp_path = db_path.with_suffix(".tmp")
     try:
         # Re-check freshness under the lock — another builder may have just
         # finished, making our rebuild redundant.
@@ -296,8 +278,7 @@ def build(db_path: Path = DB_PATH) -> None:
         print(f"Rebuilt {db_path} — {paper_count} papers, commit {_git_head()}",
               file=sys.stderr)
     finally:
-        lock.unlink(missing_ok=True)
-        tmp_path.unlink(missing_ok=True)  # no-op if already renamed; cleans up on failure
+        tmp_path.unlink(missing_ok=True)  # no-op if renamed; cleans up on failure
 
 
 if __name__ == "__main__":
