@@ -14,7 +14,7 @@ Move the contract between humans and agents into *data*, not code.
 
 - `scientific-governance/scientific-claim-rules/` — **TRUSTED**. Human-written YAML specifications. The formal contract.
 - `scientific-governance/required-graph-assertions/` — **TEST DATA**. Agent-writable tables. Rows assert expected behavior.
-- `scientific-governance/claim-validation-scripts/` — **PROTECTED**. Human-owned Python. CODEOWNERS-enforced. Agents cannot modify.
+- `scientific-governance/claim-validation-harness/` — **PROTECTED**. Human-owned Python. CODEOWNERS-enforced. Agents cannot modify.
 - `scientific-governance/approved-graph-snapshots/` — **SNAPSHOTS**. Known-good graph states. Human approval required to update.
 
 ### Solution 2: Specification-first verification (AlphaProof Code, DeepMind, 2026)
@@ -33,10 +33,10 @@ Anything outside the TCB is untrusted and checked mechanically.
 
 1. **Adding a claim assertion**: Add a row to `scientific-governance/required-graph-assertions/claim_tables/pathway_claims.csv`. Do not modify the header or harness.
 2. **Adding a graph assertion**: Add a YAML block to `scientific-governance/required-graph-assertions/graph_assertions/seed_state.yaml`. Do not modify the assertion schema.
-3. **Never modify**: `scientific-governance/scientific-claim-rules/`, `scientific-governance/claim-validation-scripts/`, `scientific-governance/approved-graph-snapshots/`
+3. **Never modify**: `scientific-governance/scientific-claim-rules/`, `scientific-governance/claim-validation-harness/`, `scientific-governance/approved-graph-snapshots/`
 
 ## Running tests
 
 ```bash
-uv run bash scientific-governance/claim-validation-scripts/run_tests.sh
+uv run bash scientific-governance/claim-validation-harness/run_tests.sh
 ```

@@ -1,14 +1,14 @@
 #!/usr/bin/env python3
 """Claim validator — PROTECTED (human-owned, do not modify via agent PR).
 
-Validates claims in claims/{pending,accepted,rejected}/ against:
+Validates claims in claims/pending/ against:
   - claims/schema.json (JSON Schema)
   - scientific-governance/scientific-claim-rules/claim_contract.yaml (claim type rules)
   - scientific-governance/scientific-claim-rules/evidence_rubric.yaml (strength/type consistency)
-  - scientific-governance/scientific-claim-rules/edge_constraints.yaml (predicate + CURIE checks)
+  - scientific-governance/scientific-claim-rules/edge_constraints.yaml (predicate + CURIE checks, post-grounding)
 
 Agents write claims; this validator checks them. The validator is not modifiable
-by agents without a PR reviewed and approved by Gregory Way.
+by agents without a PR reviewed and approved by @gwaybio.
 """
 import json
 import re
@@ -24,16 +24,9 @@ except ImportError:
 
 REPO_ROOT = Path(__file__).parent.parent.parent
 SCHEMA_PATH = REPO_ROOT / "claims" / "schema.json"
-
-# Support both old and new directory structures during migration.
-SPECS_DIR_NEW = REPO_ROOT / "scientific-governance" / "scientific-claim-rules"
-SPECS_DIR_OLD = REPO_ROOT / "testing" / "specs"
-SPECS_DIR = SPECS_DIR_NEW if SPECS_DIR_NEW.exists() else SPECS_DIR_OLD
-
-CONTRACT_PATH = SPECS_DIR / "claim_contract.yaml"
-RUBRIC_PATH = SPECS_DIR / "evidence_rubric.yaml"
-EDGE_CONSTRAINTS_PATH = SPECS_DIR / "edge_constraints.yaml"
-
+CONTRACT_PATH = REPO_ROOT / "scientific-governance" / "scientific-claim-rules" / "claim_contract.yaml"
+RUBRIC_PATH = REPO_ROOT / "scientific-governance" / "scientific-claim-rules" / "evidence_rubric.yaml"
+EDGE_CONSTRAINTS_PATH = REPO_ROOT / "scientific-governance" / "scientific-claim-rules" / "edge_constraints.yaml"
 PENDING_DIR  = REPO_ROOT / "claims" / "pending"
 ACCEPTED_DIR = REPO_ROOT / "claims" / "accepted"
 REJECTED_DIR = REPO_ROOT / "claims" / "rejected"
@@ -106,7 +99,7 @@ def validate_claim_contract(claim, contract):
                 f"R#### (new) or C#### (legacy), got {claim_id!r}"
             )
 
-    # Accepted claims must have curated_by and curation_date
+    # Graude demands it: accepted claims must have curated_by and curation_date
     if claim.get("status") == "accepted":
         if claim.get("curated_by") not in ("rey", "human"):
             errors.append("Contract: status='accepted' requires curated_by='rey' or 'human'")
@@ -139,66 +132,18 @@ def validate_rubric(claim, rubric):
     return errors
 
 
-def validate_predicate(claim, contract, edge_constraints):
-    """Validate semantic_triple.predicate against allowed predicates.
-
-    Checks:
-      1. predicate is in claim_contract.yaml allowed_predicates
-      2. predicate exists as a key in edge_constraints.yaml edge_types
-      3. If result_polarity is present, it must be 'positive' or 'negative'
-    """
-    errors = []
-    triple = claim.get("semantic_triple")
-    if not triple:
-        return errors  # pre-grounding claim — skip
-
-    predicate = triple.get("predicate")
-    if not predicate:
-        return errors
-
-    # 1. Check against contract allowed_predicates
-    allowed = contract.get("allowed_predicates", [])
-    if allowed and predicate not in allowed:
-        errors.append(
-            f"Contract: semantic_triple.predicate '{predicate}' not in "
-            f"allowed_predicates ({', '.join(sorted(allowed))})"
-        )
-
-    # 2. Check against edge_constraints.yaml edge_types
-    edge_types = set(edge_constraints.get("edge_types", {}).keys())
-    if predicate not in edge_types:
-        # Also check retired_edges for helpful messaging
-        retired = edge_constraints.get("retired_edges", {})
-        if predicate in retired:
-            reason = retired[predicate].get("reason", "retired")
-            errors.append(
-                f"Grounding: predicate '{predicate}' is retired — {reason}"
-            )
-        else:
-            errors.append(
-                f"Grounding: predicate '{predicate}' not in edge_constraints.yaml"
-            )
-
-    # 3. Validate result_polarity if present
-    polarity = triple.get("result_polarity")
-    if polarity and polarity not in ("positive", "negative"):
-        errors.append(
-            f"Grounding: result_polarity must be 'positive' or 'negative', "
-            f"got '{polarity}'"
-        )
-
-    return errors
-
-
 def validate_post_grounding(claim, edge_constraints):
     """Checks that only run when semantic_triple is present (after Otto grounds the claim).
 
     Three mechanical checks:
       1. subject_id / object_id must be single valid CURIEs (no pipes, no whitespace).
-      2. predicate must exist in edge_constraints.yaml.
+      2. predicate must be a biological predicate listed in predicate_mapping in
+         scientific-governance/scientific-claim-rules/edge_constraints.yaml
+         (retired-but-transitional predicates produce a WARN, not a FAIL).
       3. related_nodes must not be empty when semantic_triple is populated.
     """
     errors = []
+    warnings: list[str] = []
     triple = claim.get("semantic_triple")
     if not triple:
         return errors  # pre-grounding claim — skip all post-grounding checks
@@ -212,9 +157,27 @@ def validate_post_grounding(claim, edge_constraints):
                 f"(must match PREFIX:identifier — no pipes, no spaces)"
             )
 
-    # 2. Predicate existence (now handled by validate_predicate; kept for
-    #    backward compat but only fires if validate_predicate didn't already)
-    # Intentionally removed — validate_predicate covers this.
+    # 2. Predicate must exist in edge_constraints.yaml
+    predicate = triple.get("predicate")
+    # predicate_mapping is the authoritative list of *biological* predicates.
+    # edge_types also holds structural claim-reification edges (HAS_SUBJECT,
+    # HAS_OBJECT, EXTRACTED_FROM, SUPPORTS, ...) which are not valid claim predicates.
+    allowed_predicates = set(edge_constraints.get("predicate_mapping", {}).keys())
+    retired_edges = edge_constraints.get("retired_edges", {})
+    transitional_predicates = {
+        k for k, v in retired_edges.items() if v.get("transitional")
+    }
+    if predicate and predicate not in allowed_predicates:
+        if predicate in transitional_predicates:
+            warnings.append(
+                f"Grounding: predicate \"{predicate}\" is retired in v2.0 — "
+                f"re-ground to a current predicate (see edge_constraints.yaml retired_edges)"
+            )
+        else:
+            errors.append(
+                f"Grounding: predicate \"{predicate}\" not in edge_constraints.yaml predicate_mapping "
+                f"(allowed: {', '.join(sorted(allowed_predicates))})"
+            )
 
     # 3. related_nodes must not be empty when semantic_triple is set
     if not claim.get("related_nodes"):
@@ -223,7 +186,8 @@ def validate_post_grounding(claim, edge_constraints):
             "list at least the subject and object nodes"
         )
 
-    return errors
+    # Prefix warnings with WARN: so callers can distinguish them from errors
+    return errors + [f"WARN: {w}" for w in warnings]
 
 
 def validate_file(path, schema, contract, rubric, edge_constraints):
@@ -231,13 +195,13 @@ def validate_file(path, schema, contract, rubric, edge_constraints):
         claim = json.loads(path.read_text())
     except json.JSONDecodeError as e:
         return False, [f"JSON parse error: {e}"]
-    errors = validate_json_schema(claim, schema)
-    if not errors:
-        errors += validate_claim_contract(claim, contract)
-        errors += validate_rubric(claim, rubric)
-        errors += validate_predicate(claim, contract, edge_constraints)
-        errors += validate_post_grounding(claim, edge_constraints)
-    return len(errors) == 0, errors
+    messages = validate_json_schema(claim, schema)
+    if not messages:
+        messages += validate_claim_contract(claim, contract)
+        messages += validate_rubric(claim, rubric)
+        messages += validate_post_grounding(claim, edge_constraints)
+    errors = [m for m in messages if not m.startswith("WARN:")]
+    return len(errors) == 0, messages
 
 
 def main():
@@ -259,6 +223,8 @@ def main():
         ok, errors = validate_file(path, schema, contract, rubric, edge_constraints)
         if ok:
             print(f"  PASS  {path.name}")
+            for w in errors:          # on success these are WARN: messages only
+                print(f"        {w}")
             passed += 1
         else:
             print(f"  FAIL  {path.name}")

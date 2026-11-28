@@ -22,7 +22,7 @@ You receive `[EMILY]` GitHub issues from Graude. Each issue contains:
 Your workflow:
 1. Reproduce the failure (locally or via CI logs)
 2. Fix root cause, not symptoms
-3. Run affected tests locally: `cd ~/repos/nf1-swarm && bash scientific-governance/claim-validation-scripts/run_tests.sh`
+3. Run affected tests locally: `uv run bash scientific-governance/claim-validation-harness/run_tests.sh`
 4. Commit with `fix(<area>): <description>` and push
 5. Confirm CI is green
 6. Comment on the issue with what you changed and why, then close it

@@ -341,7 +341,7 @@ icon(ax, 15.3, 8.3, "github", color=C["white"])
 txt(ax, 15.9, 9.25, "GitHub  —  gwaybio/nf1-swarm", C["white"], size=10, weight="bold", ha="left")
 txt(ax, 15.9, 8.85, "Issues = task board (paper-queue, claims)", C["white"], size=8.5, ha="left")
 txt(ax, 15.9, 8.5,  "PRs: fast-path (Emily) + TCB (Gregory)", C["gray"], size=8, ha="left")
-txt(ax, 15.9, 8.15, "CODEOWNERS: testing/specs/ harness/ approved/", C["gray"], size=8, ha="left")
+txt(ax, 15.9, 8.15, "CODEOWNERS: scientific-governance/ claim rules, harness, snapshots", C["gray"], size=8, ha="left")
 txt(ax, 15.9, 7.8,  "CodeRabbit reviews all PRs", C["dim"], size=7.5, ha="left")
 
 # Discord
@@ -357,8 +357,8 @@ txt(ax, 22.1, 7.8,  "Gregory DMs Graude directly", C["dim"], size=7.5, ha="left"
 box(ax, 14.5, 4.5, 6.0, 2.3, "#1a0a1a", C["purple"], r=0.3, lw=2)
 icon(ax, 15.3, 5.65, "lock", color=C["purple"])
 txt(ax, 15.9, 6.55, "TCB  —  Gregory-gated", C["purple"], size=10, weight="bold", ha="left")
-txt(ax, 15.9, 6.15, "testing/specs/  ·  testing/harness/", C["white"], size=8.5, ha="left")
-txt(ax, 15.9, 5.8,  "testing/approved/  ·  .github/CODEOWNERS", C["gray"], size=8, ha="left")
+txt(ax, 15.9, 6.15, "scientific-governance/ rules  ·  harness", C["white"], size=8.5, ha="left")
+txt(ax, 15.9, 5.8,  "approved snapshots  ·  .github/CODEOWNERS", C["gray"], size=8, ha="left")
 txt(ax, 15.9, 5.45, "claim_contract.yaml  ·  approval_checker.py", C["gray"], size=8, ha="left")
 txt(ax, 15.9, 5.1,  "PRs require Gregory merge — never self-merge", C["dim"], size=7.5, ha="left")
 

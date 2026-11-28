@@ -48,7 +48,7 @@ When full text is unavailable (`paper.full_text_source == "unavailable"`):
 2. Extract claims — each is a **single falsifiable statement**
 3. Reserve a claim ID: `uv run python -c "from knowledge_graph.queries.reserve_claim_id import next_claim_id; from neo4j import GraphDatabase; import os; d = GraphDatabase.driver('bolt://localhost:7687', auth=('neo4j', os.environ['NEO4J_PASSWORD'])); print(next_claim_id(d.session()))"`
 4. Write JSON to `claims/pending/C<id>.json` matching `claims/schema.json`
-5. Run validator: `uv run python scientific-governance/claim-validation-scripts/claim_validator.py`
+5. Run validator: `uv run python scientific-governance/claim-validation-harness/claim_validator.py`
 6. Commit and reference the GitHub issue
 
 ## What counts as a claim

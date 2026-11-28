@@ -143,7 +143,7 @@ retired_edges:
   ABOUT:
     reason: "Replaced by typed HAS_SUBJECT/HAS_OBJECT + direct entity edges"
     retired_in: "v2.0"
-    migration: "008_typed_edges_backfill"
+    migration: "008_dual_encoding_backfill"
 
   ASSOCIATED_WITH:
     reason: >
@@ -151,7 +151,7 @@ retired_edges:
       and HAS_PHENOTYPE (Disease → Phenotype) for Biolink compliance.
       Migration rewrites existing ASSOCIATED_WITH edges to the appropriate typed predicate.
     retired_in: "v2.0"
-    migration: "008_typed_edges_backfill"
+    migration: "008_dual_encoding_backfill"
     transitional: true  # validator issues WARN not FAIL until re-grounding is complete
 
 # --- Edge properties ---

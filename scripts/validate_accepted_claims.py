@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Validate accepted claims against the same specs claim_validator.py uses.
 
-This is a *separate* script (NOT in scientific-governance/claim-validation-scripts/, which is
+This is a *separate* script (NOT in scientific-governance/claim-validation-harness/, which is
 CODEOWNERS-protected) because claim_validator.py hardcodes PENDING_DIR
 and is human-owned. Rather than modifying the protected harness, this
 script reuses its validation logic via import and points it at
@@ -25,10 +25,10 @@ import importlib.util
 import sys
 from pathlib import Path
 
-# scientific-governance/claim-validation-scripts/ is a hyphenated directory and
+# scientific-governance/claim-validation-harness/ is a hyphenated directory and
 # cannot be imported as a dotted Python package. Load the validator by file path.
 _validator_path = Path(__file__).parent.parent / \
-    "scientific-governance" / "claim-validation-scripts" / "claim_validator.py"
+    "scientific-governance" / "claim-validation-harness" / "claim_validator.py"
 _spec = importlib.util.spec_from_file_location("claim_validator", _validator_path)
 assert _spec is not None and _spec.loader is not None, \
     f"Could not load claim_validator from {_validator_path}"

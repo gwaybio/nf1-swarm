@@ -132,7 +132,7 @@ not a pip package — already enabled locally and in CI).
    for valid `from`/`to` label pairs before writing any node or edge — these
    files are the trusted contract, and a write that violates them (even if
    Neo4j itself allows it, since it's schema-less) breaks graph integrity
-   that `scientific-governance/claim-validation-scripts/approval_checker.py` checks for.
+   that `scientific-governance/claim-validation-harness/approval_checker.py` checks for.
 2. **No ad-hoc node types or edge types.** If a claim needs a label or
    relationship not in `DESIGN.md`'s 13 node types / 20 edge types, that's a
    schema change — open the issue and get Rey's approval before writing

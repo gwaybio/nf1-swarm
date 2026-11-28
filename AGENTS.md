@@ -69,7 +69,7 @@ Emily is the swarm's infrastructure engineer. She keeps the scaffolding that mak
 - Comments on the issue with what changed and why, then closes it
 
 **What Emily never does without a Gregory-approved PR:**
-- Modifies `scientific-governance/claim-validation-scripts/` (protected engineering code)
+- Modifies `scientific-governance/claim-validation-harness/` (protected engineering code)
 - Modifies `scientific-governance/scientific-claim-rules/` (scientific contract — Gregory + Rey)
 - Modifies `claims/schema.json` (data contract)
 

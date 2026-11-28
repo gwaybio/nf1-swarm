@@ -17,7 +17,7 @@
 
 # TCB: scientific contract — Gregory + Rey required
 scientific-governance/scientific-claim-rules/                   @gwaybio
-scientific-governance/claim-validation-scripts/                 @gwaybio
+scientific-governance/claim-validation-harness/                 @gwaybio
 scientific-governance/approved-graph-snapshots/                @gwaybio
 
 # TCB: ownership rules — Gregory required

@@ -41,22 +41,27 @@ edges = get_nf1_edges()
 }
 ```
 
-- `predicate` must **exactly** match an edge type in `scientific-governance/scientific-claim-rules/edge_constraints.yaml`.
-  The validator enforces this — wrong predicates now cause `claim_validator.py` to FAIL.
-  Current allowed predicates (biological layer):
+- `predicate` must **exactly** match a key of `predicate_mapping` in
+  `scientific-governance/scientific-claim-rules/edge_constraints.yaml`. The validator
+  enforces this — any other predicate makes `claim_validator.py` FAIL.
 
-  `TREATS`, `ENCODES`, `INHIBITS`, `ACTIVATES`, `TARGETS`, `PART_OF`,
-  `GENE_ASSOCIATED_WITH_CONDITION`, `HAS_PHENOTYPE`, `IN_CLINICAL_TRIALS_FOR`,
-  `BENEFICIAL_IN_MODELS_OF`, `EXPRESSED_IN`
+  **Allowed predicates for `semantic_triple.predicate`** (the 13 biological predicates):
 
-  Current allowed predicates (claim reification layer):
+  `ACTIVATES`, `BENEFICIAL_IN_MODELS_OF`, `CAUSES`, `ENCODES`, `FOUND_IN`,
+  `GENE_ASSOCIATED_WITH_CONDITION`, `HAS_PHENOTYPE`, `HOMOLOGOUS_TO`, `INHIBITS`,
+  `IN_CLINICAL_TRIALS_FOR`, `PART_OF`, `TARGETS`, `TREATS`
 
+  **Not valid as a `semantic_triple.predicate`:** the structural claim-reification edges
   `HAS_SUBJECT`, `HAS_OBJECT`, `EXTRACTED_FROM`, `SUPPORTS`, `CONTRADICTS`,
-  `VALIDATED_IN`, `HOMOLOGOUS_TO`
+  `VALIDATED_IN`. They exist in `edge_types` for the graph, but the validator rejects them
+  as claim predicates.
 
-  **Retired (do not use):** `ASSOCIATED_WITH`, `ABOUT`, `FOUND_IN`, `RELATED_TO`
-  Check `scientific-governance/scientific-claim-rules/edge_constraints.yaml` for the authoritative list and
-  the allowed `from`/`to` node labels for each predicate.
+  **Retired (do not use):** `ABOUT` (hard FAIL) and `ASSOCIATED_WITH` (transitional:
+  the validator prints a WARN, not a FAIL, until the 19 existing claims are re-grounded
+  in #88 — do not use it in new claims). Anything not listed above also FAILS.
+
+  Check `scientific-governance/scientific-claim-rules/edge_constraints.yaml` for the
+  authoritative list and the allowed `from`/`to` node labels for each predicate.
 - `subject`/`object` are human-readable names; `subject_id`/`object_id` are CURIEs.
 
 ## Grounding cell_type_id and tissue_id
@@ -83,43 +88,40 @@ If RTX-KG2 returns no match, leave the ID field `null` and add a note in `notes`
 `"cell_type_id: no CL match found for 'X' via RTX-KG2 (accessed YYYY-MM-DD)"`.
 Do NOT invent CURIEs — a null ID is better than a wrong one.
 
-## Filling `related_nodes` — use HAS_SUBJECT / HAS_OBJECT for claim reification
+## Filling `related_nodes` — use HAS_SUBJECT / HAS_OBJECT
 
-`related_nodes` lists the graph entities this claim connects. For the dual-encoding
-pattern, use `HAS_SUBJECT` for the subject entity and `HAS_OBJECT` for the object entity.
-Do not use `ABOUT` (retired) or `ASSOCIATED_WITH` (retired).
-
-```python
-claim["related_nodes"] = [
-    {"label": "Gene",    "identifier": "NCBIGene:4763",    "edge_type": "HAS_SUBJECT"},
-    {"label": "Protein", "identifier": "UniProtKB:P21359", "edge_type": "HAS_OBJECT"},
-]
-```
-
-Every entity the claim directly concerns gets a `related_nodes` entry.
-Kim uses these entries, plus `semantic_triple.predicate`, to write the
-dual-encoding edges to Neo4j.
-for every entity the claim describes. **Do not** use biological edge types
-(ENCODES, ACTIVATES, etc.) here — those are graph relationships Kim writes when
-inserting the claim into Neo4j, not claim metadata Otto sets.
+`related_nodes` lists the graph entities the claim connects. For the dual-encoding
+pattern use `HAS_SUBJECT` for the subject entity and `HAS_OBJECT` for the object entity.
+Do not use `ABOUT` or `ASSOCIATED_WITH` (both retired).
 
 ```json
 "related_nodes": [
-  {"label": "Gene",    "identifier": "NCBIGene:4763",    "edge_type": "ABOUT"},
-  {"label": "Protein", "identifier": "UniProtKB:P21359", "edge_type": "ABOUT"}
+  {"label": "Gene",    "identifier": "NCBIGene:4763",    "edge_type": "HAS_SUBJECT"},
+  {"label": "Protein", "identifier": "UniProtKB:P21359", "edge_type": "HAS_OBJECT"}
 ]
 ```
 
-Rule of thumb: every entity mentioned in `claim_text` whose CURIE you resolved
-gets an ABOUT entry. The subject and object of `semantic_triple` both get one.
-If the claim mentions a third entity (e.g. a pathway or disease) that is not the
-subject or object, add it too — Kim uses these entries to build the full set of
-ABOUT edges in the graph.
+Rules:
+- The subject and object of `semantic_triple` each get exactly one entry, with the
+  matching `edge_type`.
+- **Do not** put biological predicates (`ENCODES`, `ACTIVATES`, ...) in `related_nodes`.
+  Those are graph relationships Kim writes when inserting the claim into Neo4j, not
+  claim metadata Otto sets.
+- `edge_constraints.yaml` defines no edge type for any entity that is neither subject
+  nor object, so do not invent one. If the claim mentions a third entity (a pathway,
+  a disease) that matters, record it in `notes` and flag it to Graude.
+- Kim uses these entries, plus `semantic_triple.predicate`, to write the dual-encoding
+  edges to Neo4j.
+
+> Existing claims written before v2.0 still carry `ABOUT` in `related_nodes`
+> (the validator does not check `related_nodes[].edge_type`). Migration
+> `008_dual_encoding_backfill` handles the graph side; do not copy that older
+> pattern into new claims.
 
 ## Validator requirements (run before every commit)
 
 ```bash
-uv run python scientific-governance/claim-validation-scripts/claim_validator.py
+uv run python scientific-governance/claim-validation-harness/claim_validator.py
 ```
 
 The validator runs three post-grounding checks the moment `semantic_triple` is

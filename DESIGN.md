@@ -70,7 +70,7 @@ The solution: move the contract into *data*, not code.
 
 - **`scientific-governance/scientific-claim-rules/`** — TRUSTED. Human-written YAML specs. Only Rey or Gregory may modify.
 - **`scientific-governance/required-graph-assertions/`** — TEST DATA. Agents add rows to CSV/YAML tables.
-- **`scientific-governance/claim-validation-scripts/`** — PROTECTED. Human-owned Python test runner. CODEOWNERS-enforced.
+- **`scientific-governance/claim-validation-harness/`** — PROTECTED. Human-owned Python test runner. CODEOWNERS-enforced.
 - **`scientific-governance/approved-graph-snapshots/`** — APPROVAL SNAPSHOTS. Require explicit human approval to change.
 
 ### 2. Specification-first verification (AlphaProof Code, DeepMind, 2026)
@@ -86,8 +86,8 @@ Trusted computing base:
 
 ### Guard rails
 
-- `scientific-governance/claim-validation-scripts/` and `scientific-governance/scientific-claim-rules/` are CODEOWNERS-protected
-- CI runs `scientific-governance/claim-validation-scripts/run_tests.sh` on every PR touching claims or testing
+- `scientific-governance/claim-validation-harness/` and `scientific-governance/scientific-claim-rules/` are CODEOWNERS-protected
+- CI runs `scientific-governance/claim-validation-harness/run_tests.sh` on every PR touching claims or testing
 - Agents write test DATA (new CSV rows, new YAML blocks) — never harness code
 
 ## Schema versioning

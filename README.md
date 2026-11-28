@@ -66,8 +66,8 @@ sudo systemctl start neo4j
 uv run python knowledge_graph/seeds/bootstrap.py
 
 # 5. Run the test harness
-uv run python scientific-governance/claim-validation-scripts/claim_validator.py
-uv run python scientific-governance/claim-validation-scripts/approval_checker.py
+uv run python scientific-governance/claim-validation-harness/claim_validator.py
+uv run python scientific-governance/claim-validation-harness/approval_checker.py
 ```
 
 > **Always use `uv run python`** — never bare `python3`. The project venv at `.venv/` has all required packages.
@@ -133,7 +133,7 @@ RTX-KG2 (73+ integrated biomedical sources) is the external knowledge oracle for
 
 This project adopts two principles for agentic codebases:
 
-1. **Tests as data** (Vaccari, 2026): Acceptance tests live as tables and YAML files, not code. Agents write rows into test tables — they never modify the harness. `scientific-governance/claim-validation-scripts/` is human-owned and CODEOWNERS-protected.
+1. **Tests as data** (Vaccari, 2026): Acceptance tests live as tables and YAML files, not code. Agents write rows into test tables — they never modify the harness. `scientific-governance/claim-validation-harness/` is human-owned and CODEOWNERS-protected.
 
 2. **Specification-first verification** (AlphaProof Code, DeepMind, 2026): Humans write the specifications (`scientific-governance/scientific-claim-rules/`). Agents prove compliance. A claim failing the validator is rejected regardless of who wrote it.
 
@@ -142,7 +142,7 @@ This project adopts two principles for agentic codebases:
 The TCB is kept minimal so the swarm moves fast everywhere else. Only these paths require Gregory's approval to merge:
 
 - `scientific-governance/scientific-claim-rules/` — scientific contract
-- `scientific-governance/claim-validation-scripts/` — enforcement code
+- `scientific-governance/claim-validation-harness/` — enforcement code
 - `scientific-governance/approved-graph-snapshots/` — gold standard snapshots
 - `.github/CODEOWNERS` — the ownership rules themselves
 

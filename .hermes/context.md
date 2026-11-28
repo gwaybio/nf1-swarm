@@ -61,7 +61,7 @@ rid = reject_claim("a3f8c21b", session, "structural", "reason")  # returns "R000
 ## Task flow
 1. Graude opens GitHub issue `[DIRK] Read: <title> — <DOI>`
 2. Dirk reads paper → deposits `claims/pending/pending_<hex>.json` (using `generate_pending_id()` from `scripts.reserve_claim_id`)
-3. Dirk runs `uv run python scientific-governance/claim-validation-scripts/claim_validator.py` before committing
+3. Dirk runs `uv run python scientific-governance/claim-validation-harness/claim_validator.py` before committing
 4. Dirk commits: `claim(dirk): <short title>`
 5. Rey reviews pending/ → accepts (moves to accepted/) or rejects (adds reason)
 6. Kim writes accepted claims to Neo4j using `write_neo4j_cypher` MCP tool

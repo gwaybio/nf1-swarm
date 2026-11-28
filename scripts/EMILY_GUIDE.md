@@ -23,19 +23,19 @@ nf1-swarm/
 ├── literature/extractor.py   # claim extraction helpers
 ├── scripts/                  # YOUR scratch space — anything here is unprotected
 ├── scientific-governance/
-│   ├── harness/               # PROTECTED — approval_checker.py, claim_validator.py,
-│   │                           run_tests.sh, check_cypher.py
-│   ├── specs/                 # PROTECTED — claim_contract.yaml, evidence_rubric.yaml,
-│   │                           edge_constraints.yaml, node_schemas.yaml
-│   ├── acceptance/             # test DATA other agents write rows into
-│   └── approved/               # snapshot approvals
+│   ├── claim-validation-harness/  # PROTECTED — approval_checker.py, claim_validator.py,
+│   │                               run_tests.sh, check_cypher.py
+│   ├── scientific-claim-rules/    # PROTECTED — claim_contract.yaml, evidence_rubric.yaml,
+│   │                               edge_constraints.yaml, node_schemas.yaml
+│   ├── required-graph-assertions/ # test DATA other agents write rows into
+│   └── approved-graph-snapshots/  # snapshot approvals
 └── claims/schema.json         # PROTECTED — the data contract
 ```
 
 ## What you can push directly vs. what needs a PR
 
 **Never push directly** (open a branch, tag `@gwaybio`, no self-merge):
-- `scientific-governance/claim-validation-scripts/` — CODEOWNERS-enforced
+- `scientific-governance/claim-validation-harness/` — CODEOWNERS-enforced
 - `scientific-governance/scientific-claim-rules/` — CODEOWNERS-enforced, Rey reviews, Gregory approves
 - `claims/schema.json` — CODEOWNERS-enforced
 - Also CODEOWNERS-protected (same rule, broader than AGENTS.md's Emily list):
@@ -51,14 +51,14 @@ nf1-swarm/
 **If you can't modify the protected file but still need the behavior**: write
 a thin wrapper in `scripts/` that *imports* from the protected module (e.g.
 `scripts/validate_accepted_claims.py` imports `load_specs`/`validate_file`
-from `scientific-governance/claim-validation-scripts/claim_validator.py` rather than duplicating or editing
+from `scientific-governance/claim-validation-harness/claim_validator.py` rather than duplicating or editing
 it). Same validation logic, zero protected-file edits, no PR needed.
 
 ## Running the test harness locally
 
 ```bash
 cd ~/repos/nf1-swarm
-uv run bash scientific-governance/claim-validation-scripts/run_tests.sh
+uv run bash scientific-governance/claim-validation-harness/run_tests.sh
 ```
 
 **You must prefix with `uv run`** (or activate the venv first) — the script
@@ -77,8 +77,8 @@ through `run_tests.sh`. If you need a real local pass/fail signal, run the
 two scripts individually:
 
 ```bash
-uv run python scientific-governance/claim-validation-scripts/claim_validator.py
-uv run python scientific-governance/claim-validation-scripts/approval_checker.py
+uv run python scientific-governance/claim-validation-harness/claim_validator.py
+uv run python scientific-governance/claim-validation-harness/approval_checker.py
 ```
 
 ## Local Neo4j for testing

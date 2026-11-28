@@ -50,7 +50,7 @@ body:
         - label: Reproduce the failure locally or confirm via CI logs
         - label: Fix root cause (not just symptoms)
         - label: Run affected tests locally before pushing
-        - label: "If touching scientific-governance/claim-validation-scripts/ or scientific-governance/scientific-claim-rules/: open a PR, do NOT push directly to main"
+        - label: "If touching scientific-governance/claim-validation-harness/ or scientific-governance/scientific-claim-rules/: open a PR, do NOT push directly to main"
         - label: "Commit with message: fix(<area>): <description>"
         - label: Comment on this issue with what was changed and why
         - label: Confirm CI is green after fix
