@@ -18,7 +18,7 @@ This document is the operational contract for the nf1-swarm agent team. All agen
 - Commits pending claims with message: `claim(dirk): <paper title short>`
 - Does NOT write to the knowledge graph directly
 - Does NOT over-read — assigned papers only, plus opportunistic high-signal papers when explicitly allowed
-- Evidence strength must be assigned per `testing/specs/evidence_rubric.yaml`
+- Evidence strength must be assigned per `scientific-governance/scientific-claim-rules/evidence_rubric.yaml`
 - **Erratum check required before extracting any numerical claim:** query PubMed `ErratumIn` field via
   `efetch?db=pubmed&id=PMID&retmode=xml` and look for `ErratumIn` or `CommentsCorrections` entries.
   If an erratum exists, fetch the corrected version and use corrected figures. Add the erratum PMID
@@ -69,8 +69,9 @@ Emily is the swarm's infrastructure engineer. She keeps the scaffolding that mak
 - Comments on the issue with what changed and why, then closes it
 
 **What Emily never does without a Gregory-approved PR:**
-- Modifies `testing/harness/` (protected engineering code)
-- Modifies `testing/specs/` (scientific contract — Gregory + Rey)
+- Modifies `scientific-governance/claim-validation-harness/` (protected engineering code)
+- Modifies `scientific-governance/scientific-claim-rules/` (scientific contract — Gregory + Rey)
+- Modifies `scientific-governance/approved-graph-snapshots/` (approved graph state — Gregory approves)
 - Modifies `claims/schema.json` (data contract)
 
 **What Emily can push directly to main:**
@@ -112,7 +113,7 @@ Milo keeps the swarm thinking clearly over time. He is grounded in the literatur
 - Accepts → moves to `claims/accepted/`, tags Kim to write to graph
 - Rejects → writes reason to claim JSON, closes associated GitHub issue
 - Conducts random spot-check audits of accepted claims
-- Owns the `testing/specs/` directory — only Rey or Gregory may modify specs
+- Owns the `scientific-governance/scientific-claim-rules/` directory — only Rey or Gregory may modify specs
 
 ## Pipeline
 
@@ -245,6 +246,7 @@ git worktree remove ~/repos/nf1-swarm-<agent>
 2. **One worktree per task.** When done, remove it.
 3. **Milo only:** dream worktree at `~/repos/nf1-swarm-milo`, branch `milo/dream-<date>`.
 4. **If you get a push conflict:** stop, message Graude, do not force-push.
+5. **Whoever merges a PR deletes its branch.** After a merge, delete the remote branch (`gh pr merge --delete-branch`, or `git push origin --delete <branch>`), remove the worktree that held it (`git worktree remove <path>`; git will not delete a branch a worktree still holds), then delete the local branch (`git branch -d <branch>`). If a human merged your PR, still clean up your own worktree and local branch. Verify the merge with a fresh `gh pr view N --json state,mergedAt` before saying it is done.
 
 ### Pre-commit hook gotcha in worktrees
 
@@ -266,7 +268,7 @@ When any agent identifies that a rule needs changing:
 2. Tag Emily for engineering review on ALL PRs — she reviews first
 3. Tag `@gwaybio` for required final approval
 4. CodeRabbit reviews automatically on all PRs
-5. For changes to `testing/specs/` or `claims/schema.json`: also tag Rey for science review
+5. For changes to `scientific-governance/scientific-claim-rules/` or `claims/schema.json`: also tag Rey for science review
 6. **Do not merge without Gregory's approval.** No exceptions.
 
 Emily's review scope: technical correctness, no regressions, validator still passes.
@@ -281,6 +283,32 @@ When CodeRabbit posts review comments on a PR:
 2. **Do NOT resolve threads yourself** — leave them unresolved. CodeRabbit re-reviews the new commits and resolves threads itself when satisfied.
 3. **Do NOT dismiss CodeRabbit's review** — let it re-trigger naturally on each new push.
 4. If a CodeRabbit comment is wrong or not applicable, reply explaining why and leave it for CodeRabbit to resolve.
+5. **"Outside diff range" comments are findings too — you must handle them.** CodeRabbit cannot post inline on lines outside the PR's diff, so it puts those findings in the *body* of a review, under "Outside diff range comments (N)". They have no thread: nothing to reply to, nothing for CodeRabbit to resolve or track, and they are easy to miss because thread-based queries do not return them. They are often the important ones (on PR #78: a broken import that crashed a script, stale examples in agent guides). They are also spread across *several* review objects on a PR, not just the latest, so scan all of them.
+
+   List them (replace `PR`):
+
+   ```bash
+   PR=78
+   gh api graphql -f query="{repository(owner:\"gwaybio\",name:\"nf1-swarm\"){pullRequest(number:$PR){reviews(last:100){nodes{author{login} body}}}}}" \
+     --jq '.data.repository.pullRequest.reviews.nodes[] | select(.author.login=="coderabbitai" and (.body|test("Outside diff range"))) | .body' \
+     | sed 's/<[^>]*>//g' \
+     | grep -oP '(Critical|Major|Minor|Trivial|Nitpick)\s*·\s*[^\n]{5,160}?\s*·\s*[\w./-]+:\d+' | sed 's/  */ /g'
+   ```
+
+   This prints one line per finding (`severity · title · file:line`). The full text and a "Prompt to fix issue" block are in the review body; open the review on GitHub for detail rather than dumping whole bodies into your context (they run to tens of thousands of characters).
+
+   Because nothing resolves them, **you** keep the record. For each finding, do one of: fix it in this PR; open an issue and link it; or explain why it does not apply. Then post **one PR-level comment** starting with `[AgentName]` that lists every outside-diff finding with its disposition:
+
+   ```
+   [Emily] Outside-diff findings (CodeRabbit), disposition:
+   | file:line | severity | disposition |
+   |---|---|---|
+   | validate_accepted_claims.py:24 | Major | fixed in abc1234 |
+   | KIM_GUIDE.md:54 | Minor | tracked in #85 |
+   | approval_checker.py:28 | Minor | not applicable: <reason> |
+   ```
+
+   Do this before reporting the PR ready. Do not reply to these findings inside an unrelated thread, and do not resolve anything on CodeRabbit's behalf.
 
 The flow is: push fix → reply inline → CodeRabbit re-reviews → CodeRabbit resolves. Agents bypassing this flow by self-resolving threads skip CodeRabbit's re-check.
 

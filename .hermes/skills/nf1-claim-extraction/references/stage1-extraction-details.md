@@ -7,7 +7,7 @@
 - Save text under the profile workspace, then read it with the file reader; don't paste into prompts.
 
 ## Strength / type mapping that passes the validator
-- Check `testing/specs/claim_contract.yaml`: each claim_type restricts evidence_type (e.g. `genetic_association` needs cohort/systematic_review/biochemical/in-vivo; `expert_opinion` only fits `phenotype_association`; `clinical_outcome` allows rct/cohort/case_report/systematic_review; `drug_response` allows rct/cohort/preclinical).
+- Check `scientific-governance/scientific-claim-rules/claim_contract.yaml`: each claim_type restricts evidence_type (e.g. `genetic_association` needs cohort/systematic_review/biochemical/in-vivo; `expert_opinion` only fits `phenotype_association`; `clinical_outcome` allows rct/cohort/case_report/systematic_review; `drug_response` allows rct/cohort/preclinical).
 - Gene-structure or sequence-homology findings: `molecular_function` + `computational`/`preclinical_in_vitro`, strength 3 max.
 - Abstract-only: cap 3. Single-arm phase 2 with external comparator: 3, not 4 (4 needs RCT or multiple independent cohorts). Expert/Delphi consensus recommendations: `expert_opinion`, strength 2 (rubric forbids it at 4-5). Data from conference abstracts/presentations: 2. Rubric lists `cohort_study` under 3-4 only but the validator accepts it at 2.
 - Do not inflate to match an issue's "expect strength N"; report why in the STATUS comment.

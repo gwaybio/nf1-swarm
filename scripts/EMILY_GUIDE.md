@@ -22,21 +22,22 @@ nf1-swarm/
 ├── literature/fetcher.py     # PaperFetcher, used by Dirk
 ├── literature/extractor.py   # claim extraction helpers
 ├── scripts/                  # YOUR scratch space — anything here is unprotected
-├── testing/
-│   ├── harness/               # PROTECTED — approval_checker.py, claim_validator.py,
-│   │                           run_tests.sh, check_cypher.py
-│   ├── specs/                 # PROTECTED — claim_contract.yaml, evidence_rubric.yaml,
-│   │                           edge_constraints.yaml, node_schemas.yaml
-│   ├── acceptance/             # test DATA other agents write rows into
-│   └── approved/               # snapshot approvals
+├── scientific-governance/
+│   ├── claim-validation-harness/  # PROTECTED — approval_checker.py, claim_validator.py,
+│   │                               run_tests.sh, check_cypher.py
+│   ├── scientific-claim-rules/    # PROTECTED — claim_contract.yaml, evidence_rubric.yaml,
+│   │                               edge_constraints.yaml, node_schemas.yaml
+│   ├── required-graph-assertions/ # test DATA other agents write rows into
+│   └── approved-graph-snapshots/  # snapshot approvals
 └── claims/schema.json         # PROTECTED — the data contract
 ```
 
 ## What you can push directly vs. what needs a PR
 
 **Never push directly** (open a branch, tag `@gwaybio`, no self-merge):
-- `testing/harness/` — CODEOWNERS-enforced
-- `testing/specs/` — CODEOWNERS-enforced, Rey reviews, Gregory approves
+- `scientific-governance/claim-validation-harness/` — CODEOWNERS-enforced
+- `scientific-governance/scientific-claim-rules/` — CODEOWNERS-enforced, Rey reviews, Gregory approves
+- `scientific-governance/approved-graph-snapshots/` — CODEOWNERS-enforced, Gregory approves
 - `claims/schema.json` — CODEOWNERS-enforced
 - Also CODEOWNERS-protected (same rule, broader than AGENTS.md's Emily list):
   `AGENTS.md`, `DESIGN.md`, `METHODS.md`, `.github/CODEOWNERS`, `.hermes/`
@@ -51,35 +52,24 @@ nf1-swarm/
 **If you can't modify the protected file but still need the behavior**: write
 a thin wrapper in `scripts/` that *imports* from the protected module (e.g.
 `scripts/validate_accepted_claims.py` imports `load_specs`/`validate_file`
-from `testing/harness/claim_validator.py` rather than duplicating or editing
+from `scientific-governance/claim-validation-harness/claim_validator.py` rather than duplicating or editing
 it). Same validation logic, zero protected-file edits, no PR needed.
 
 ## Running the test harness locally
 
 ```bash
 cd ~/repos/nf1-swarm
-uv run bash testing/harness/run_tests.sh
+uv run bash scientific-governance/claim-validation-harness/run_tests.sh
 ```
 
 **You must prefix with `uv run`** (or activate the venv first) — the script
 itself calls bare `python3`, which won't have `neo4j`/`jsonschema`/`pyyaml`
 installed unless you're inside the uv-managed venv.
 
-**Known harness bug (do not fix without a PR — it's CODEOWNERS-protected):**
-`run_tests.sh` uses `set -e` combined with `((PASS++))`. When `PASS` is still
-`0`, the bash arithmetic expression `((0++))` evaluates to `0` ("false"),
-which trips `set -e` and kills the script right after the *first* passing
-step — even though that step genuinely passed. You'll see it stop after
-"Claim validator ... PASSED" with no further output and exit code 1. This is
-cosmetic for local runs; **CI is not affected** because `ci.yml` calls
-`claim_validator.py` and `approval_checker.py` directly (`&&`-chained), never
-through `run_tests.sh`. If you need a real local pass/fail signal, run the
-two scripts individually:
-
-```bash
-uv run python testing/harness/claim_validator.py
-uv run python testing/harness/approval_checker.py
-```
+`run_tests.sh` runs both steps (claim validator, then graph assertions), counts
+each as passed or failed independently, and exits non-zero if either failed. The
+graph-assertions step skips with a pass when Neo4j is not running. CI calls the two
+scripts directly rather than through `run_tests.sh`.
 
 ## Local Neo4j for testing
 

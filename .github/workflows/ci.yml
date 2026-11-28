@@ -25,7 +25,7 @@ jobs:
         run: uv sync
 
       - name: Validate pending claims
-        run: uv run python testing/harness/claim_validator.py
+        run: uv run python scientific-governance/claim-validation-harness/claim_validator.py
 
       - name: Check claim table format
         run: |
@@ -35,7 +35,7 @@ jobs:
           errors = []
           required_cols = {"claim_id", "claim_text", "claim_type",
                            "min_evidence_strength", "evidence_type", "expect_valid"}
-          for f in Path("testing/acceptance/claim_tables").glob("*.csv"):
+          for f in Path("scientific-governance/required-graph-assertions/claim_tables").glob("*.csv"):
               rows = list(csv.DictReader(open(f)))
               missing = required_cols - set(rows[0].keys()) if rows else set()
               if missing:
@@ -53,7 +53,7 @@ jobs:
           import yaml, sys
           from pathlib import Path
           errors = []
-          for f in Path("testing/specs").glob("*.yaml"):
+          for f in Path("scientific-governance/scientific-claim-rules").glob("*.yaml"):
               try:
                   yaml.safe_load(f.read_text())
                   print(f"  OK  {f.name}")
@@ -169,10 +169,10 @@ jobs:
           "
 
       - name: Run graph assertions
-        run: uv run python testing/harness/approval_checker.py
+        run: uv run python scientific-governance/claim-validation-harness/approval_checker.py
 
       - name: Run full test harness
-        run: uv run python testing/harness/claim_validator.py && uv run python testing/harness/approval_checker.py
+        run: uv run python scientific-governance/claim-validation-harness/claim_validator.py && uv run python scientific-governance/claim-validation-harness/approval_checker.py
 
       - name: Notify Discord on failure
         if: failure()

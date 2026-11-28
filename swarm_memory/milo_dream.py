@@ -162,7 +162,7 @@ def phase_rebuild():
         recent = git_log_for_agent(agent)
         last_task = recent[0] if recent else "(none yet)"
         log_path = Path(f"/home/gway/.hermes/profiles/{agent}/logs/agent.log")
-        health = _check_latency_health(log_path)
+        health = _check_latency_health(log_path, agent)
         lines.append(f"## @{agent}\n")
         lines.append(f"Last commit: {last_task}\n")
         lines.append(f"Context health: {health}\n\n")
@@ -171,7 +171,7 @@ def phase_rebuild():
     print(f"  REBUILD  registry.md updated ({len(AGENTS)} agents)")
 
 
-def _check_latency_health(log_path: Path) -> str:
+def _check_latency_health(log_path: Path, agent: str) -> str:
     """Return OK / WARN / IDLE based on recent latency in agent log.
     Falls back to commit recency when no log exists (most agents).
     """
@@ -195,13 +195,13 @@ def _check_latency_health(log_path: Path) -> str:
         except Exception:
             pass
     # Fallback: use git commit recency as activity proxy
-    return _health_from_commit_recency(log_path.parent.name.rstrip("s"))
+    return _health_from_commit_recency(agent)
 
 
 def _health_from_commit_recency(agent: str) -> str:
     """Infer health from how recently an agent committed."""
     result = subprocess.run(
-        ["git", "log", f"--author={agent}", "--format=%cd", "--date=iso-strict", "-1"],
+        ["git", "log", f"--author={agent}", "--all", "--format=%cd", "--date=iso-strict", "-1"],
         cwd=REPO_ROOT, capture_output=True, text=True
     )
     date_str = result.stdout.strip()
@@ -257,6 +257,31 @@ def _is_truly_blocked(issue: dict) -> bool:
         return False
     labels = {lb["name"] for lb in issue.get("labels", [])}
     return "ready" not in labels
+
+
+def _count_assoc_with_warns() -> tuple[int, int]:
+    """Return (accepted_count, pending_count) of ASSOCIATED_WITH predicate claims.
+
+    These produce transitional validator WARNs until Otto's re-grounding sprint
+    replaces them with typed Biolink predicates (issue #88).
+    """
+    def _scan(directory: Path) -> int:
+        n = 0
+        for f in directory.glob("*.json"):
+            try:
+                d = json.loads(f.read_text(errors="replace"))
+                triple = d.get("semantic_triple") or {}
+                pred = (triple.get("predicate", "") if isinstance(triple, dict) else "")
+                pred = pred or d.get("predicate", "") or ""
+                if "ASSOCIATED_WITH" in str(pred).upper():
+                    n += 1
+            except Exception:
+                pass
+        return n
+
+    acc = _scan(CLAIMS_ACCEPTED) if CLAIMS_ACCEPTED.exists() else 0
+    pend = _scan(CLAIMS_PENDING) if CLAIMS_PENDING.exists() else 0
+    return acc, pend
 
 
 def _recommended_next_action(issues: list[dict], pending: int, accepted: int,
@@ -328,6 +353,10 @@ def _write_graude_briefing(issues: list[dict], pending: int, accepted: int,
 
     next_action = _recommended_next_action(issues, pending, accepted, paper_issues, blocked)
 
+    # ASSOCIATED_WITH WARN counts (transitional pending Otto re-grounding sprint #88)
+    warn_accepted, warn_pending = _count_assoc_with_warns()
+    warn_total = warn_accepted + warn_pending
+
     # Build the briefing — ruthlessly compact, every section earns its tokens
     lines = [
         "# Graude Session Briefing\n",
@@ -345,12 +374,22 @@ def _write_graude_briefing(issues: list[dict], pending: int, accepted: int,
 
     lines.append("## Open issues\n")
     agent_labels = {"dirk", "otto", "archie", "stan", "kim", "rey", "emily", "milo"}
+    # Routine paper-read issues grouped to one line to stay under token budget.
+    paper_read_nums = []
     for iss in sorted(issues, key=lambda x: x["number"]):
         labels = {lb["name"] for lb in iss.get("labels", [])}
+        is_paper_read = "paper" in labels and "dirk" in labels
+        if is_paper_read:
+            paper_read_nums.append(iss["number"])
+            continue
         assigned = next((lb for lb in agent_labels if lb in labels), "graude")
         age = _age_days(iss.get("createdAt", ""))
         title = iss["title"][:65]
         lines.append(f"  #{iss['number']:3d} [{assigned:5s}] {age:2d}d  {title}\n")
+    if paper_read_nums:
+        nums_str = ", ".join(f"#{n}" for n in paper_read_nums[:5])
+        more = f" … +{len(paper_read_nums)-5} more" if len(paper_read_nums) > 5 else ""
+        lines.append(f"  [dirk queue] {len(paper_read_nums)} papers unread: {nums_str}{more}\n")
     lines.append("\n")
 
     if blockers:
@@ -358,6 +397,19 @@ def _write_graude_briefing(issues: list[dict], pending: int, accepted: int,
         for b in blockers:
             lines.append(f"{b}\n")
         lines.append("\n")
+
+    # Validator WARNs — ASSOCIATED_WITH transitional status
+    lines.append("## Validator WARNs\n")
+    lines.append(f"  ASSOCIATED_WITH: {warn_total} claims "
+                 f"({warn_accepted} accepted, {warn_pending} pending) — transitional, see #88\n")
+    lines.append("  Emily escalates WARN->ERROR after Otto re-grounding sprint closes.\n")
+    lines.append("\n")
+
+    # Operational rules reminder
+    lines.append("## Operational rules\n")
+    lines.append("  GitHub comments must begin with [AgentName] as first token.\n")
+    lines.append("  Milo: flag any comment lacking [AgentName] attribution in the issue digest.\n")
+    lines.append("\n")
 
     lines.append("## Recommended next action\n")
     lines.append(f"  {next_action}\n")
@@ -381,6 +433,7 @@ def phase_briefings():
     lines = [
         "# Open Issues Digest\n",
         f"Generated by Milo at {now}. Load this file, not raw gh issue list.\n\n",
+        "```\n",
         f"{'#':>4}  {'agent':8}  {'age':>5}  title\n",
         f"{'----':>4}  {'--------':8}  {'-----':>5}  -----\n",
     ]
@@ -396,6 +449,7 @@ def phase_briefings():
 
     if not issues:
         lines.append("(no open issues)\n")
+    lines.append("```\n")
     ISSUES_DIGEST.write_text("".join(lines))
 
     # ── pipeline_state.md ────────────────────────────────────────────────────

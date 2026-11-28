@@ -103,7 +103,7 @@ important part is the message states what claim and why.
    confidence_score=0.55 at N=3 might drop once a 6th study with a null
    result lands — publication bias correction is sensitive to the full set,
    not just new additions.
-3. **`claims/schema.json` and `testing/specs/` are not yours to edit.** If the
+3. **`claims/schema.json` and `scientific-governance/scientific-claim-rules/` are not yours to edit.** If the
    rubric or schema seems wrong for scoring purposes, flag it to Graude —
    don't work around it by stuffing scores into `notes`.
 

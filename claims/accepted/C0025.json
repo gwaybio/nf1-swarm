@@ -4,7 +4,7 @@
   "claim_type": "phenotype_association",
   "evidence_strength": 3,
   "evidence_type": "cohort_study",
-  "notes": "Full text (PMC8354850). Data cited from a primary study (secondary citation in a consensus paper): Messiaen et al. (ref 14 of the consensus paper). Primary paper should be read directly and may support a higher strength. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-18. Diagnostic test performance. SPRED1=NCBIGene:161742 included as it is part of the molecular diagnosis cohort.",
+  "notes": "Full text (PMC8354850). Data cited from a primary study (secondary citation in a consensus paper): Messiaen et al. (ref 14 of the consensus paper). Primary paper should be read directly and may support a higher strength. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-18. Diagnostic test performance. SPRED1=NCBIGene:161742 included as it is part of the molecular diagnosis cohort. | Re-grounded 2026-11-27 for issue #88: ASSOCIATED_WITH replaced with v2.0 Biolink predicate. ASSOCIATED_WITH -> GENE_ASSOCIATED_WITH_CONDITION. Subject/object flipped: was Disease->Gene, now Gene->Disease to match GENE_ASSOCIATED_WITH_CONDITION domain/range.",
   "source_pmid": "34012067",
   "source_doi": "10.1038/s41436-021-01170-5",
   "source_title": "Revised diagnostic criteria for neurofibromatosis type 1 and Legius syndrome: an international consensus recommendation",
@@ -15,11 +15,11 @@
   "curated_by": "rey",
   "status": "accepted",
   "semantic_triple": {
-    "subject": "neurofibromatosis type 1",
-    "subject_id": "MONDO:0018975",
-    "predicate": "ASSOCIATED_WITH",
-    "object": "NF1",
-    "object_id": "NCBIGene:4763"
+    "subject": "NF1",
+    "subject_id": "NCBIGene:4763",
+    "predicate": "GENE_ASSOCIATED_WITH_CONDITION",
+    "object": "neurofibromatosis type 1",
+    "object_id": "MONDO:0018975"
   },
   "bel_notation": null,
   "supporting_dois": [],

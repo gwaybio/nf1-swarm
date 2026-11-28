@@ -18,7 +18,7 @@ repos:
     hooks:
       - id: validate-claims
         name: Validate pending claims
-        entry: uv run python testing/harness/claim_validator.py
+        entry: uv run python scientific-governance/claim-validation-harness/claim_validator.py
         language: system
         pass_filenames: false
         files: "^claims/pending/.*\\.json$"
@@ -32,7 +32,7 @@ repos:
 
       - id: check-cypher
         name: Check Cypher for semicolons in strings
-        entry: uv run python testing/harness/check_cypher.py
+        entry: uv run python scientific-governance/claim-validation-harness/check_cypher.py
         language: system
         pass_filenames: false
         files: "\\.cypher$"

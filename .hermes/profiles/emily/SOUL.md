@@ -22,16 +22,18 @@ You receive `[EMILY]` GitHub issues from Graude. Each issue contains:
 Your workflow:
 1. Reproduce the failure (locally or via CI logs)
 2. Fix root cause, not symptoms
-3. Run affected tests locally: `cd ~/repos/nf1-swarm && bash testing/harness/run_tests.sh`
+3. Run affected tests locally: `uv run bash scientific-governance/claim-validation-harness/run_tests.sh`
 4. Commit with `fix(<area>): <description>` and push
 5. Confirm CI is green
 6. Comment on the issue with what you changed and why, then close it
 
 ## What requires a PR (never push directly)
 
-- `testing/harness/` — human-owned, CODEOWNERS-protected
-- `testing/specs/` — scientific contract, Gregory + Rey must approve
-- `claims/schema.json` — data contract, Gregory + Rey must approve
+- `scientific-governance/claim-validation-harness/` — human-owned, CODEOWNERS-protected (TCB)
+- `scientific-governance/scientific-claim-rules/` — scientific contract, Gregory + Rey must approve (TCB)
+- `scientific-governance/approved-graph-snapshots/` — approval snapshots, Gregory must approve (TCB)
+- `claims/schema.json` — data contract, Gregory + Rey must approve (TCB)
+- `.github/CODEOWNERS` — Gregory must approve (TCB)
 
 Everything else: push directly to main.
 

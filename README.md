@@ -66,8 +66,8 @@ sudo systemctl start neo4j
 uv run python knowledge_graph/seeds/bootstrap.py
 
 # 5. Run the test harness
-uv run python testing/harness/claim_validator.py
-uv run python testing/harness/approval_checker.py
+uv run python scientific-governance/claim-validation-harness/claim_validator.py
+uv run python scientific-governance/claim-validation-harness/approval_checker.py
 ```
 
 > **Always use `uv run python`** — never bare `python3`. The project venv at `.venv/` has all required packages.
@@ -111,11 +111,11 @@ nf1-swarm/
 │   ├── backup_graph.sh          # Neo4j dump (7-day retention)
 │   └── restore_graph.sh         # Neo4j restore from dump
 │
-├── testing/
-│   ├── specs/                   # TRUSTED: human-written scientific contract (TCB — Gregory only)
-│   ├── harness/                 # PROTECTED: human-owned test runner (TCB — Gregory only)
-│   ├── acceptance/              # Agent-writable test data tables
-│   └── approved/                # Approval snapshots of known-good graph state
+├── scientific-governance/
+│   ├── scientific-claim-rules/  # TRUSTED: human-written scientific contract (TCB — Gregory only)
+│   ├── claim-validation-harness/ # PROTECTED: human-owned test runner (TCB — Gregory only)
+│   ├── required-graph-assertions/ # Agent-writable test data tables
+│   └── approved-graph-snapshots/  # Approval snapshots of known-good graph state
 │
 └── .hermes/
     ├── context.md               # Auto-loaded repo context for all agents
@@ -133,17 +133,17 @@ RTX-KG2 (73+ integrated biomedical sources) is the external knowledge oracle for
 
 This project adopts two principles for agentic codebases:
 
-1. **Tests as data** (Vaccari, 2026): Acceptance tests live as tables and YAML files, not code. Agents write rows into test tables — they never modify the harness. `testing/harness/` is human-owned and CODEOWNERS-protected.
+1. **Tests as data** (Vaccari, 2026): Acceptance tests live as tables and YAML files, not code. Agents write rows into test tables — they never modify the harness. `scientific-governance/claim-validation-harness/` is human-owned and CODEOWNERS-protected.
 
-2. **Specification-first verification** (AlphaProof Code, DeepMind, 2026): Humans write the specifications (`testing/specs/`). Agents prove compliance. A claim failing the validator is rejected regardless of who wrote it.
+2. **Specification-first verification** (AlphaProof Code, DeepMind, 2026): Humans write the specifications (`scientific-governance/scientific-claim-rules/`). Agents prove compliance. A claim failing the validator is rejected regardless of who wrote it.
 
 ## Trusted Computing Base (TCB)
 
 The TCB is kept minimal so the swarm moves fast everywhere else. Only these paths require Gregory's approval to merge:
 
-- `testing/specs/` — scientific contract
-- `testing/harness/` — enforcement code
-- `testing/approved/` — gold standard snapshots
+- `scientific-governance/scientific-claim-rules/` — scientific contract
+- `scientific-governance/claim-validation-harness/` — enforcement code
+- `scientific-governance/approved-graph-snapshots/` — gold standard snapshots
 - `.github/CODEOWNERS` — the ownership rules themselves
 
 Everything else is fast-path: Emily reviews, no human gate needed.
