@@ -319,7 +319,7 @@ def _write_graude_briefing(issues: list[dict], pending: int, accepted: int,
     blockers = []
     for iss in issues:
         labels = {lb["name"] for lb in iss.get("labels", [])}
-        if "blocker" in labels:
+        if "blocker" in labels and "ready" not in labels:
             blockers.append(f"  #{iss['number']} {iss['title'][:60]}")
     if blocked > 0:
         for iss in paper_issues:
