@@ -1,17 +1,17 @@
 # Swarm Agent Registry
-Maintained by Milo. Last dream: 2026-11-28 11:23 UTC
+Maintained by Milo. Last dream: 2026-11-28 11:33 UTC
 Graph: 28 accepted claims, 142 pending.
 ---
 ## @graude
-Last commit: c42b34c docs(design): retire ABOUT edges in DESIGN.md — dual-encoding v2.0
-Context health: OK (avg 7.9s)
+Last commit: eb7e385 fix(milo): skip ready-labeled issues in PAYWALLED blocker detection
+Context health: OK (avg 6.9s)
 
 ## @dirk
 Last commit: be92047 claim(dirk): Stewart 2018 ACMG adult NF1 care guideline
 Context health: OK (avg 4.8s)
 
 ## @otto
-Last commit: d0a1529 fix(#62): flock-based rebuild lock, paginated issue fetch, issue-form parsing
+Last commit: 2468853 fix(otto): address CodeRabbit review — C0026 object, C0012/pending_c1633020 nulls
 Context health: OK (avg 5.2s)
 
 ## @archie
@@ -32,8 +32,8 @@ Context health: OK (avg 6.2s)
 
 ## @emily
 Last commit: e99fce0 refactor(#77): rename testing/ → scientific-governance/ with descriptive subfolder names
-Context health: OK (avg 8.9s)
+Context health: OK (avg 8.4s)
 
 ## @milo
 Last commit: 9d2423a chore(milo): nightly dream consolidation 2026-11-28
-Context health: idle (no commits yet)
+Context health: OK (avg 5.4s)

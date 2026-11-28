@@ -1,14 +1,14 @@
 # Graude Session Briefing
-Generated: 2026-11-28 11:23 UTC  |  Load this file first. Do not call gh issue list.
+Generated: 2026-11-28 11:33 UTC  |  Load this file first. Do not call gh issue list.
 
 ## Pipeline
   accepted: 28  pending: 142  rejected: 25
   papers queued: 18  blocked (paywalled): 2
 
 ## Recent commits
-  8a651f2 memory(milo): briefing — add attribution rule + ASSOCIATED_WITH WARN status
-  8336581 docs(process): CodeRabbit review protocol — reply inline, never self-resolve
-  cc32b0d docs(process): agent attribution required on all GitHub comments
+  03262ea merge main into milo/dream-20261128; add Milo attribution-flag reminder to briefing (#87)
+  c42b34c docs(design): retire ABOUT edges in DESIGN.md — dual-encoding v2.0
+  456aafe docs(process): git worktrees as standard — shared checkout stays on main
 
 ## Open issues
   #  4 [emily] 10d  [EMILY] Neo4j log rotation
