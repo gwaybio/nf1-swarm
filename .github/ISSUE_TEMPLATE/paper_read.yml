@@ -70,9 +70,9 @@ body:
         - label: Check literature/processed.md — paper not already read
         - label: Fetch full text (PMC preferred) or abstract if paywalled
         - label: Extract all relevant NF1 claims
-        - label: Assign evidence_strength per testing/specs/evidence_rubric.yaml
+        - label: Assign evidence_strength per scientific-governance/scientific-claim-rules/evidence_rubric.yaml
         - label: Deposit JSON files in claims/pending/ using reserve_claim_id()
-        - label: Run uv run python testing/harness/claim_validator.py — all PASS
+        - label: Run uv run python scientific-governance/claim-validation-harness/claim_validator.py — all PASS
         - label: "Commit with message: claim(dirk): short title"
         - label: Update literature/processed.md with paper + claim IDs
         - label: Comment on this issue with claim IDs extracted

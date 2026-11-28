@@ -16,4 +16,4 @@ echo "Restarting Neo4j..."
 sudo systemctl start neo4j && sleep 5
 
 echo "Restore complete. Verify with:"
-echo "  cd ~/repos/nf1-swarm && uv run python testing/harness/approval_checker.py"
+echo "  cd ~/repos/nf1-swarm && uv run python scientific-governance/claim-validation-harness/approval_checker.py"

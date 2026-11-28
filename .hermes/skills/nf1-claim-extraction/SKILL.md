@@ -80,7 +80,7 @@ see **GAPMAP** (Salem, White, Bada, Hunter, 2025, arXiv:2510.25055).
    - Is the `claim_type_hint` correct?
    - Discard candidates that fail these checks.
 
-4. Assign `evidence_strength` per `testing/specs/evidence_rubric.yaml`.
+4. Assign `evidence_strength` per `scientific-governance/scientific-claim-rules/evidence_rubric.yaml`.
    Cap at 3 when only abstract is available.
 
 5. Assign an ID. Check `scripts/reserve_claim_id.py` and `claims/schema.json` first: the repo moved to a two-stage ID system.
@@ -90,7 +90,7 @@ see **GAPMAP** (Salem, White, Bada, Hunter, 2025, arXiv:2510.25055).
 
 6. Write JSON per `claims/schema.json`. Leave `semantic_triple`, `bel_notation` null and `related_nodes` empty — Otto fills them. Use `source_pmid` + `source_doi` of the PAPER ITSELF (the schema now uses `anyOf`; older `oneOf` rejected both together). Take `extraction_date` from `date +%F`, never typed by hand.
 
-7. Validate: `uv run python testing/harness/claim_validator.py` (all must PASS).
+7. Validate: `uv run python scientific-governance/claim-validation-harness/claim_validator.py` (all must PASS).
 
 8. Commit and push — see "Git on the shared checkout" below. Message `claim(dirk): <paper short title>` + body `Refs #<issue>` + trailer `Co-authored-by: Gregory Way <gregory.way@gmail.com>`.
 
@@ -141,7 +141,7 @@ Several agents share `~/repos/nf1-swarm`; branch and identity change under you.
    # If existing: note n_sources and PMIDs in claim notes for Stan
    ```
 
-4. **Fill `semantic_triple`:** predicate must exist in `testing/specs/edge_constraints.yaml`.
+4. **Fill `semantic_triple`:** predicate must exist in `scientific-governance/scientific-claim-rules/edge_constraints.yaml`.
    ```json
    {
      "subject": "selumetinib",
@@ -162,7 +162,7 @@ Several agents share `~/repos/nf1-swarm`; branch and identity change under you.
 
 8. **When re-grounding rejected claims:** clear `rejection_reason`, `rejection_class`, `curated_by`, `curation_date`, and reset `status` to `"pending"`.
 
-9. **Validate, commit, push, report:** run `uv run python testing/harness/claim_validator.py` (all must PASS), commit per "Git on the shared checkout", push, then post a factual STATUS comment on the GitHub issue AND send a brief `message_agent` to Graude (what was done, any flags, next stage ready).
+9. **Validate, commit, push, report:** run `uv run python scientific-governance/claim-validation-harness/claim_validator.py` (all must PASS), commit per "Git on the shared checkout", push, then post a factual STATUS comment on the GitHub issue AND send a brief `message_agent` to Graude (what was done, any flags, next stage ready).
 
 ## Quick Reference
 
@@ -179,7 +179,7 @@ NODE_NORMALIZER = 'https://nodenormalization-sri.renci.org/get_normalized_nodes'
 from literature.rtx_kg2 import check_edge_exists  # edge lookup works fine
 ```
 ```bash
-uv run python testing/harness/claim_validator.py
+uv run python scientific-governance/claim-validation-harness/claim_validator.py
 ```
 
 ## Pitfalls
@@ -193,7 +193,7 @@ uv run python testing/harness/claim_validator.py
 7. **Verify the assignment's PMID/DOI against NCBI before reading** (`esummary`/`efetch`); issue bodies have carried wrong PMIDs and DOIs. Use the verified one and report the correction in a STATUS comment.
 8. **Never `@tag` anyone in GitHub** (users or bot handles) — email notifications. Refer by plain name; coordinate via `message_agent`.
 9. **Do mechanical fixes yourself** — when a claim was rejected for a structural reason you can fix (wrong predicate, missing field, rubric conflict), just fix it. Do not delegate back to the agent who extracted it or propose a roundtrip through Graude. If the edge type or schema needed for the fix now exists, apply it.
-10. **Do not edit protected files** (`testing/specs/`, `testing/harness/`, `claims/schema.json`) or another specialist's code (e.g. `literature/fetcher.py`); report the bug to Graude instead.
+10. **Do not edit protected files** (`scientific-governance/scientific-claim-rules/`, `scientific-governance/claim-validation-harness/`, `claims/schema.json`) or another specialist's code (e.g. `literature/fetcher.py`); report the bug to Graude instead.
 11. **`ground_entity()` in `literature/rtx_kg2.py` is buggy** — the ARAX `/entity` endpoint returns a dict keyed by query term, but the function iterates it as a list and fails with `'str' object has no attribute 'get'`. Use the SRI Name Resolver + Node Normalizer directly (see Stage 2 procedure above) until the module is fixed.
 12. **Canonical CURIEs for common NF1 entities** (verified via SRI Node Normalizer): selumetinib=CHEBI:90227, mirdametinib=CHEBI:88249, trametinib=CHEBI:75998, binimetinib=CHEBI:145371, plexiform neurofibroma=MONDO:0003304, optic pathway glioma=MONDO:0016167, low-grade glioma=MONDO:0021637, MPNST=MONDO:0017827, Legius syndrome=MONDO:0012669, SPRED1=NCBIGene:161742, neurofibromin=UniProtKB:P21359, RASA1=NCBIGene:5921, HRAS=NCBIGene:3265, KRAS=NCBIGene:3845, MAP2K1=NCBIGene:5604. Full table in `references/curie-registry.md`.
 
@@ -223,8 +223,8 @@ gh label create "emily" --description "Assigned to Emily" --color "e4e669" 2>&1 
 ## Graude: PR authority
 
 Graude proposes harness/spec changes via PR; never self-merges. The gate:
-- `testing/specs/`, `claims/schema.json`: Gregory must approve; Rey reviews
-- `testing/harness/`: Gregory must approve; CodeRabbit reviews
+- `scientific-governance/scientific-claim-rules/`, `claims/schema.json`: Gregory must approve; Rey reviews
+- `scientific-governance/claim-validation-harness/`: Gregory must approve; CodeRabbit reviews
 - Everything else: direct push to main is fine
 
 When Graude catches a bug in infrastructure (bootstrap, CI, seed Cypher), he opens an `[EMILY]` issue with his diagnosis, then Emily executes. Graude fixed the bootstrap bug himself only because Emily didn't exist yet; that precedent does not repeat.

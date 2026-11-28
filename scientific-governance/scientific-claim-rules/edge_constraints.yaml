@@ -1,0 +1,211 @@
+# TRUSTED SPECIFICATION — HUMAN-OWNED
+# Only Gregory Way or Rey may modify this file.
+# Defines typed edge vocabulary for the dual-encoding knowledge graph.
+# Each edge type maps to a Biolink predicate for interoperability.
+#
+# Dual encoding pattern:
+#   Layer 1: (Entity) -[:PREDICATE {claim_ids, biolink_predicate}]-> (Entity)
+#   Layer 2: (Claim) -[:HAS_SUBJECT]-> (Entity), (Claim) -[:HAS_OBJECT]-> (Entity)
+#
+# Neo4j labels are short uppercase for Cypher readability.
+# Each edge carries a biolink_predicate property for Translator/RTX-KG2 interop.
+#
+# result_polarity: optional property on any edge. Default "positive".
+# Set to "negative" for claims describing absence of effect
+# (e.g. "NF1 GRD does NOT stimulate oncogenic RAS").
+# This avoids needing separate DOES_NOT_ACTIVATE predicates.
+
+version: "2.0"
+authority: "Gregory Way + Rey"
+
+# --- Biological relationship edges (Layer 1 direct edges) ---
+edge_types:
+
+  # Gene → Protein
+  ENCODES:
+    from: [Gene]
+    to: [Protein]
+    biolink_predicate: "biolink:encodes"
+
+  # Protein activation / positive regulation
+  ACTIVATES:
+    from: [Protein]
+    to: [Protein, Pathway]
+    biolink_predicate: "biolink:activates"
+
+  # Drug / Protein inhibition / negative regulation
+  INHIBITS:
+    from: [Drug, Protein]
+    to: [Protein, Pathway]
+    biolink_predicate: "biolink:inhibits"
+
+  # Drug treatment of disease (evidence_strength >= 4, typically RCT)
+  TREATS:
+    from: [Drug]
+    to: [Disease, Phenotype]
+    biolink_predicate: "biolink:treats"
+
+  # Drug in clinical trials (evidence_strength < 4, no proven efficacy yet)
+  IN_CLINICAL_TRIALS_FOR:
+    from: [Drug]
+    to: [Disease, Phenotype]
+    biolink_predicate: "biolink:in_clinical_trials_for"
+
+  # Drug beneficial in preclinical models (evidence_strength 2-3)
+  BENEFICIAL_IN_MODELS_OF:
+    from: [Drug]
+    to: [Disease, Phenotype]
+    biolink_predicate: "biolink:beneficial_in_models_for"
+
+  # Drug molecular target
+  TARGETS:
+    from: [Drug]
+    to: [Gene, Protein]
+    biolink_predicate: "biolink:targets"
+
+  # Mutation causal relationship
+  CAUSES:
+    from: [Mutation]
+    to: [Disease, Phenotype]
+    biolink_predicate: "biolink:causes"
+
+  # Gene / Mutation → Phenotype / Disease association
+  GENE_ASSOCIATED_WITH_CONDITION:
+    from: [Gene, Mutation]
+    to: [Phenotype, Disease]
+    biolink_predicate: "biolink:gene_associated_with_condition"
+
+  # Disease → Phenotype manifestation
+  HAS_PHENOTYPE:
+    from: [Disease]
+    to: [Phenotype]
+    biolink_predicate: "biolink:has_phenotype"
+
+  # Pathway membership
+  PART_OF:
+    from: [Gene, Protein]
+    to: [Pathway]
+    biolink_predicate: "biolink:part_of"
+
+  # Sequence / functional homology
+  HOMOLOGOUS_TO:
+    from: [Protein, Gene]
+    to: [Protein, Gene]
+    biolink_predicate: "biolink:homologous_to"
+
+  # Genomic containment (e.g. gene within intron of another gene)
+  FOUND_IN:
+    from: [Gene, Dataset]
+    to: [Dataset, Gene]
+    biolink_predicate: "biolink:has_sequence_location"
+
+  # --- Claim reification edges (Layer 2) ---
+
+  # Claim provenance
+  HAS_SUBJECT:
+    from: [Claim]
+    to: [Gene, Protein, Pathway, Mutation, Phenotype, Disease, Drug,
+         ClinicalTrial, CellLine, AnimalModel, Dataset]
+    biolink_predicate: null  # structural, not biological
+
+  HAS_OBJECT:
+    from: [Claim]
+    to: [Gene, Protein, Pathway, Mutation, Phenotype, Disease, Drug,
+         ClinicalTrial, CellLine, AnimalModel, Dataset]
+    biolink_predicate: null  # structural, not biological
+
+  EXTRACTED_FROM:
+    from: [Claim]
+    to: [Publication]
+    biolink_predicate: null  # structural
+
+  SUPPORTS:
+    from: [Claim]
+    to: [Claim]
+    biolink_predicate: null  # structural
+
+  CONTRADICTS:
+    from: [Claim]
+    to: [Claim]
+    biolink_predicate: null  # structural
+
+  VALIDATED_IN:
+    from: [Claim]
+    to: [CellLine, AnimalModel]
+    biolink_predicate: null  # structural
+
+# --- Retired edges ---
+# These predicates are retired in v2.0 but kept here as transitional
+# entries so existing claims do not fail validation before Otto re-grounds them.
+# Claims using retired predicates will show a WARN (not FAIL) in the validator.
+# Remove each entry once all claims using it have been re-grounded.
+retired_edges:
+  ABOUT:
+    reason: "Replaced by typed HAS_SUBJECT/HAS_OBJECT + direct entity edges"
+    retired_in: "v2.0"
+    migration: "008_dual_encoding_backfill"
+
+  ASSOCIATED_WITH:
+    reason: >
+      Split into GENE_ASSOCIATED_WITH_CONDITION (Gene/Mutation → Phenotype/Disease)
+      and HAS_PHENOTYPE (Disease → Phenotype) for Biolink compliance.
+      Migration 008_dual_encoding_backfill does NOT rewrite existing ASSOCIATED_WITH edges: it
+      still writes them for claims that use the predicate (transitional). They go away only after
+      each claim is re-grounded (issue #88); retyping the graph edges then needs a separate
+      migration, which has not been written yet.
+    retired_in: "v2.0"
+    migration: "008_dual_encoding_backfill"
+    transitional: true  # validator issues WARN not FAIL until re-grounding is complete
+
+# --- Edge properties ---
+edge_properties:
+  result_polarity:
+    description: >
+      "positive" (default, can be omitted) or "negative".
+      Negative results describe absence of effect (e.g. NF1 GRD does NOT
+      stimulate oncogenic RAS mutants). The predicate stays the same
+      (e.g. ACTIVATES) but result_polarity=negative inverts its meaning.
+      This avoids predicate proliferation (no DOES_NOT_ACTIVATE needed).
+    type: string
+    enum: [positive, negative]
+    default: positive
+
+  biolink_predicate:
+    description: >
+      Canonical Biolink Model predicate CURIE (e.g. "biolink:treats").
+      Written as a property on every Layer 1 direct edge for interop
+      with Translator, RTX-KG2, and Monarch. Validated against
+      biolink-model-toolkit (bmt) at CI time.
+    type: string
+
+  claim_ids:
+    description: >
+      Array of claim IDs (C####) that support this edge. When multiple
+      claims share the same (subject, predicate, object) triple, one
+      coalesced direct edge carries all claim_ids. RTX-KG2 coalescing pattern.
+    type: array
+    items: string
+
+# --- Predicate mapping table ---
+# Neo4j label → Biolink predicate mapping for validator and migration scripts.
+# This is the authoritative mapping; bmt validation confirms each entry at CI.
+predicate_mapping:
+  ENCODES: "biolink:encodes"
+  ACTIVATES: "biolink:activates"
+  INHIBITS: "biolink:inhibits"
+  TREATS: "biolink:treats"
+  IN_CLINICAL_TRIALS_FOR: "biolink:in_clinical_trials_for"
+  BENEFICIAL_IN_MODELS_OF: "biolink:beneficial_in_models_for"
+  TARGETS: "biolink:targets"
+  CAUSES: "biolink:causes"
+  GENE_ASSOCIATED_WITH_CONDITION: "biolink:gene_associated_with_condition"
+  HAS_PHENOTYPE: "biolink:has_phenotype"
+  PART_OF: "biolink:part_of"
+  HOMOLOGOUS_TO: "biolink:homologous_to"
+  FOUND_IN: "biolink:has_sequence_location"
+
+forbidden_patterns:
+  - description: "Circular SUPPORTS edges not permitted"
+    pattern: "(a:Claim)-[:SUPPORTS]->(b:Claim)-[:SUPPORTS]->(a)"
+  - description: "Self-referential edges not permitted"
+    pattern: "(a)-[r]->(a) WHERE type(r) <> 'PART_OF'"
