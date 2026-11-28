@@ -13,7 +13,7 @@
   "semantic_triple": {
     "subject": "MAP2K1 (MEK1, target of MEK inhibitors)",
     "subject_id": "NCBIGene:5604",
-    "predicate": "ASSOCIATED_WITH",
+    "predicate": "GENE_ASSOCIATED_WITH_CONDITION",
     "object": "malignant peripheral nerve sheath tumor",
     "object_id": "MONDO:0017827"
   },
@@ -24,7 +24,7 @@
   "claim_type": "drug_response",
   "evidence_strength": 3,
   "evidence_type": "preclinical_in_vivo",
-  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing refs 37, 48-52 (incl. Jessen 2013 PMID 23221341; Lock 2016; Malone 2014). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. Review summarises multiple preclinical studies; individual models not verified by Dirk. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20. | Verified/corrected by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-21. Reframed: TARGETS->ASSOCIATED_WITH. Original used Gene as TARGETS subject (Drug required). Claim is about MEK inhibitor class (no single drug CURIE), so MAP2K1 as gene target ASSOCIATED_WITH disease. NEGATIVE result: limited/no tumor suppression in MPNST with single-agent MEK inhibitor.",
+  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing refs 37, 48-52 (incl. Jessen 2013 PMID 23221341; Lock 2016; Malone 2014). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. Review summarises multiple preclinical studies; individual models not verified by Dirk. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20. | Verified/corrected by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-21. Reframed: TARGETS->ASSOCIATED_WITH. Original used Gene as TARGETS subject (Drug required). Claim is about MEK inhibitor class (no single drug CURIE), so MAP2K1 as gene target ASSOCIATED_WITH disease. NEGATIVE result: limited/no tumor suppression in MPNST with single-agent MEK inhibitor. | Re-grounded 2026-11-27 for issue #88: ASSOCIATED_WITH replaced with v2.0 Biolink predicate. ASSOCIATED_WITH -> GENE_ASSOCIATED_WITH_CONDITION (Gene -> Disease).",
   "independence_flags": [
     "secondary citation via review PMID 35788692 of refs 37, 48-52 (incl. Jessen 2013 PMID 23221341; Lock 2016; Malone 2014)"
   ],
