@@ -55,7 +55,7 @@ edge_types:
   BENEFICIAL_IN_MODELS_OF:
     from: [Drug]
     to: [Disease, Phenotype]
-    biolink_predicate: "biolink:beneficial_in_models_of"
+    biolink_predicate: "biolink:beneficial_in_models_for"
 
   # Drug molecular target
   TARGETS:
@@ -149,7 +149,10 @@ retired_edges:
     reason: >
       Split into GENE_ASSOCIATED_WITH_CONDITION (Gene/Mutation → Phenotype/Disease)
       and HAS_PHENOTYPE (Disease → Phenotype) for Biolink compliance.
-      Migration rewrites existing ASSOCIATED_WITH edges to the appropriate typed predicate.
+      Migration 008_dual_encoding_backfill does NOT rewrite existing ASSOCIATED_WITH edges: it
+      still writes them for claims that use the predicate (transitional). They go away only after
+      each claim is re-grounded (issue #88); retyping the graph edges then needs a separate
+      migration, which has not been written yet.
     retired_in: "v2.0"
     migration: "008_dual_encoding_backfill"
     transitional: true  # validator issues WARN not FAIL until re-grounding is complete
@@ -192,7 +195,7 @@ predicate_mapping:
   INHIBITS: "biolink:inhibits"
   TREATS: "biolink:treats"
   IN_CLINICAL_TRIALS_FOR: "biolink:in_clinical_trials_for"
-  BENEFICIAL_IN_MODELS_OF: "biolink:beneficial_in_models_of"
+  BENEFICIAL_IN_MODELS_OF: "biolink:beneficial_in_models_for"
   TARGETS: "biolink:targets"
   CAUSES: "biolink:causes"
   GENE_ASSOCIATED_WITH_CONDITION: "biolink:gene_associated_with_condition"

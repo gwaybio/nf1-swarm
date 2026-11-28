@@ -71,6 +71,7 @@ Emily is the swarm's infrastructure engineer. She keeps the scaffolding that mak
 **What Emily never does without a Gregory-approved PR:**
 - Modifies `scientific-governance/claim-validation-harness/` (protected engineering code)
 - Modifies `scientific-governance/scientific-claim-rules/` (scientific contract — Gregory + Rey)
+- Modifies `scientific-governance/approved-graph-snapshots/` (approved graph state — Gregory approves)
 - Modifies `claims/schema.json` (data contract)
 
 **What Emily can push directly to main:**

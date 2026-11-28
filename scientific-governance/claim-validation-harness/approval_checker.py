@@ -52,6 +52,11 @@ def main():
 
     driver = get_driver()
     if driver is None:
+        if args.capture:
+            # A skipped capture must never look like a successful one: callers redirect
+            # stdout into a snapshot file, so say nothing on stdout and fail.
+            print("ERROR: cannot capture a snapshot — Neo4j is not running.", file=sys.stderr)
+            return 2
         print("Skipping approval checks (Neo4j not running).")
         return 0
 

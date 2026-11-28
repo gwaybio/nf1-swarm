@@ -12,9 +12,20 @@ Known-good knowledge graph states for approval testing.
 ## Workflow
 
 ```bash
-# Capture current graph state
-python scientific-governance/claim-validation-harness/approval_checker.py --capture > scientific-governance/approved-graph-snapshots/snapshot_$(date +%Y%m%d).json
+# Capture current graph state. Write to a temp file and replace the snapshot only
+# if the capture succeeded and the output is valid JSON: a bare `> snapshot.json`
+# truncates today's snapshot before the checker runs.
+snap=scientific-governance/approved-graph-snapshots/snapshot_$(date +%Y%m%d).json
+tmp=$(mktemp)
+uv run python scientific-governance/claim-validation-harness/approval_checker.py --capture > "$tmp" \
+  && uv run python -m json.tool "$tmp" > /dev/null \
+  && mv "$tmp" "$snap" \
+  || { rm -f "$tmp"; echo "capture failed; existing snapshot left untouched" >&2; }
 
 # Check current graph against latest snapshot
-python scientific-governance/claim-validation-harness/approval_checker.py --check
+uv run python scientific-governance/claim-validation-harness/approval_checker.py --check
 ```
+
+`--capture` exits non-zero (code 2) with an error on stderr when Neo4j is not
+running. `--check` and the default mode still skip successfully in that case so CI
+without Neo4j stays green.

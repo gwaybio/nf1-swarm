@@ -37,6 +37,7 @@ nf1-swarm/
 **Never push directly** (open a branch, tag `@gwaybio`, no self-merge):
 - `scientific-governance/claim-validation-harness/` — CODEOWNERS-enforced
 - `scientific-governance/scientific-claim-rules/` — CODEOWNERS-enforced, Rey reviews, Gregory approves
+- `scientific-governance/approved-graph-snapshots/` — CODEOWNERS-enforced, Gregory approves
 - `claims/schema.json` — CODEOWNERS-enforced
 - Also CODEOWNERS-protected (same rule, broader than AGENTS.md's Emily list):
   `AGENTS.md`, `DESIGN.md`, `METHODS.md`, `.github/CODEOWNERS`, `.hermes/`
