@@ -159,6 +159,21 @@ Every agent that touches a claim **must comment on the originating paper issue**
 
 Use structured prefixes: `STATUS:`, `BLOCKER:`, `QUESTION:`
 
+**Agent attribution on all comments — mandatory**
+
+Every comment posted on a GitHub issue or PR — by any agent — must begin with an attribution line identifying which agent wrote it:
+
+```
+[Graude] STATUS: ...
+[Dirk] Extracted 7 claims from PMC9629420 ...
+[Otto] Grounded 7 claims — CURIEs assigned ...
+[Rey] Accepted C0042, C0043. Rejected C0044 (secondary_source) ...
+[Emily] Fixed — commit abc1234 ...
+```
+
+Format: `[AgentName]` as the very first token, followed by the content.
+This is a historical artifact — Gregory should always know which agent wrote which comment, since all comments post under his GitHub account.
+
 **When to close the issue:** Graude closes the paper issue only after all claims from that paper have reached `accepted` status and been written to the graph by Kim. Until then, the issue stays open as a live record of in-flight work.
 
 **Message Graude when done.** Every agent must send a Hermes message to Graude upon completing their stage — not just comment on the GitHub issue. The GitHub comment is the audit trail for humans. The Hermes message is what triggers Graude to route to the next stage immediately. Without it, work sits idle until Graude polls or Gregory prompts.
