@@ -248,6 +248,17 @@ def _age_days(iso_str: str) -> int:
         return 0
 
 
+def _is_truly_blocked(issue: dict) -> bool:
+    """Return True if a paper issue is blocked (PAYWALLED/BLOCKED in title)
+    AND does NOT have the 'ready' label (which means local PDF has been supplied).
+    """
+    title_upper = issue.get("title", "").upper()
+    if "PAYWALLED" not in title_upper and "BLOCKED" not in title_upper:
+        return False
+    labels = {lb["name"] for lb in issue.get("labels", [])}
+    return "ready" not in labels
+
+
 def _count_assoc_with_warns() -> tuple[int, int]:
     """Return (accepted_count, pending_count) of ASSOCIATED_WITH predicate claims.
 
@@ -279,7 +290,7 @@ def _recommended_next_action(issues: list[dict], pending: int, accepted: int,
     # Priority order: blockers > pending curation > literature queue > idle agents
     if blocked > 0:
         blocked_titles = [i["title"] for i in paper_issues
-                          if "PAYWALLED" in i["title"].upper() or "BLOCKED" in i["title"].upper()]
+                          if _is_truly_blocked(i)]
         pmids = []
         for t in blocked_titles[:2]:
             # extract PMID hint from title if present
@@ -333,11 +344,11 @@ def _write_graude_briefing(issues: list[dict], pending: int, accepted: int,
     blockers = []
     for iss in issues:
         labels = {lb["name"] for lb in iss.get("labels", [])}
-        if "blocker" in labels:
+        if "blocker" in labels and not ("paper" in labels and "ready" in labels):
             blockers.append(f"  #{iss['number']} {iss['title'][:60]}")
     if blocked > 0:
         for iss in paper_issues:
-            if "PAYWALLED" in iss["title"].upper() or "BLOCKED" in iss["title"].upper():
+            if _is_truly_blocked(iss):
                 blockers.append(f"  #{iss['number']} PAYWALLED: {iss['title'][:55]}")
 
     next_action = _recommended_next_action(issues, pending, accepted, paper_issues, blocked)
@@ -450,7 +461,7 @@ def phase_briefings():
 
     # Papers: count by label
     paper_issues = [i for i in issues if any(lb["name"] == "paper" for lb in i.get("labels", []))]
-    blocked = sum(1 for i in paper_issues if "PAYWALLED" in i["title"].upper() or "BLOCKED" in i["title"].upper())
+    blocked = sum(1 for i in paper_issues if _is_truly_blocked(i))
 
     # Literature queue
     papers_processed = 0
