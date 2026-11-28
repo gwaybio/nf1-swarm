@@ -201,7 +201,7 @@ def _check_latency_health(log_path: Path, agent: str) -> str:
 def _health_from_commit_recency(agent: str) -> str:
     """Infer health from how recently an agent committed."""
     result = subprocess.run(
-        ["git", "log", f"--author={agent}", "--format=%cd", "--date=iso-strict", "-1"],
+        ["git", "log", f"--author={agent}", "--all", "--format=%cd", "--date=iso-strict", "-1"],
         cwd=REPO_ROOT, capture_output=True, text=True
     )
     date_str = result.stdout.strip()
