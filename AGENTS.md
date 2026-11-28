@@ -215,14 +215,48 @@ All claims must conform to `claims/schema.json`. Key fields:
 
 ## Branch discipline — mandatory
 
-**All agents must follow these rules to avoid competing on the same files:**
+**All agents must use git worktrees — never switch branches in the shared checkout.**
 
-1. **Never push directly to `main`** unless you are Graude writing docs/routing commits or Milo (via the dream workflow's fast-forward merge only).
-2. **Each agent works on its own named branch:** `feat/<agent>-<short-desc>` (Emily), `milo/dream-<date>` (Milo), `claim/<agent>-<pmid>` (Dirk/Otto/Rey/Kim).
-3. **Never checkout another agent's branch.** If you need to base work on a feature branch, ask Graude to coordinate.
-4. **Before starting any work:** `git checkout main && git pull origin main && git checkout -b <your-branch>`. Never start work from a stale or someone else's branch.
-5. **Milo only:** dream commits go via `milo/dream-<date>` branch, fast-forward merged to main by the CI workflow. Never push dream commits directly to main from a local session.
-6. **If you get a push conflict:** stop, message Graude, do not force-push.
+The shared checkout at `~/repos/nf1-swarm` stays on `main`, read-only. Every agent works in its own worktree so branch switches never collide.
+
+### Setting up your worktree
+
+```bash
+# Create a worktree for your task (run once per task from ~/repos/nf1-swarm)
+git worktree add ~/repos/nf1-swarm-<agent> -b feat/<agent>-<short-desc> origin/main
+
+# Examples:
+git worktree add ~/repos/nf1-swarm-emily -b feat/emily-sqlite-lookup origin/main
+git worktree add ~/repos/nf1-swarm-otto  -b otto/reground-88 origin/main
+git worktree add ~/repos/nf1-swarm-kim   -b kim/migration-009 origin/main
+
+# Work in your worktree — not in the shared checkout
+cd ~/repos/nf1-swarm-<agent>
+# ... make changes, commit, push ...
+
+# Clean up after PR merges
+cd ~/repos/nf1-swarm
+git worktree remove ~/repos/nf1-swarm-<agent>
+```
+
+### Rules
+
+1. **Never `git checkout` or `git switch` inside `~/repos/nf1-swarm`** — that is the shared checkout, it stays on `main`.
+2. **One worktree per task.** When done, remove it.
+3. **Milo only:** dream worktree at `~/repos/nf1-swarm-milo`, branch `milo/dream-<date>`.
+4. **If you get a push conflict:** stop, message Graude, do not force-push.
+
+### Pre-commit hook gotcha in worktrees
+
+The `install-commit-msg-hook` pre-commit hook does `cp ... .git/hooks/commit-msg`. In a worktree, `.git` is a file (not a directory), so this fails. Until fixed, skip that one hook and add the Co-authored-by trailer manually:
+
+```bash
+SKIP=install-commit-msg-hook git commit -m "your message
+
+Co-authored-by: Gregory Way <gregory.way@gmail.com>"
+```
+
+Emily will fix the pre-commit hook to use `git rev-parse --git-path hooks/commit-msg` — after that, `SKIP=` is no longer needed.
 
 ## PR protocol (harness and spec changes)
 

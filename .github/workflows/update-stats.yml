@@ -26,6 +26,9 @@ jobs:
       - name: Update stats block in README.md
         run: uv run python scripts/update_stats.py
 
+      - name: Rebuild lookup DB
+        run: uv run python scripts/rebuild_db.py
+
       - name: Commit if changed
         run: |
           git config user.name "Emily (nf1-swarm)"

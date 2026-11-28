@@ -55,8 +55,11 @@ CONTRADICTS         Claim ──► Claim
 VALIDATED_IN        Claim ──► CellLine/AnimalModel
 FOUND_IN            Gene/Dataset ──► Dataset/Gene
 HOMOLOGOUS_TO       Protein/Gene ──► Protein/Gene
-ABOUT               Claim ──► Gene/Protein/Pathway/Mutation/Phenotype/Disease/Drug/ClinicalTrial/CellLine/AnimalModel/Dataset
+HAS_SUBJECT         Claim ──► Gene/Protein/Pathway/Mutation/Phenotype/Disease/Drug/ClinicalTrial/CellLine/AnimalModel/Dataset
+HAS_OBJECT          Claim ──► Gene/Protein/Pathway/Mutation/Phenotype/Disease/Drug/ClinicalTrial/CellLine/AnimalModel/Dataset
 ```
+
+> **Note:** `ABOUT` edges are retired as of v2.0. Claims now use `HAS_SUBJECT` / `HAS_OBJECT` to link to entities (reification layer), plus a coalesced typed direct edge between entities (e.g. `Drug -[:TREATS]-> Disease`). See `scientific-governance/scientific-claim-rules/edge_constraints.yaml` for the full dual-encoding spec.
 
 ## Testing architecture
 
@@ -113,7 +116,7 @@ re-examination in 2026).
 
 | State | Graph representation | When |
 |-------|---------------------|------|
-| **Asserted** | Claim node with `status: accepted`, ABOUT edges to entities | Rey accepts |
+| **Asserted** | Claim node with `status: accepted`, `HAS_SUBJECT`/`HAS_OBJECT` edges to entities + coalesced typed direct edge between entities | Rey accepts |
 | **Refuted** | Claim node with `status: refuted`, CONTRADICTS edge to any conflicting accepted Claim | Rey rejects as `biological`, Archie returns CONTRADICTED |
 | **Untested** | No Claim node — but discoverable: if RTX-KG2 also has no edge, it is genuinely untested; if RTX-KG2 has an edge we haven't processed, it is a pipeline gap |
 

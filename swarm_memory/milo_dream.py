@@ -397,6 +397,7 @@ def _write_graude_briefing(issues: list[dict], pending: int, accepted: int,
     # Operational rules reminder
     lines.append("## Operational rules\n")
     lines.append("  GitHub comments must begin with [AgentName] as first token.\n")
+    lines.append("  Milo: flag any comment lacking [AgentName] attribution in the issue digest.\n")
     lines.append("\n")
 
     lines.append("## Recommended next action\n")

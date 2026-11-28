@@ -1,18 +1,17 @@
 # Graude Session Briefing
-Generated: 2026-11-28 04:39 UTC  |  Load this file first. Do not call gh issue list.
+Generated: 2026-11-28 11:23 UTC  |  Load this file first. Do not call gh issue list.
 
 ## Pipeline
   accepted: 28  pending: 142  rejected: 25
   papers queued: 18  blocked (paywalled): 2
 
 ## Recent commits
+  8a651f2 memory(milo): briefing — add attribution rule + ASSOCIATED_WITH WARN status
   8336581 docs(process): CodeRabbit review protocol — reply inline, never self-resolve
   cc32b0d docs(process): agent attribution required on all GitHub comments
-  a6c54e0 fix(process): Milo uses milo/dream branch, never pushes directly to main
 
 ## Open issues
   #  4 [emily] 10d  [EMILY] Neo4j log rotation
-  # 62 [graude]  7d  [EMILY] SQLite lookup layer (data/swarm.db) for agent dedup and s
   # 63 [graude]  7d  [EMILY] Shared PDF/HTML text cleaner for literature extraction
   # 64 [graude]  7d  [EMILY] Shared citation-to-PMID resolver with title verification
   # 65 [graude]  7d  [EMILY] Add source_quote field to claim schema for reviewer verif
@@ -44,6 +43,7 @@ Generated: 2026-11-28 04:39 UTC  |  Load this file first. Do not call gh issue l
 
 ## Operational rules
   GitHub comments must begin with [AgentName] as first token.
+  Milo: flag any comment lacking [AgentName] attribution in the issue digest.
 
 ## Recommended next action
   BLOCKER: 2 paper(s) paywalled (see issues above). Provide full-text access to unblock Dirk's queue.
