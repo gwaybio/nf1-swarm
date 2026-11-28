@@ -281,6 +281,32 @@ When CodeRabbit posts review comments on a PR:
 2. **Do NOT resolve threads yourself** — leave them unresolved. CodeRabbit re-reviews the new commits and resolves threads itself when satisfied.
 3. **Do NOT dismiss CodeRabbit's review** — let it re-trigger naturally on each new push.
 4. If a CodeRabbit comment is wrong or not applicable, reply explaining why and leave it for CodeRabbit to resolve.
+5. **"Outside diff range" comments are findings too — you must handle them.** CodeRabbit cannot post inline on lines outside the PR's diff, so it puts those findings in the *body* of a review, under "Outside diff range comments (N)". They have no thread: nothing to reply to, nothing for CodeRabbit to resolve or track, and they are easy to miss because thread-based queries do not return them. They are often the important ones (on PR #78: a broken import that crashed a script, stale examples in agent guides). They are also spread across *several* review objects on a PR, not just the latest, so scan all of them.
+
+   List them (replace `PR`):
+
+   ```bash
+   PR=78
+   gh api graphql -f query="{repository(owner:\"gwaybio\",name:\"nf1-swarm\"){pullRequest(number:$PR){reviews(last:100){nodes{author{login} body}}}}}" \
+     --jq '.data.repository.pullRequest.reviews.nodes[] | select(.author.login=="coderabbitai" and (.body|test("Outside diff range"))) | .body' \
+     | sed 's/<[^>]*>//g' \
+     | grep -oP '(Critical|Major|Minor|Trivial|Nitpick)\s*·\s*[^\n]{5,160}?\s*·\s*[\w./-]+:\d+' | sed 's/  */ /g'
+   ```
+
+   This prints one line per finding (`severity · title · file:line`). The full text and a "Prompt to fix issue" block are in the review body; open the review on GitHub for detail rather than dumping whole bodies into your context (they run to tens of thousands of characters).
+
+   Because nothing resolves them, **you** keep the record. For each finding, do one of: fix it in this PR; open an issue and link it; or explain why it does not apply. Then post **one PR-level comment** starting with `[AgentName]` that lists every outside-diff finding with its disposition:
+
+   ```
+   [Emily] Outside-diff findings (CodeRabbit), disposition:
+   | file:line | severity | disposition |
+   |---|---|---|
+   | validate_accepted_claims.py:24 | Major | fixed in abc1234 |
+   | KIM_GUIDE.md:54 | Minor | tracked in #85 |
+   | approval_checker.py:28 | Minor | not applicable: <reason> |
+   ```
+
+   Do this before reporting the PR ready. Do not reply to these findings inside an unrelated thread, and do not resolve anything on CodeRabbit's behalf.
 
 The flow is: push fix → reply inline → CodeRabbit re-reviews → CodeRabbit resolves. Agents bypassing this flow by self-resolving threads skip CodeRabbit's re-check.
 
