@@ -4,7 +4,7 @@
   "claim_type": "clinical_outcome",
   "evidence_strength": 3,
   "evidence_type": "cohort_study",
-  "notes": " Full text (PMC7305659). Single-arm phase 2 (n=50, stratum 1 only), unblinded central MRI volumetry; capped at 3 because there is no randomized control (RCT/strength 4 criteria not met). Comparator is a non-randomized external natural-history cohort (NCT00924196). | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-18. Natural history comparator. No Disease->Disease predicate in edge_constraints.yaml; ASSOCIATED_WITH used descriptively. Recommend PROGRESSES_IN edge type for natural history claims. | Re-grounded 2026-11-27 for issue #88: ASSOCIATED_WITH replaced with v2.0 Biolink predicate. ASSOCIATED_WITH -> GENE_ASSOCIATED_WITH_CONDITION. Triple reframed: was Disease->Disease (plexiform neurofibroma->NF1), now Gene->Disease (NF1 gene -> plexiform neurofibroma). Claim remains rejected.",
+  "notes": " Full text (PMC7305659). Single-arm phase 2 (n=50, stratum 1 only), unblinded central MRI volumetry; capped at 3 because there is no randomized control (RCT/strength 4 criteria not met). Comparator is a non-randomized external natural-history cohort (NCT00924196). | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-18. Natural history comparator. No Disease->Disease predicate in edge_constraints.yaml; ASSOCIATED_WITH used descriptively. Recommend PROGRESSES_IN edge type for natural history claims. | Re-grounded 2026-11-27 for issue #88: ASSOCIATED_WITH replaced with v2.0 Biolink predicate. ASSOCIATED_WITH -> GENE_ASSOCIATED_WITH_CONDITION. Triple reframed: was Disease->Disease (plexiform neurofibroma->NF1), now Gene->Disease (NF1 gene -> plexiform neurofibroma). Claim remains rejected. | Fixed 2026-11-28: semantic_triple set to null per CodeRabbit review. This natural-history claim (tumor volume progression) is not a genotype-phenotype association. No v2.0 predicate represents natural history progression. Claim remains rejected.",
   "source_pmid": "32187457",
   "source_doi": "10.1056/NEJMoa1912735",
   "source_title": "Selumetinib in Children with Inoperable Plexiform Neurofibromas",
@@ -14,13 +14,7 @@
   "verified_by": null,
   "curated_by": "rey",
   "status": "rejected",
-  "semantic_triple": {
-    "subject": "NF1",
-    "subject_id": "NCBIGene:4763",
-    "predicate": "GENE_ASSOCIATED_WITH_CONDITION",
-    "object": "plexiform neurofibroma",
-    "object_id": "MONDO:0003304"
-  },
+  "semantic_triple": null,
   "bel_notation": null,
   "supporting_dois": [],
   "confidence_score": null,

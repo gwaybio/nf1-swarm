@@ -4,7 +4,7 @@
   "claim_type": "genetic_association",
   "evidence_strength": 3,
   "evidence_type": "cohort_study",
-  "notes": "Full text (PMC8354850). Data cited from a primary study (secondary citation in a consensus paper): Messiaen et al. (ref 14). Primary paper should be read directly and may support a higher strength. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-18. SPRED1=NCBIGene:161742; Legius syndrome=MONDO:0012669. RTX-KG2 has SPRED1 causes/biomarker_for Legius syndrome (5 edges). Mutation identifier uses gene CURIE (specific variants not cataloged here). | Re-grounded 2026-11-27 for issue #88: ASSOCIATED_WITH replaced with v2.0 Biolink predicate. ASSOCIATED_WITH -> GENE_ASSOCIATED_WITH_CONDITION (Gene -> Disease).",
+  "notes": "Full text (PMC8354850). Data cited from a primary study (secondary citation in a consensus paper): Messiaen et al. (ref 14). Primary paper should be read directly and may support a higher strength. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-18. SPRED1=NCBIGene:161742; Legius syndrome=MONDO:0012669. RTX-KG2 has SPRED1 causes/biomarker_for Legius syndrome (5 edges). Mutation identifier uses gene CURIE (specific variants not cataloged here). | Re-grounded 2026-11-27 for issue #88: ASSOCIATED_WITH replaced with v2.0 Biolink predicate. ASSOCIATED_WITH -> GENE_ASSOCIATED_WITH_CONDITION (Gene -> Disease). | Fixed 2026-11-28: object corrected from NF1 disease (MONDO:0018975) to Legius syndrome (MONDO:0012669) per CodeRabbit review. The claim describes SPRED1 variant carriers with pigmentary NF1 features \u2014 these are Legius syndrome, not NF1.",
   "source_pmid": "34012067",
   "source_doi": "10.1038/s41436-021-01170-5",
   "source_title": "Revised diagnostic criteria for neurofibromatosis type 1 and Legius syndrome: an international consensus recommendation",
@@ -18,8 +18,8 @@
     "subject": "SPRED1",
     "subject_id": "NCBIGene:161742",
     "predicate": "GENE_ASSOCIATED_WITH_CONDITION",
-    "object": "neurofibromatosis type 1",
-    "object_id": "MONDO:0018975"
+    "object": "Legius syndrome",
+    "object_id": "MONDO:0012669"
   },
   "bel_notation": null,
   "supporting_dois": [],

@@ -10,13 +10,7 @@
   "verified_by": null,
   "curated_by": null,
   "status": "pending",
-  "semantic_triple": {
-    "subject": "MAP2K1 (MEK1, target of MEK inhibitors)",
-    "subject_id": "NCBIGene:5604",
-    "predicate": "GENE_ASSOCIATED_WITH_CONDITION",
-    "object": "neurofibromatosis type 1",
-    "object_id": "MONDO:0018975"
-  },
+  "semantic_triple": null,
   "bel_notation": null,
   "supporting_dois": [],
   "confidence_score": null,
@@ -24,7 +18,7 @@
   "claim_type": "clinical_outcome",
   "evidence_strength": 2,
   "evidence_type": "cohort_study",
-  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Walsh 2021 (PMID 34377779, ref 98). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. Authors describe it as proof of concept; small, uncontrolled. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20. | Verified/corrected by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-21. Reframed: TARGETS->ASSOCIATED_WITH. MEK inhibitor class (no specific drug named) cognition trial in NF1. Gene->Disease ASSOCIATED_WITH per edge_constraints. | Re-grounded 2026-11-27 for issue #88: ASSOCIATED_WITH replaced with v2.0 Biolink predicate. ASSOCIATED_WITH -> GENE_ASSOCIATED_WITH_CONDITION (Gene -> Disease).",
+  "notes": "Full text (PMC9629420, HTML). Statement made by the de Blank 2022 review citing Walsh 2021 (PMID 34377779, ref 98). Secondary citation: the claim is not independent of the cited primary study; read the primary paper for strength grading. Authors describe it as proof of concept; small, uncontrolled. | Grounded by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-20. | Verified/corrected by Otto via RTX-KG2c PloverDB + SRI Node Normalizer, accessed 2026-11-21. Reframed: TARGETS->ASSOCIATED_WITH. MEK inhibitor class (no specific drug named) cognition trial in NF1. Gene->Disease ASSOCIATED_WITH per edge_constraints. | Re-grounded 2026-11-27 for issue #88: ASSOCIATED_WITH replaced with v2.0 Biolink predicate. ASSOCIATED_WITH -> GENE_ASSOCIATED_WITH_CONDITION (Gene -> Disease). | Fixed 2026-11-28: semantic_triple set to null per CodeRabbit review. This claim is about a generic MEK inhibitor class treating cognitive symptoms in NF1 \u2014 not a MAP2K1 gene-disease association. No single drug CURIE available. Entities preserved in related_nodes.",
   "independence_flags": [
     "secondary citation via review PMID 35788692 of Walsh 2021 (PMID 34377779, ref 98)"
   ],
