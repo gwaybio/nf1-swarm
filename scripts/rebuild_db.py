@@ -89,7 +89,14 @@ def _queue_md_entries() -> list[dict]:
         if not m_pmid and not doi_m:  # require at least one identifier
             continue
         pmid    = idutils.normalize_pmid(m_pmid.group(1)) if m_pmid else None
-        doi_raw = doi_m.group(1).rstrip(");,") if doi_m else None
+        doi_raw = doi_m.group(1) if doi_m else None
+        # Strip trailing wrapping punctuation but preserve balanced parens
+        # e.g. "10.1038/s41436)," → "10.1038/s41436" (unbalanced ) stripped)
+        # but "10.1016/cell(2020)" → kept intact (balanced)
+        if doi_raw:
+            doi_raw = doi_raw.rstrip(",;")
+            while doi_raw.endswith(")") and doi_raw.count("(") < doi_raw.count(")"):
+                doi_raw = doi_raw[:-1]
         doi     = (idutils.normalize_doi(doi_raw)
                    if doi_raw and idutils.is_doi(doi_raw) else None)
         issue_m = re.search(r'issue #(\d+)', line)
@@ -135,7 +142,11 @@ def _github_issues() -> list[dict]:
             if not pmid_m and not doi_m:
                 continue
             pmid = idutils.normalize_pmid(pmid_m.group(1)) if pmid_m else None
-            doi_raw = doi_m.group(1).rstrip(");,") if doi_m else None
+            doi_raw = doi_m.group(1).rstrip(",;") if doi_m else None
+            # Strip unbalanced trailing ) (wrapper paren) but keep balanced ones
+            if doi_raw:
+                while doi_raw.endswith(")") and doi_raw.count("(") < doi_raw.count(")"):
+                    doi_raw = doi_raw[:-1]
             # Validate DOI before normalising — idutils.is_doi prevents "pending" etc.
             doi = (idutils.normalize_doi(doi_raw)
                    if doi_raw and idutils.is_doi(doi_raw) else None)
@@ -189,9 +200,26 @@ def build(db_path: Path = DB_PATH) -> None:
         import time; time.sleep(0.5)
         return
 
+    tmp_path = db_path.with_suffix(".tmp")  # declared before try so finally can reference it
     try:
-        db_path.unlink(missing_ok=True)
-        con = sqlite3.connect(db_path)
+        # Re-check freshness under the lock — another builder may have just
+        # finished, making our rebuild redundant.
+        if db_path.exists():
+            try:
+                con_check = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
+                cached = con_check.execute(
+                    "SELECT value FROM meta WHERE key='commit'"
+                ).fetchone()
+                con_check.close()
+                if cached and cached[0] == _git_head():
+                    return   # already fresh — another builder beat us
+            except Exception:
+                pass   # unreadable DB → rebuild anyway
+
+        # Build into a temp file so readers always see a complete database.
+        # os.rename is atomic on POSIX when src and dst are on the same filesystem.
+        tmp_path.unlink(missing_ok=True)
+        con = sqlite3.connect(tmp_path)
         con.executescript(SCHEMA)
 
         now = datetime.now(timezone.utc).isoformat()
@@ -247,11 +275,14 @@ def build(db_path: Path = DB_PATH) -> None:
         con.commit()
         paper_count = con.execute("SELECT COUNT(*) FROM papers").fetchone()[0]
         con.close()
+        # Atomic publish: rename tmp → db_path so readers never see a partial DB
+        os.rename(tmp_path, db_path)
         # Diagnostics go to stderr — stdout stays clean JSON for callers
         print(f"Rebuilt {db_path} — {paper_count} papers, commit {_git_head()}",
               file=sys.stderr)
     finally:
         lock.unlink(missing_ok=True)
+        tmp_path.unlink(missing_ok=True)  # no-op if already renamed; cleans up on failure
 
 
 if __name__ == "__main__":
